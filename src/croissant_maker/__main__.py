@@ -1,4 +1,9 @@
+"""Command-line interface for Croissant Maker."""
+
 import typer
+from pathlib import Path
+from .files import discover_files
+from .handlers import find_handler
 
 # Create the Typer application instance
 app = typer.Typer(
@@ -9,16 +14,32 @@ app = typer.Typer(
 
 
 @app.command()
-def main():
+def main(
+    dir_path: str = typer.Argument(..., help="Directory to scan for dataset files"),
+) -> None:
     """
-    Placeholder main command. Currently does nothing.
-    (This docstring becomes the command's help text)
+    Scan a directory and identify files that can be processed by registered handlers.
+
+    Args:
+        dir_path: Path to the directory containing dataset files.
+
+    Raises:
+        typer.Exit: If the directory is invalid or inaccessible, exits with code 1.
     """
-    typer.echo("Croissant Maker - Tool starting point (currently does nothing).")
-    # Future logic for parsing arguments and calling core functions will go here
+    try:
+        files = discover_files(dir_path)
+        if not files:
+            typer.echo("No files found in the directory.")
+            return
+
+        for file_path in files:
+            handler = find_handler(Path(dir_path) / file_path)
+            status = "Supported" if handler else "Unsupported"
+            typer.echo(f"File: {file_path} -> {status}")
+    except (FileNotFoundError, PermissionError) as e:
+        typer.echo(f"Error: {e}")
+        raise typer.Exit(code=1)
 
 
-# This standard Python construct allows the script to be run directly
-# using `python -m croissant_maker` and executes the Typer app.
 if __name__ == "__main__":
     app()
