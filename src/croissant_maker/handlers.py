@@ -19,6 +19,7 @@ class FileTypeHandler(ABC):
         Returns:
             True if the handler can process the file, False otherwise.
         """
+        pass
 
     @abstractmethod
     def extract_metadata(self, file_path: Path) -> dict:
@@ -31,6 +32,7 @@ class FileTypeHandler(ABC):
         Returns:
             Metadata extracted from the file as a dictionary.
         """
+        pass
 
 
 _registry: list[FileTypeHandler] = []

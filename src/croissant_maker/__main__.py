@@ -2,8 +2,9 @@
 
 import typer
 from pathlib import Path
-from .files import discover_files
-from .handlers import find_handler
+
+from croissant_maker.files import discover_files
+from croissant_maker.handlers import find_handler
 
 # Create the Typer application instance
 app = typer.Typer(
