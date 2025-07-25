@@ -9,11 +9,11 @@ name = "croissant-maker"
 version = "0.0.1"
 description = "A tool to automatically generate Croissant metadata for datasets."
 readme = "README.md"
-# Requires Python 3.8 or newer.
+# Requires Python 3.10 or newer.
 # Chosen as a balance between modern features (used by dependencies like Typer)
 # and allowing users on slightly older, but still supported, Python versions.
 # Avoids forcing users onto the absolute latest version (3.13+).
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 authors = [
   { name="Rafi Al Attrach", email="rafiaa@mit.edu" },
   { name="Tom Pollard", email="tpollard@mit.edu" },
