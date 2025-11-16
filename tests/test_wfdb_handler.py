@@ -8,7 +8,18 @@ from croissant_maker.handlers.wfdb_handler import WFDBHandler
 
 @pytest.fixture
 def wfdb_sample_path():
-    path = Path(__file__).parent / "data" / "input" / "mitdb_sample" / "100.hea"
+    """Path to a WFDB record for unit testing."""
+    path = (
+        Path(__file__).parent
+        / "data"
+        / "input"
+        / "mitdb_wfdb"
+        / "physionet.org"
+        / "files"
+        / "mitdb"
+        / "1.0.0"
+        / "100.hea"
+    )
     if not path.exists():
         pytest.skip(f"WFDB sample data not found at {path}")
     return path
@@ -37,6 +48,7 @@ def test_extract_metadata(wfdb_sample_path):
     assert metadata["num_samples"] == 650000
     assert "MLII" in metadata["signal_names"]
     assert "V5" in metadata["signal_names"]
+    # We expect .dat and .atr files to be found alongside .hea
     assert len(metadata["related_files"]) == 2
     assert metadata["signal_types"]["MLII"] == "sc:Float"
     assert metadata["signal_types"]["V5"] == "sc:Float"

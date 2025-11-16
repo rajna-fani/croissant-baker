@@ -169,6 +169,3 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-
-# WFDB test input data (add back after approved PR to avoid large diffs while reviewing)
-tests/data/input/mitdb_wfdb/

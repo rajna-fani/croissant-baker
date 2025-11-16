@@ -287,10 +287,10 @@
       "@type": "cr:FileObject",
       "@id": "file_25",
       "name": "232.dat",
-      "contentSize": "1950000",
+      "contentSize": "1949906",
       "contentUrl": "232.dat",
       "encodingFormat": "application/x-wfdb-data",
-      "sha256": "3d74a21f848766c9607bc5eead7e4b2655f09586adb5561f02fd8fcb0e9da6d0"
+      "sha256": "9a240f3fd401bed2baaa42eb4813b75f78026462d38a1f8a8682164a7c5445ad"
     },
     {
       "@type": "cr:FileObject",
@@ -611,10 +611,10 @@
       "@type": "cr:FileObject",
       "@id": "file_61",
       "name": "101.dat",
-      "contentSize": "1950000",
+      "contentSize": "1949999",
       "contentUrl": "101.dat",
       "encodingFormat": "application/x-wfdb-data",
-      "sha256": "698d1ea6f472d23ca50317c72c96cda2698badd8578220ed0380cdf241e39006"
+      "sha256": "2c9f52ea5061113ba91881b74cca9896eb14d7eea442bf878087b36b0d0594cc"
     },
     {
       "@type": "cr:FileObject",
@@ -1745,10 +1745,10 @@
       "@type": "cr:FileObject",
       "@id": "file_187",
       "name": "x_232.dat",
-      "contentSize": "648000",
+      "contentSize": "647970",
       "contentUrl": "x_mitdb/x_232.dat",
       "encodingFormat": "application/x-wfdb-data",
-      "sha256": "9e0b6430b1ec0d925ee7e9cb701b6d58a32ad978980a92cf215a28556d1aaa42"
+      "sha256": "1c17d956258cf13b932b776f7830d70b5f37188ac8a93cfc5dfa943446e9d4cf"
     },
     {
       "@type": "cr:FileObject",
