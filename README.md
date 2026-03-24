@@ -96,6 +96,54 @@ After running `uv run pre-commit install` once, the hook fires automatically on 
 uv run pre-commit run --all-files
 ```
 
+## Releases
+
+This project uses [release-please](https://github.com/googleapis/release-please) to automate versioning and GitHub Releases. You do not need to manually edit the version number or write a changelog.
+
+### How it works
+
+Every time a PR is merged into `main`, the release-please GitHub Action opens or updates a **Release PR** — a bot-authored pull request that:
+
+- bumps the version in `pyproject.toml`
+- generates a `CHANGELOG.md` entry listing every merged PR since the last release
+
+The Release PR stays open and accumulates entries as more PRs are merged. When the team is ready to cut a release, **merge the Release PR**. That merge:
+
+1. creates a git tag (e.g. `v0.1.0`)
+2. creates a GitHub Release with the generated notes
+3. triggers the `publish` job, which builds the package with `uv build`
+
+Nothing else is required — no manual tagging, no direct commits to `main`.
+
+### Commit message conventions
+
+release-please reads commit messages (or PR titles, which become the squash-merge commit) to decide what kind of version bump to apply:
+
+| Prefix | Effect | Example |
+|--------|--------|---------|
+| `feat:` | minor bump (`0.1.0 → 0.2.0`) | `feat: add Parquet handler` |
+| `fix:` | patch bump (`0.1.0 → 0.1.1`) | `fix: handle empty CSV files` |
+| `perf:` | patch bump | `perf: stream CSV in chunks` |
+| `feat!:` or `BREAKING CHANGE:` in body | major bump (`0.1.0 → 1.0.0`) | `feat!: remove legacy API` |
+| `docs:`, `build:`, `chore:` | no bump (appear in changelog or hidden) | `docs: update README` |
+
+If a PR contains only `chore:` or `build:` commits it will not trigger a version bump on its own, but those commits will appear in the Release PR's diff so you can decide to merge it when combined with a real bump.
+
+### One-time repository setup
+
+The workflow needs permission to open PRs and create tags. In the GitHub repository settings:
+
+**Settings → Actions → General → Workflow permissions → select "Read and write permissions"**
+
+Without this the bot will fail silently and no Release PR will appear.
+
+### Publishing to PyPI
+
+The `publish` job in `.github/workflows/release-please.yaml` already runs `uv build` on every release. To enable PyPI upload:
+
+1. Add a PyPI API token as a repository secret named `PYPI_API_TOKEN`
+2. Uncomment the publish step in the workflow file
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) file.
