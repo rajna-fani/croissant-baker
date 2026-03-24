@@ -2,7 +2,6 @@
 
 **Base:** `MIT-LCP/croissant-maker @ main`
 **Head:** `slolab/croissant-maker @ chore/modern-python-tooling`
-**Commits:** 6
 
 This PR modernises the developer tooling and CI setup. It contains no functional changes to the metadata generation code.
 
@@ -20,7 +19,7 @@ This PR modernises the developer tooling and CI setup. It contains no functional
 - All dependency names normalised to lowercase PEP 508 canonical form (e.g. `PyArrow` → `pyarrow`).
 - Added `[tool.hatch.build.targets.wheel]` with `packages = ["src/croissant_maker"]` to explicitly declare the src layout to hatchling.
 
-**Discussion point:** This is a breaking change for anyone currently using `pip install -e '.[test]'`. The new equivalent is `uv sync --group test`. If upstream prefers to keep setuptools, the packaging changes can be held back independently of the functional PRs.
+**Discussion point:** This is a breaking change for anyone currently using `pip install -e '.[test]'`. The new equivalent is `uv sync --group test`.
 
 ---
 
@@ -32,7 +31,6 @@ This PR modernises the developer tooling and CI setup. It contains no functional
 - Both CI workflows (`test.yaml`, `pre-commit.yaml`) replace `actions/setup-python` + `pip install` with `astral-sh/setup-uv@v5` + `uv sync --group ...`. The test matrix (Python 3.10, 3.12) is unchanged.
 - `uv.lock` added — pinned lockfile for reproducible installs.
 - `dependabot.yml` added — weekly automated PRs to bump GitHub Actions versions and Python dependencies in `uv.lock`, preventing silent staleness.
-- `.gitignore` extended: `.DS_Store`, `CLAUDE.md` (AI assistant context), and a large reference JSON that does not belong in version control.
 - README updated throughout to use `uv run` prefix for all CLI and test commands.
 
 **Discussion point:** `uv.lock` is large (~2700 lines). Some projects prefer not to commit lockfiles for libraries (only for applications). This could be dropped if upstream prefers, though committing it means Dependabot can open automated update PRs.
