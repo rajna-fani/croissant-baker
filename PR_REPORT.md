@@ -2,7 +2,6 @@
 
 **Base:** `MIT-LCP/croissant-maker @ chore/modern-python-tooling` (retarget to `main` after that PR merges)
 **Head:** `slolab/croissant-maker @ feat/open-targets-partitioned-parquet-v2`
-**Commits:** 2
 
 > **Dependency:** This PR builds on `chore/modern-python-tooling` and should be merged after that PR lands in `main`.
 
@@ -76,3 +75,6 @@ The test fixture is extended with a `credible_set` table exercising all three co
 | `mlc.Organization` creator type | Could add `--creator-org` CLI flag; low priority |
 | Numeric type coarsening | Gold standard uses `sc:Integer`/`sc:Float`; we emit `cr:Int32`/`cr:Float64`; both are valid Croissant |
 | Remove `recordset_counter` | Variable is now unused after Fix 5c; minor cleanup |
+
+Semantic or heuristic tasks or guesses could be deferred to GenAI agents. Might be useful to think
+about how these could be exposed to be easy to use for agents.
