@@ -67,7 +67,7 @@
       "name": "part-00000.parquet",
       "contentSize": "1336",
       "contentUrl": "targets/part-00000.parquet",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "sha256": "479f51386b8561aa66b282023f012413c497eef809a2b8d0d72d1f6af6fb35ff"
     },
     {
@@ -76,52 +76,70 @@
       "name": "part-00001.parquet",
       "contentSize": "1340",
       "contentUrl": "targets/part-00001.parquet",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "sha256": "6815c545575449d5a06653a0c8cdb3cd69bfa71b4089212ef31e5e540462f67f"
     },
     {
       "@type": "cr:FileObject",
       "@id": "file_2",
       "name": "part-00000.parquet",
-      "contentSize": "1754",
-      "contentUrl": "association_by_datatype_direct/part-00000.parquet",
-      "encodingFormat": "application/x-parquet",
-      "sha256": "d22ec081c4a45addd57398ba5e79d2370e19d8892d71b7af389d4ea4129cf097"
+      "contentSize": "2909",
+      "contentUrl": "credible_set/part-00000.parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
+      "sha256": "8575a9e1b475d46ef96901a542291d9406685a69bc33628b1d28b7d319927505"
     },
     {
       "@type": "cr:FileObject",
       "@id": "file_3",
       "name": "part-00001.parquet",
-      "contentSize": "1758",
-      "contentUrl": "association_by_datatype_direct/part-00001.parquet",
-      "encodingFormat": "application/x-parquet",
-      "sha256": "7c4bd73af4d4bc599062790ea6aaff62b1f1ded21c885a62064fcab759ee1d33"
+      "contentSize": "2909",
+      "contentUrl": "credible_set/part-00001.parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
+      "sha256": "c0810e1dfbdf31d9541b8c14d5563c6e2e1f2136c0662fd373fe134dc051b9bd"
     },
     {
       "@type": "cr:FileObject",
       "@id": "file_4",
       "name": "part-00000.parquet",
-      "contentSize": "1228",
-      "contentUrl": "diseases/part-00000.parquet",
-      "encodingFormat": "application/x-parquet",
-      "sha256": "ca01d80de8f10ecf1a15c79ecc55e8c814fe326355181f239437641de3bcf095"
+      "contentSize": "1754",
+      "contentUrl": "association_by_datatype_direct/part-00000.parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
+      "sha256": "d22ec081c4a45addd57398ba5e79d2370e19d8892d71b7af389d4ea4129cf097"
     },
     {
       "@type": "cr:FileObject",
       "@id": "file_5",
       "name": "part-00001.parquet",
-      "contentSize": "1228",
-      "contentUrl": "diseases/part-00001.parquet",
-      "encodingFormat": "application/x-parquet",
-      "sha256": "49fb56fdcdc5feed027ac7bbf7c362c25f440e686c2876ae2556723b24a8d03c"
+      "contentSize": "1758",
+      "contentUrl": "association_by_datatype_direct/part-00001.parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
+      "sha256": "7c4bd73af4d4bc599062790ea6aaff62b1f1ded21c885a62064fcab759ee1d33"
     },
     {
       "@type": "cr:FileObject",
       "@id": "file_6",
       "name": "part-00000.parquet",
+      "contentSize": "1228",
+      "contentUrl": "diseases/part-00000.parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
+      "sha256": "ca01d80de8f10ecf1a15c79ecc55e8c814fe326355181f239437641de3bcf095"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "file_7",
+      "name": "part-00001.parquet",
+      "contentSize": "1228",
+      "contentUrl": "diseases/part-00001.parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
+      "sha256": "49fb56fdcdc5feed027ac7bbf7c362c25f440e686c2876ae2556723b24a8d03c"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "file_8",
+      "name": "part-00000.parquet",
       "contentSize": "1588",
       "contentUrl": "drug_molecule/part-00000.parquet",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "sha256": "57152f67233267521c04c7f21551300299ebc34f4992f58c5e4415cdc49410dc"
     },
     {
@@ -129,15 +147,23 @@
       "@id": "targets-fileset",
       "name": "targets partition files",
       "description": "2 Parquet partition files for table 'targets'",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "includes": "targets/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "credible_set-fileset",
+      "name": "credible_set partition files",
+      "description": "2 Parquet partition files for table 'credible_set'",
+      "encodingFormat": "application/vnd.apache.parquet",
+      "includes": "credible_set/*.parquet"
     },
     {
       "@type": "cr:FileSet",
       "@id": "association_by_datatype_direct-fileset",
       "name": "association_by_datatype_direct partition files",
       "description": "2 Parquet partition files for table 'association_by_datatype_direct'",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "includes": "association_by_datatype_direct/*.parquet"
     },
     {
@@ -145,27 +171,27 @@
       "@id": "diseases-fileset",
       "name": "diseases partition files",
       "description": "2 Parquet partition files for table 'diseases'",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "includes": "diseases/*.parquet"
     }
   ],
   "recordSet": [
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_0",
+      "@id": "drug_molecule",
       "name": "drug_molecule",
       "description": "Records from part-00000.parquet (5 rows)",
       "field": [
         {
           "@type": "cr:Field",
-          "@id": "file_6_id",
+          "@id": "drug_molecule/id",
           "name": "id",
-          "description": "Column 'id' from part-00000.parquet",
+          "description": "Column 'id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_6_source_id",
+            "@id": "drug_molecule/id/source",
             "fileObject": {
-              "@id": "file_6"
+              "@id": "file_8"
             },
             "extract": {
               "column": "id"
@@ -174,14 +200,14 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_6_name",
+          "@id": "drug_molecule/name",
           "name": "name",
-          "description": "Column 'name' from part-00000.parquet",
+          "description": "Column 'name'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_6_source_name",
+            "@id": "drug_molecule/name/source",
             "fileObject": {
-              "@id": "file_6"
+              "@id": "file_8"
             },
             "extract": {
               "column": "name"
@@ -190,14 +216,14 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_6_maxClinicalTrialPhase",
+          "@id": "drug_molecule/maxClinicalTrialPhase",
           "name": "maxClinicalTrialPhase",
-          "description": "Column 'maxClinicalTrialPhase' from part-00000.parquet",
+          "description": "Column 'maxClinicalTrialPhase'",
           "dataType": "cr:Float32",
           "source": {
-            "@id": "file_6_source_maxClinicalTrialPhase",
+            "@id": "drug_molecule/maxClinicalTrialPhase/source",
             "fileObject": {
-              "@id": "file_6"
+              "@id": "file_8"
             },
             "extract": {
               "column": "maxClinicalTrialPhase"
@@ -206,14 +232,14 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_6_yearOfFirstApproval",
+          "@id": "drug_molecule/yearOfFirstApproval",
           "name": "yearOfFirstApproval",
-          "description": "Column 'yearOfFirstApproval' from part-00000.parquet",
+          "description": "Column 'yearOfFirstApproval'",
           "dataType": "cr:Int16",
           "source": {
-            "@id": "file_6_source_yearOfFirstApproval",
+            "@id": "drug_molecule/yearOfFirstApproval/source",
             "fileObject": {
-              "@id": "file_6"
+              "@id": "file_8"
             },
             "extract": {
               "column": "yearOfFirstApproval"
@@ -222,14 +248,14 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_6_hasBeenWithdrawn",
+          "@id": "drug_molecule/hasBeenWithdrawn",
           "name": "hasBeenWithdrawn",
-          "description": "Column 'hasBeenWithdrawn' from part-00000.parquet",
+          "description": "Column 'hasBeenWithdrawn'",
           "dataType": "sc:Boolean",
           "source": {
-            "@id": "file_6_source_hasBeenWithdrawn",
+            "@id": "drug_molecule/hasBeenWithdrawn/source",
             "fileObject": {
-              "@id": "file_6"
+              "@id": "file_8"
             },
             "extract": {
               "column": "hasBeenWithdrawn"
@@ -240,7 +266,7 @@
     },
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_1",
+      "@id": "targets",
       "name": "targets",
       "description": "Partitioned table 'targets' (2 Parquet files, 10 total rows)",
       "field": [
@@ -248,7 +274,7 @@
           "@type": "cr:Field",
           "@id": "targets/id",
           "name": "id",
-          "description": "Column 'id' from table 'targets'",
+          "description": "Column 'id'",
           "dataType": "sc:Text",
           "source": {
             "@id": "targets/id/source",
@@ -264,7 +290,7 @@
           "@type": "cr:Field",
           "@id": "targets/approvedSymbol",
           "name": "approvedSymbol",
-          "description": "Column 'approvedSymbol' from table 'targets'",
+          "description": "Column 'approvedSymbol'",
           "dataType": "sc:Text",
           "source": {
             "@id": "targets/approvedSymbol/source",
@@ -280,7 +306,7 @@
           "@type": "cr:Field",
           "@id": "targets/tractabilityScore",
           "name": "tractabilityScore",
-          "description": "Column 'tractabilityScore' from table 'targets'",
+          "description": "Column 'tractabilityScore'",
           "dataType": "cr:Float64",
           "source": {
             "@id": "targets/tractabilityScore/source",
@@ -296,7 +322,7 @@
           "@type": "cr:Field",
           "@id": "targets/isDriver",
           "name": "isDriver",
-          "description": "Column 'isDriver' from table 'targets'",
+          "description": "Column 'isDriver'",
           "dataType": "sc:Boolean",
           "source": {
             "@id": "targets/isDriver/source",
@@ -312,7 +338,179 @@
     },
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_2",
+      "@id": "credible_set",
+      "name": "credible_set",
+      "description": "Partitioned table 'credible_set' (2 Parquet files, 6 total rows)",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "credible_set/studyId",
+          "name": "studyId",
+          "description": "Column 'studyId'",
+          "dataType": "sc:Text",
+          "source": {
+            "@id": "credible_set/studyId/source",
+            "fileSet": {
+              "@id": "credible_set-fileset"
+            },
+            "extract": {
+              "column": "studyId"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "credible_set/chromosome",
+          "name": "chromosome",
+          "description": "Column 'chromosome'",
+          "dataType": "sc:Text",
+          "source": {
+            "@id": "credible_set/chromosome/source",
+            "fileSet": {
+              "@id": "credible_set-fileset"
+            },
+            "extract": {
+              "column": "chromosome"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "credible_set/position",
+          "name": "position",
+          "description": "Column 'position'",
+          "dataType": "cr:Int32",
+          "source": {
+            "@id": "credible_set/position/source",
+            "fileSet": {
+              "@id": "credible_set-fileset"
+            },
+            "extract": {
+              "column": "position"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "credible_set/qualityControls",
+          "name": "qualityControls",
+          "description": "Column 'qualityControls'",
+          "cr:isArray": true,
+          "dataType": "sc:Text",
+          "source": {
+            "@id": "credible_set/qualityControls/source",
+            "fileSet": {
+              "@id": "credible_set-fileset"
+            },
+            "extract": {
+              "column": "qualityControls"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "credible_set/locus",
+          "name": "locus",
+          "description": "Column 'locus'",
+          "cr:isArray": true,
+          "source": {
+            "@id": "credible_set/locus/source",
+            "fileSet": {
+              "@id": "credible_set-fileset"
+            },
+            "extract": {
+              "column": "locus"
+            }
+          },
+          "subField": [
+            {
+              "@type": "cr:Field",
+              "@id": "credible_set/locus/variantId",
+              "name": "variantId",
+              "description": "Column 'variantId'",
+              "dataType": "sc:Text",
+              "source": {
+                "@id": "credible_set/locus/variantId/source",
+                "fileSet": {
+                  "@id": "credible_set-fileset"
+                },
+                "extract": {
+                  "column": "locus/variantId"
+                }
+              }
+            },
+            {
+              "@type": "cr:Field",
+              "@id": "credible_set/locus/posteriorProbability",
+              "name": "posteriorProbability",
+              "description": "Column 'posteriorProbability'",
+              "dataType": "cr:Float64",
+              "source": {
+                "@id": "credible_set/locus/posteriorProbability/source",
+                "fileSet": {
+                  "@id": "credible_set-fileset"
+                },
+                "extract": {
+                  "column": "locus/posteriorProbability"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "credible_set/stats",
+          "name": "stats",
+          "description": "Column 'stats'",
+          "source": {
+            "@id": "credible_set/stats/source",
+            "fileSet": {
+              "@id": "credible_set-fileset"
+            },
+            "extract": {
+              "column": "stats"
+            }
+          },
+          "subField": [
+            {
+              "@type": "cr:Field",
+              "@id": "credible_set/stats/beta",
+              "name": "beta",
+              "description": "Column 'beta'",
+              "dataType": "cr:Float64",
+              "source": {
+                "@id": "credible_set/stats/beta/source",
+                "fileSet": {
+                  "@id": "credible_set-fileset"
+                },
+                "extract": {
+                  "column": "stats/beta"
+                }
+              }
+            },
+            {
+              "@type": "cr:Field",
+              "@id": "credible_set/stats/pValueExponent",
+              "name": "pValueExponent",
+              "description": "Column 'pValueExponent'",
+              "dataType": "cr:Int32",
+              "source": {
+                "@id": "credible_set/stats/pValueExponent/source",
+                "fileSet": {
+                  "@id": "credible_set-fileset"
+                },
+                "extract": {
+                  "column": "stats/pValueExponent"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "association_by_datatype_direct",
       "name": "association_by_datatype_direct",
       "description": "Partitioned table 'association_by_datatype_direct' (2 Parquet files, 10 total rows)",
       "field": [
@@ -320,7 +518,7 @@
           "@type": "cr:Field",
           "@id": "association_by_datatype_direct/targetId",
           "name": "targetId",
-          "description": "Column 'targetId' from table 'association_by_datatype_direct'",
+          "description": "Column 'targetId'",
           "dataType": "sc:Text",
           "source": {
             "@id": "association_by_datatype_direct/targetId/source",
@@ -336,7 +534,7 @@
           "@type": "cr:Field",
           "@id": "association_by_datatype_direct/diseaseId",
           "name": "diseaseId",
-          "description": "Column 'diseaseId' from table 'association_by_datatype_direct'",
+          "description": "Column 'diseaseId'",
           "dataType": "sc:Text",
           "source": {
             "@id": "association_by_datatype_direct/diseaseId/source",
@@ -352,7 +550,7 @@
           "@type": "cr:Field",
           "@id": "association_by_datatype_direct/datatypeId",
           "name": "datatypeId",
-          "description": "Column 'datatypeId' from table 'association_by_datatype_direct'",
+          "description": "Column 'datatypeId'",
           "dataType": "sc:Text",
           "source": {
             "@id": "association_by_datatype_direct/datatypeId/source",
@@ -368,7 +566,7 @@
           "@type": "cr:Field",
           "@id": "association_by_datatype_direct/score",
           "name": "score",
-          "description": "Column 'score' from table 'association_by_datatype_direct'",
+          "description": "Column 'score'",
           "dataType": "cr:Float64",
           "source": {
             "@id": "association_by_datatype_direct/score/source",
@@ -384,7 +582,7 @@
           "@type": "cr:Field",
           "@id": "association_by_datatype_direct/evidenceCount",
           "name": "evidenceCount",
-          "description": "Column 'evidenceCount' from table 'association_by_datatype_direct'",
+          "description": "Column 'evidenceCount'",
           "dataType": "cr:Int32",
           "source": {
             "@id": "association_by_datatype_direct/evidenceCount/source",
@@ -400,7 +598,7 @@
     },
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_3",
+      "@id": "diseases",
       "name": "diseases",
       "description": "Partitioned table 'diseases' (2 Parquet files, 10 total rows)",
       "field": [
@@ -408,7 +606,7 @@
           "@type": "cr:Field",
           "@id": "diseases/id",
           "name": "id",
-          "description": "Column 'id' from table 'diseases'",
+          "description": "Column 'id'",
           "dataType": "sc:Text",
           "source": {
             "@id": "diseases/id/source",
@@ -424,7 +622,7 @@
           "@type": "cr:Field",
           "@id": "diseases/name",
           "name": "name",
-          "description": "Column 'name' from table 'diseases'",
+          "description": "Column 'name'",
           "dataType": "sc:Text",
           "source": {
             "@id": "diseases/name/source",
@@ -440,7 +638,7 @@
           "@type": "cr:Field",
           "@id": "diseases/numChildren",
           "name": "numChildren",
-          "description": "Column 'numChildren' from table 'diseases'",
+          "description": "Column 'numChildren'",
           "dataType": "cr:Int32",
           "source": {
             "@id": "diseases/numChildren/source",
@@ -456,7 +654,7 @@
           "@type": "cr:Field",
           "@id": "diseases/isTherapeuticArea",
           "name": "isTherapeuticArea",
-          "description": "Column 'isTherapeuticArea' from table 'diseases'",
+          "description": "Column 'isTherapeuticArea'",
           "dataType": "sc:Boolean",
           "source": {
             "@id": "diseases/isTherapeuticArea/source",

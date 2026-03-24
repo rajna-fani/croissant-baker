@@ -640,6 +640,87 @@ def open_targets_like_path(tmp_path: Path) -> Path:
         n_parts=1,
     )
 
+    # Partitioned table with complex types: list<string>, struct, list<struct>
+    credible_set_schema = pa.schema(
+        [
+            ("studyId", pa.string()),
+            ("chromosome", pa.string()),
+            ("position", pa.int32()),
+            ("qualityControls", pa.list_(pa.string())),  # list<string>
+            (
+                "locus",
+                pa.list_(
+                    pa.struct(
+                        [  # list<struct>
+                            pa.field("variantId", pa.string()),
+                            pa.field("posteriorProbability", pa.float64()),
+                        ]
+                    )
+                ),
+            ),
+            (
+                "stats",
+                pa.struct(
+                    [  # struct (not in list)
+                        pa.field("beta", pa.float64()),
+                        pa.field("pValueExponent", pa.int32()),
+                    ]
+                ),
+            ),
+        ]
+    )
+
+    credible_set_dir = root / "credible_set"
+    credible_set_dir.mkdir(parents=True)
+    n_rows = 3
+    for i in range(2):
+        offset = i * n_rows
+        table = pa.table(
+            {
+                "studyId": pa.array([f"STUDY_{offset + j}" for j in range(n_rows)]),
+                "chromosome": pa.array([f"chr{j + 1}" for j in range(n_rows)]),
+                "position": pa.array(
+                    [offset + j for j in range(n_rows)], type=pa.int32()
+                ),
+                "qualityControls": pa.array(
+                    [[f"QC_{j}"] for j in range(n_rows)], type=pa.list_(pa.string())
+                ),
+                "locus": pa.array(
+                    [
+                        [
+                            {
+                                "variantId": f"var_{j}",
+                                "posteriorProbability": 0.5 + j * 0.1,
+                            }
+                        ]
+                        for j in range(n_rows)
+                    ],
+                    type=pa.list_(
+                        pa.struct(
+                            [
+                                pa.field("variantId", pa.string()),
+                                pa.field("posteriorProbability", pa.float64()),
+                            ]
+                        )
+                    ),
+                ),
+                "stats": pa.array(
+                    [
+                        {"beta": float(j) * 0.01, "pValueExponent": -(j + 1)}
+                        for j in range(n_rows)
+                    ],
+                    type=pa.struct(
+                        [
+                            pa.field("beta", pa.float64()),
+                            pa.field("pValueExponent", pa.int32()),
+                        ]
+                    ),
+                ),
+            },
+            schema=credible_set_schema,
+        )
+        pq.write_table(table, credible_set_dir / f"part-{i:05d}.parquet")
+
     return root
 
 
@@ -696,16 +777,16 @@ def test_open_targets_like_generation(
     file_objects = [d for d in dist if d["@type"] == "cr:FileObject"]
     file_sets = [d for d in dist if d["@type"] == "cr:FileSet"]
 
-    # 3 partitioned tables × 2 part files = 6 FileObjects
-    # + 1 standalone table × 1 part file = 1 FileObject  → 7 total
-    # + 3 FileSets (one per partitioned table directory)  → 10 distribution entries
-    assert len(file_objects) == 7, f"Expected 7 FileObjects, got {len(file_objects)}"
-    assert len(file_sets) == 3, f"Expected 3 FileSets, got {len(file_sets)}"
-    assert len(dist) == 10
+    # 4 partitioned tables × 2 part files = 8 FileObjects
+    # + 1 standalone table × 1 part file = 1 FileObject  → 9 total
+    # + 4 FileSets (one per partitioned table directory)  → 13 distribution entries
+    assert len(file_objects) == 9, f"Expected 9 FileObjects, got {len(file_objects)}"
+    assert len(file_sets) == 4, f"Expected 4 FileSets, got {len(file_sets)}"
+    assert len(dist) == 13
 
     record_sets = metadata["recordSet"]
-    # 3 partitioned RecordSets + 1 standalone RecordSet
-    assert len(record_sets) == 4, f"Expected 4 RecordSets, got {len(record_sets)}"
+    # 4 partitioned RecordSets + 1 standalone RecordSet
+    assert len(record_sets) == 5, f"Expected 5 RecordSets, got {len(record_sets)}"
 
     rs_names = {rs["name"] for rs in record_sets}
     assert rs_names == {
@@ -713,6 +794,7 @@ def test_open_targets_like_generation(
         "targets",
         "association_by_datatype_direct",
         "drug_molecule",
+        "credible_set",
     }
 
     # FileSets should carry directory-scoped glob patterns
@@ -720,6 +802,7 @@ def test_open_targets_like_generation(
     assert "diseases/*.parquet" in includes_patterns
     assert "targets/*.parquet" in includes_patterns
     assert "association_by_datatype_direct/*.parquet" in includes_patterns
+    assert "credible_set/*.parquet" in includes_patterns
 
     # Collect all Croissant types emitted across all fields.
     # dataType serializes as a plain string in the JSON output.
@@ -746,3 +829,45 @@ def test_open_targets_like_generation(
     # Standalone table fields must reference their FileObject
     standalone_rs = next(rs for rs in record_sets if rs["name"] == "drug_molecule")
     assert all("fileObject" in f["source"] for f in standalone_rs["field"])
+
+    # --- Nested type assertions (credible_set table) ---
+    cs_rs = next(rs for rs in record_sets if rs["name"] == "credible_set")
+    cs_fields = {f["name"]: f for f in cs_rs["field"]}
+
+    # list<string> → cr:isArray + sc:Text
+    qc = cs_fields["qualityControls"]
+    assert qc.get("cr:isArray") is True, "qualityControls should be marked as array"
+    assert qc.get("dataType") == "sc:Text", (
+        f"Expected sc:Text inner type, got {qc.get('dataType')}"
+    )
+
+    # struct<beta, pValueExponent> → subField list, no dataType at top level
+    stats = cs_fields["stats"]
+    assert "subField" in stats, "stats should have subField"
+    sub_names = {
+        sf["name"]
+        for sf in (
+            stats["subField"]
+            if isinstance(stats["subField"], list)
+            else [stats["subField"]]
+        )
+    }
+    assert sub_names == {"beta", "pValueExponent"}, (
+        f"Unexpected sub_fields: {sub_names}"
+    )
+
+    # list<struct<variantId, posteriorProbability>> → cr:isArray + subField
+    locus = cs_fields["locus"]
+    assert locus.get("cr:isArray") is True, "locus should be marked as array"
+    assert "subField" in locus, "locus should have subField (inner struct)"
+    locus_sub_names = {
+        sf["name"]
+        for sf in (
+            locus["subField"]
+            if isinstance(locus["subField"], list)
+            else [locus["subField"]]
+        )
+    }
+    assert locus_sub_names == {"variantId", "posteriorProbability"}, (
+        f"Unexpected locus sub_fields: {locus_sub_names}"
+    )
