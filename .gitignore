@@ -169,3 +169,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# macOS
+.DS_Store
+
+# AI assistant context files
+CLAUDE.md
+
+# Large reference outputs not under version control
+tests/data/output/open_targets_official_croissant.json
