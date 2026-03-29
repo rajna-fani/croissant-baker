@@ -27,16 +27,18 @@ This project uses [uv](https://docs.astral.sh/uv/) for environment and dependenc
 
 ## Usage
 
-After installation, you can use the `croissant-maker` CLI:
+After `uv sync`, run the CLI directly by activating the venv first, or prefix with `uv run`:
 
 ```bash
+source .venv/bin/activate   # once per terminal session — then just use `croissant-maker` directly
+# or without activating:
 uv run croissant-maker --help
 ```
 
 ### Generate Croissant Metadata
 
 ```bash
-uv run croissant-maker --input /path/to/dataset --creator "Your Name" --output my-metadata.jsonld
+croissant-maker --input /path/to/dataset --creator "Your Name" --output my-metadata.jsonld
 ```
 
 ### Metadata Override Options
@@ -44,7 +46,7 @@ uv run croissant-maker --input /path/to/dataset --creator "Your Name" --output m
 You can override default metadata fields:
 
 ```bash
-uv run croissant-maker --input /path/to/dataset \
+croissant-maker --input /path/to/dataset \
   --name "My Dataset" \
   --description "A machine learning dataset" \
   --creator "John Doe,john@example.com,https://john.com" \
@@ -73,7 +75,7 @@ uv run croissant-maker --input /path/to/dataset \
 Validation checks that the file can be loaded by `mlcroissant` and conforms to the basic structure of the specification.
 
 ```bash
-uv run croissant-maker validate my-metadata.jsonld
+croissant-maker validate my-metadata.jsonld
 ```
 
 ## Testing

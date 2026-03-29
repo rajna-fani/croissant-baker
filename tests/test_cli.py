@@ -158,6 +158,61 @@ def test_invalid_date_format(csv_dataset: Path, tmp_path: Path) -> None:
     assert "Expected ISO format like '2023-12-15'" in result.stderr
 
 
+def test_spec_warnings_when_fields_missing(csv_dataset: Path, tmp_path: Path) -> None:
+    """Test that missing spec-required fields produce a warning on stderr."""
+    output = tmp_path / "output.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Alice Smith",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert "Warning:" in result.stderr
+    assert "--description" in result.stderr
+    assert "--url" in result.stderr
+    assert "--license" in result.stderr
+    assert "--date-published" in result.stderr
+    assert "--creator" not in result.stderr  # was provided, should not appear
+
+
+def test_no_spec_warnings_when_all_fields_provided(
+    csv_dataset: Path, tmp_path: Path
+) -> None:
+    """Test that no warning appears when all spec-required fields are explicitly provided."""
+    output = tmp_path / "output.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Alice Smith",
+            "--description",
+            "A test dataset",
+            "--url",
+            "https://example.com",
+            "--license",
+            "MIT",
+            "--date-published",
+            "2024-01-01",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert "Warning:" not in result.stderr
+
+
 def test_help_and_version() -> None:
     """Test help and version commands."""
     # Help
