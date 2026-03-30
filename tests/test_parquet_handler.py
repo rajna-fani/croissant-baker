@@ -7,7 +7,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from croissant_maker.handlers.parquet_handler import ParquetHandler
+from croissant_baker.handlers.parquet_handler import ParquetHandler
 
 
 @pytest.fixture
@@ -88,7 +88,7 @@ def test_parquet_file_handle_closed(
         return pf
 
     with patch(
-        "croissant_maker.handlers.parquet_handler.ParquetFile", side_effect=_spy
+        "croissant_baker.handlers.parquet_handler.ParquetFile", side_effect=_spy
     ):
         handler.extract_metadata(sample_parquet)
 
