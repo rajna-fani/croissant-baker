@@ -167,7 +167,7 @@ def collect_image_summary(image_metadata_list: List[Dict]) -> Dict:
         props = meta.get("image_properties")
         if not props:
             continue
-        
+
         width = props.get("width")
         height = props.get("height")
         num_bands = props.get("num_bands")
