@@ -32,6 +32,32 @@ def _get_default_output_name(input_path: str) -> str:
     return f"{dataset_name}-croissant.jsonld"
 
 
+# Croissant spec: these CLI flags map to fields that *must* be specified for every dataset.
+# https://docs.mlcommons.org/croissant/docs/croissant-spec.html
+# The tool generates defaults for all of them, but warns when user hasn't explicitly set them.
+_SPEC_REQUIRED_FLAGS = {
+    "creator": "--creator",
+    "description": "--description",
+    "url": "--url",
+    "license": "--license",
+    "date_published": "--date-published",
+}
+
+
+def _warn_missing_spec_fields(**provided: object) -> None:
+    """Warn about spec-required fields that were not explicitly provided."""
+    missing = [
+        flag for key, flag in _SPEC_REQUIRED_FLAGS.items() if not provided.get(key)
+    ]
+    if missing:
+        typer.echo(
+            f"\nWarning: {', '.join(missing)} are required by the Croissant spec but were not provided.\n"
+            "  The tool used defaults — review them before publishing.\n"
+            "  See: https://docs.mlcommons.org/croissant/docs/croissant-spec.html",
+            err=True,
+        )
+
+
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
@@ -216,6 +242,14 @@ def main(
             typer.echo(
                 f"Tip: Run `croissant-maker validate {output}` to validate later"
             )
+
+        _warn_missing_spec_fields(
+            creator=creator,
+            description=description,
+            url=url,
+            license=license,
+            date_published=date_published,
+        )
 
     except ValueError as e:
         typer.echo(f"Error: {e}", err=True)
