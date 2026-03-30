@@ -117,7 +117,7 @@ def main(
         typer.echo("       croissant-maker --help")
         return
 
-    if not output:
+    if not output and not dry_run:
         output = _get_default_output_name(input)
         typer.echo(f"Auto-generated output filename: {output}")
 
