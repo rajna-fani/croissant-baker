@@ -284,7 +284,6 @@ class MetadataGenerator:
         # related_files, so enumerate(i) would cause ID conflicts. The counter
         # increments for every FileObject created, not just per iteration.
         file_counter = 0
-        recordset_counter = 0
 
         # Collect image file IDs so we can build one FileSet + summary
         # RecordSet after the per-file loop (images are grouped, not per-file).
@@ -411,7 +410,6 @@ class MetadataGenerator:
                         fields=fields,
                     )
                     record_sets.append(record_set)
-                    recordset_counter += 1
 
             # Signal data (e.g., WFDB physiological waveforms)
             elif "signal_types" in file_meta:
@@ -441,7 +439,6 @@ class MetadataGenerator:
                     fields=fields,
                 )
                 record_sets.append(record_set)
-                recordset_counter += 1
 
             # Image data: defer to summary RecordSet after the loop
             elif "image_properties" in file_meta:
@@ -517,7 +514,6 @@ class MetadataGenerator:
                 fields=image_fields,
             )
             record_sets.append(image_record_set)
-            recordset_counter += 1
 
         # Emit one FileSet + one RecordSet per partitioned parquet directory.
         # Schema is taken from the first partition; all partitions must share the
@@ -577,7 +573,6 @@ class MetadataGenerator:
                     fields=fields,
                 )
             )
-            recordset_counter += 1
 
         metadata.distribution = file_objects
         metadata.record_sets = record_sets
