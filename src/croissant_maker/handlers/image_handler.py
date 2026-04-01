@@ -164,9 +164,10 @@ def collect_image_summary(image_metadata_list: List[Dict]) -> Dict:
     formats: Dict[str, int] = {}
 
     processed_count = 0
-    for meta in image_metadata_list:
+    for i, meta in enumerate(image_metadata_list):
         props = meta.get("image_properties")
         if not props:
+            logger.warning("Skipping image entry %d: missing or incomplete image_properties", i)
             continue
 
         processed_count += 1
