@@ -189,7 +189,6 @@
           "description": "Column 'id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "drug_molecule/id/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -205,7 +204,6 @@
           "description": "Column 'name'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "drug_molecule/name/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -221,7 +219,6 @@
           "description": "Column 'maxClinicalTrialPhase'",
           "dataType": "cr:Float32",
           "source": {
-            "@id": "drug_molecule/maxClinicalTrialPhase/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -237,7 +234,6 @@
           "description": "Column 'yearOfFirstApproval'",
           "dataType": "cr:Int16",
           "source": {
-            "@id": "drug_molecule/yearOfFirstApproval/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -253,7 +249,6 @@
           "description": "Column 'hasBeenWithdrawn'",
           "dataType": "sc:Boolean",
           "source": {
-            "@id": "drug_molecule/hasBeenWithdrawn/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -277,7 +272,6 @@
           "description": "Column 'id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "targets/id/source",
             "fileSet": {
               "@id": "targets-fileset"
             },
@@ -293,7 +287,6 @@
           "description": "Column 'approvedSymbol'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "targets/approvedSymbol/source",
             "fileSet": {
               "@id": "targets-fileset"
             },
@@ -309,7 +302,6 @@
           "description": "Column 'tractabilityScore'",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "targets/tractabilityScore/source",
             "fileSet": {
               "@id": "targets-fileset"
             },
@@ -325,7 +317,6 @@
           "description": "Column 'isDriver'",
           "dataType": "sc:Boolean",
           "source": {
-            "@id": "targets/isDriver/source",
             "fileSet": {
               "@id": "targets-fileset"
             },
@@ -349,7 +340,6 @@
           "description": "Column 'studyId'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "credible_set/studyId/source",
             "fileSet": {
               "@id": "credible_set-fileset"
             },
@@ -365,7 +355,6 @@
           "description": "Column 'chromosome'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "credible_set/chromosome/source",
             "fileSet": {
               "@id": "credible_set-fileset"
             },
@@ -381,7 +370,6 @@
           "description": "Column 'position'",
           "dataType": "cr:Int32",
           "source": {
-            "@id": "credible_set/position/source",
             "fileSet": {
               "@id": "credible_set-fileset"
             },
@@ -398,7 +386,6 @@
           "cr:isArray": true,
           "dataType": "sc:Text",
           "source": {
-            "@id": "credible_set/qualityControls/source",
             "fileSet": {
               "@id": "credible_set-fileset"
             },
@@ -414,7 +401,6 @@
           "description": "Column 'locus'",
           "cr:isArray": true,
           "source": {
-            "@id": "credible_set/locus/source",
             "fileSet": {
               "@id": "credible_set-fileset"
             },
@@ -430,7 +416,6 @@
               "description": "Column 'variantId'",
               "dataType": "sc:Text",
               "source": {
-                "@id": "credible_set/locus/variantId/source",
                 "fileSet": {
                   "@id": "credible_set-fileset"
                 },
@@ -446,7 +431,6 @@
               "description": "Column 'posteriorProbability'",
               "dataType": "cr:Float64",
               "source": {
-                "@id": "credible_set/locus/posteriorProbability/source",
                 "fileSet": {
                   "@id": "credible_set-fileset"
                 },
@@ -463,7 +447,6 @@
           "name": "stats",
           "description": "Column 'stats'",
           "source": {
-            "@id": "credible_set/stats/source",
             "fileSet": {
               "@id": "credible_set-fileset"
             },
@@ -479,7 +462,6 @@
               "description": "Column 'beta'",
               "dataType": "cr:Float64",
               "source": {
-                "@id": "credible_set/stats/beta/source",
                 "fileSet": {
                   "@id": "credible_set-fileset"
                 },
@@ -495,7 +477,6 @@
               "description": "Column 'pValueExponent'",
               "dataType": "cr:Int32",
               "source": {
-                "@id": "credible_set/stats/pValueExponent/source",
                 "fileSet": {
                   "@id": "credible_set-fileset"
                 },
@@ -521,7 +502,6 @@
           "description": "Column 'targetId'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "association_by_datatype_direct/targetId/source",
             "fileSet": {
               "@id": "association_by_datatype_direct-fileset"
             },
@@ -537,7 +517,6 @@
           "description": "Column 'diseaseId'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "association_by_datatype_direct/diseaseId/source",
             "fileSet": {
               "@id": "association_by_datatype_direct-fileset"
             },
@@ -553,7 +532,6 @@
           "description": "Column 'datatypeId'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "association_by_datatype_direct/datatypeId/source",
             "fileSet": {
               "@id": "association_by_datatype_direct-fileset"
             },
@@ -569,7 +547,6 @@
           "description": "Column 'score'",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "association_by_datatype_direct/score/source",
             "fileSet": {
               "@id": "association_by_datatype_direct-fileset"
             },
@@ -585,7 +562,6 @@
           "description": "Column 'evidenceCount'",
           "dataType": "cr:Int32",
           "source": {
-            "@id": "association_by_datatype_direct/evidenceCount/source",
             "fileSet": {
               "@id": "association_by_datatype_direct-fileset"
             },
@@ -609,7 +585,6 @@
           "description": "Column 'id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "diseases/id/source",
             "fileSet": {
               "@id": "diseases-fileset"
             },
@@ -625,7 +600,6 @@
           "description": "Column 'name'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "diseases/name/source",
             "fileSet": {
               "@id": "diseases-fileset"
             },
@@ -641,7 +615,6 @@
           "description": "Column 'numChildren'",
           "dataType": "cr:Int32",
           "source": {
-            "@id": "diseases/numChildren/source",
             "fileSet": {
               "@id": "diseases-fileset"
             },
@@ -657,7 +630,6 @@
           "description": "Column 'isTherapeuticArea'",
           "dataType": "sc:Boolean",
           "source": {
-            "@id": "diseases/isTherapeuticArea/source",
             "fileSet": {
               "@id": "diseases-fileset"
             },

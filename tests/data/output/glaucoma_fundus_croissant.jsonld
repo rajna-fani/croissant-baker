@@ -199,7 +199,6 @@
           "description": "Column 'Image Name' from Labels.csv",
           "dataType": "sc:Text",
           "source": {
-            "@id": "Labels/Image_Name/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -215,7 +214,6 @@
           "description": "Column 'Patient' from Labels.csv",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "Labels/Patient/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -231,7 +229,6 @@
           "description": "Column 'Label' from Labels.csv",
           "dataType": "sc:Text",
           "source": {
-            "@id": "Labels/Label/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -247,7 +244,6 @@
           "description": "Column 'Quality Score' from Labels.csv",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "Labels/Quality_Score/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -271,7 +267,6 @@
           "description": "Image content (12 files, JPEG (12))",
           "dataType": "sc:ImageObject",
           "source": {
-            "@id": "images/image_content/source",
             "fileSet": {
               "@id": "image-files"
             },

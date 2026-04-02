@@ -55,7 +55,6 @@ def _build_fields(
         inner_type = arrow_type.value_type if is_array else arrow_type
 
         source = mlc.Source(
-            id=f"{field_id}/source",
             extract=mlc.Extract(column=col_path),
             **source_ref,
         )
@@ -405,7 +404,6 @@ class MetadataGenerator:
                                 description=f"Column '{col_name}' from {file_meta['file_name']}",
                                 data_types=[col_type],
                                 source=mlc.Source(
-                                    id=f"{field_id}/source",
                                     file_object=file_id,
                                     extract=mlc.Extract(column=col_name),
                                 ),
@@ -433,7 +431,6 @@ class MetadataGenerator:
                         description=f"Signal '{signal_name}' from {file_meta['record_name']}",
                         data_types=[signal_type],
                         source=mlc.Source(
-                            id=f"{file_id}_source_{safe_name}",
                             file_object=file_id,
                         ),
                     )
@@ -511,7 +508,6 @@ class MetadataGenerator:
                     description=f"Image content ({summary['num_images']} files, {formats_str})",
                     data_types=["sc:ImageObject"],
                     source=mlc.Source(
-                        id="images/image_content/source",
                         file_set=fileset_id,
                         extract=mlc.Extract(file_property="content"),
                     ),
@@ -568,7 +564,6 @@ class MetadataGenerator:
                             description=f"Column '{col_name}' from table '{table_name}'",
                             data_types=[col_type],
                             source=mlc.Source(
-                                id=f"{field_id}/source",
                                 file_set=fileset_id,
                                 extract=mlc.Extract(column=col_name),
                             ),

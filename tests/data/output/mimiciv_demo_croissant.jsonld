@@ -393,7 +393,6 @@
           "description": "Column 'subject_id' from demo_subject_id.csv",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "demo_subject_id/subject_id/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -417,7 +416,6 @@
           "description": "Column 'poe_id' from poe.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe/poe_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -433,7 +431,6 @@
           "description": "Column 'poe_seq' from poe.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "poe/poe_seq/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -449,7 +446,6 @@
           "description": "Column 'subject_id' from poe.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "poe/subject_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -465,7 +461,6 @@
           "description": "Column 'hadm_id' from poe.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "poe/hadm_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -481,7 +476,6 @@
           "description": "Column 'ordertime' from poe.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "poe/ordertime/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -497,7 +491,6 @@
           "description": "Column 'order_type' from poe.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe/order_type/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -513,7 +506,6 @@
           "description": "Column 'order_subtype' from poe.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe/order_subtype/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -529,7 +521,6 @@
           "description": "Column 'transaction_type' from poe.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe/transaction_type/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -545,7 +536,6 @@
           "description": "Column 'discontinue_of_poe_id' from poe.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe/discontinue_of_poe_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -561,7 +551,6 @@
           "description": "Column 'discontinued_by_poe_id' from poe.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe/discontinued_by_poe_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -577,7 +566,6 @@
           "description": "Column 'order_provider_id' from poe.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe/order_provider_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -593,7 +581,6 @@
           "description": "Column 'order_status' from poe.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe/order_status/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -617,7 +604,6 @@
           "description": "Column 'code' from d_hcpcs.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_hcpcs/code/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -633,7 +619,6 @@
           "description": "Column 'category' from d_hcpcs.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "d_hcpcs/category/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -649,7 +634,6 @@
           "description": "Column 'long_description' from d_hcpcs.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_hcpcs/long_description/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -665,7 +649,6 @@
           "description": "Column 'short_description' from d_hcpcs.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_hcpcs/short_description/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -689,7 +672,6 @@
           "description": "Column 'poe_id' from poe_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe_detail/poe_id/source",
             "fileObject": {
               "@id": "file_3"
             },
@@ -705,7 +687,6 @@
           "description": "Column 'poe_seq' from poe_detail.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "poe_detail/poe_seq/source",
             "fileObject": {
               "@id": "file_3"
             },
@@ -721,7 +702,6 @@
           "description": "Column 'subject_id' from poe_detail.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "poe_detail/subject_id/source",
             "fileObject": {
               "@id": "file_3"
             },
@@ -737,7 +717,6 @@
           "description": "Column 'field_name' from poe_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe_detail/field_name/source",
             "fileObject": {
               "@id": "file_3"
             },
@@ -753,7 +732,6 @@
           "description": "Column 'field_value' from poe_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "poe_detail/field_value/source",
             "fileObject": {
               "@id": "file_3"
             },
@@ -777,7 +755,6 @@
           "description": "Column 'subject_id' from patients.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "patients/subject_id/source",
             "fileObject": {
               "@id": "file_4"
             },
@@ -793,7 +770,6 @@
           "description": "Column 'gender' from patients.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "patients/gender/source",
             "fileObject": {
               "@id": "file_4"
             },
@@ -809,7 +785,6 @@
           "description": "Column 'anchor_age' from patients.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "patients/anchor_age/source",
             "fileObject": {
               "@id": "file_4"
             },
@@ -825,7 +800,6 @@
           "description": "Column 'anchor_year' from patients.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "patients/anchor_year/source",
             "fileObject": {
               "@id": "file_4"
             },
@@ -841,7 +815,6 @@
           "description": "Column 'anchor_year_group' from patients.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "patients/anchor_year_group/source",
             "fileObject": {
               "@id": "file_4"
             },
@@ -857,7 +830,6 @@
           "description": "Column 'dod' from patients.csv.gz",
           "dataType": "sc:Date",
           "source": {
-            "@id": "patients/dod/source",
             "fileObject": {
               "@id": "file_4"
             },
@@ -881,7 +853,6 @@
           "description": "Column 'subject_id' from diagnoses_icd.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "diagnoses_icd/subject_id/source",
             "fileObject": {
               "@id": "file_5"
             },
@@ -897,7 +868,6 @@
           "description": "Column 'hadm_id' from diagnoses_icd.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "diagnoses_icd/hadm_id/source",
             "fileObject": {
               "@id": "file_5"
             },
@@ -913,7 +883,6 @@
           "description": "Column 'seq_num' from diagnoses_icd.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "diagnoses_icd/seq_num/source",
             "fileObject": {
               "@id": "file_5"
             },
@@ -929,7 +898,6 @@
           "description": "Column 'icd_code' from diagnoses_icd.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "diagnoses_icd/icd_code/source",
             "fileObject": {
               "@id": "file_5"
             },
@@ -945,7 +913,6 @@
           "description": "Column 'icd_version' from diagnoses_icd.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "diagnoses_icd/icd_version/source",
             "fileObject": {
               "@id": "file_5"
             },
@@ -969,7 +936,6 @@
           "description": "Column 'subject_id' from emar_detail.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "emar_detail/subject_id/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -985,7 +951,6 @@
           "description": "Column 'emar_id' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/emar_id/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1001,7 +966,6 @@
           "description": "Column 'emar_seq' from emar_detail.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "emar_detail/emar_seq/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1017,7 +981,6 @@
           "description": "Column 'parent_field_ordinal' from emar_detail.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "emar_detail/parent_field_ordinal/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1033,7 +996,6 @@
           "description": "Column 'administration_type' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/administration_type/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1049,7 +1011,6 @@
           "description": "Column 'pharmacy_id' from emar_detail.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "emar_detail/pharmacy_id/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1065,7 +1026,6 @@
           "description": "Column 'barcode_type' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/barcode_type/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1081,7 +1041,6 @@
           "description": "Column 'reason_for_no_barcode' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/reason_for_no_barcode/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1097,7 +1056,6 @@
           "description": "Column 'complete_dose_not_given' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/complete_dose_not_given/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1113,7 +1071,6 @@
           "description": "Column 'dose_due' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/dose_due/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1129,7 +1086,6 @@
           "description": "Column 'dose_due_unit' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/dose_due_unit/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1145,7 +1101,6 @@
           "description": "Column 'dose_given' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/dose_given/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1161,7 +1116,6 @@
           "description": "Column 'dose_given_unit' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/dose_given_unit/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1177,7 +1131,6 @@
           "description": "Column 'will_remainder_of_dose_be_given' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/will_remainder_of_dose_be_given/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1193,7 +1146,6 @@
           "description": "Column 'product_amount_given' from emar_detail.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "emar_detail/product_amount_given/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1209,7 +1161,6 @@
           "description": "Column 'product_unit' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/product_unit/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1225,7 +1176,6 @@
           "description": "Column 'product_code' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/product_code/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1241,7 +1191,6 @@
           "description": "Column 'product_description' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/product_description/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1257,7 +1206,6 @@
           "description": "Column 'product_description_other' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/product_description_other/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1273,7 +1221,6 @@
           "description": "Column 'prior_infusion_rate' from emar_detail.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "emar_detail/prior_infusion_rate/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1289,7 +1236,6 @@
           "description": "Column 'infusion_rate' from emar_detail.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "emar_detail/infusion_rate/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1305,7 +1251,6 @@
           "description": "Column 'infusion_rate_adjustment' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/infusion_rate_adjustment/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1321,7 +1266,6 @@
           "description": "Column 'infusion_rate_adjustment_amount' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/infusion_rate_adjustment_amount/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1337,7 +1281,6 @@
           "description": "Column 'infusion_rate_unit' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/infusion_rate_unit/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1353,7 +1296,6 @@
           "description": "Column 'route' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/route/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1369,7 +1311,6 @@
           "description": "Column 'infusion_complete' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/infusion_complete/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1385,7 +1326,6 @@
           "description": "Column 'completion_interval' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/completion_interval/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1401,7 +1341,6 @@
           "description": "Column 'new_iv_bag_hung' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/new_iv_bag_hung/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1417,7 +1356,6 @@
           "description": "Column 'continued_infusion_in_other_location' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/continued_infusion_in_other_location/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1433,7 +1371,6 @@
           "description": "Column 'restart_interval' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/restart_interval/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1449,7 +1386,6 @@
           "description": "Column 'side' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/side/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1465,7 +1401,6 @@
           "description": "Column 'site' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/site/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1481,7 +1416,6 @@
           "description": "Column 'non_formulary_visual_verification' from emar_detail.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar_detail/non_formulary_visual_verification/source",
             "fileObject": {
               "@id": "file_6"
             },
@@ -1505,7 +1439,6 @@
           "description": "Column 'provider_id' from provider.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "provider/provider_id/source",
             "fileObject": {
               "@id": "file_7"
             },
@@ -1529,7 +1462,6 @@
           "description": "Column 'subject_id' from prescriptions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "prescriptions/subject_id/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1545,7 +1477,6 @@
           "description": "Column 'hadm_id' from prescriptions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "prescriptions/hadm_id/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1561,7 +1492,6 @@
           "description": "Column 'pharmacy_id' from prescriptions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "prescriptions/pharmacy_id/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1577,7 +1507,6 @@
           "description": "Column 'poe_id' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/poe_id/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1593,7 +1522,6 @@
           "description": "Column 'poe_seq' from prescriptions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "prescriptions/poe_seq/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1609,7 +1537,6 @@
           "description": "Column 'order_provider_id' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/order_provider_id/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1625,7 +1552,6 @@
           "description": "Column 'starttime' from prescriptions.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "prescriptions/starttime/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1641,7 +1567,6 @@
           "description": "Column 'stoptime' from prescriptions.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "prescriptions/stoptime/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1657,7 +1582,6 @@
           "description": "Column 'drug_type' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/drug_type/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1673,7 +1597,6 @@
           "description": "Column 'drug' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/drug/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1689,7 +1612,6 @@
           "description": "Column 'formulary_drug_cd' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/formulary_drug_cd/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1705,7 +1627,6 @@
           "description": "Column 'gsn' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/gsn/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1721,7 +1642,6 @@
           "description": "Column 'ndc' from prescriptions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "prescriptions/ndc/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1737,7 +1657,6 @@
           "description": "Column 'prod_strength' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/prod_strength/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1753,7 +1672,6 @@
           "description": "Column 'form_rx' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/form_rx/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1769,7 +1687,6 @@
           "description": "Column 'dose_val_rx' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/dose_val_rx/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1785,7 +1702,6 @@
           "description": "Column 'dose_unit_rx' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/dose_unit_rx/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1801,7 +1717,6 @@
           "description": "Column 'form_val_disp' from prescriptions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "prescriptions/form_val_disp/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1817,7 +1732,6 @@
           "description": "Column 'form_unit_disp' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/form_unit_disp/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1833,7 +1747,6 @@
           "description": "Column 'doses_per_24_hrs' from prescriptions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "prescriptions/doses_per_24_hrs/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1849,7 +1762,6 @@
           "description": "Column 'route' from prescriptions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "prescriptions/route/source",
             "fileObject": {
               "@id": "file_8"
             },
@@ -1873,7 +1785,6 @@
           "description": "Column 'subject_id' from drgcodes.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "drgcodes/subject_id/source",
             "fileObject": {
               "@id": "file_9"
             },
@@ -1889,7 +1800,6 @@
           "description": "Column 'hadm_id' from drgcodes.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "drgcodes/hadm_id/source",
             "fileObject": {
               "@id": "file_9"
             },
@@ -1905,7 +1815,6 @@
           "description": "Column 'drg_type' from drgcodes.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "drgcodes/drg_type/source",
             "fileObject": {
               "@id": "file_9"
             },
@@ -1921,7 +1830,6 @@
           "description": "Column 'drg_code' from drgcodes.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "drgcodes/drg_code/source",
             "fileObject": {
               "@id": "file_9"
             },
@@ -1937,7 +1845,6 @@
           "description": "Column 'description' from drgcodes.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "drgcodes/description/source",
             "fileObject": {
               "@id": "file_9"
             },
@@ -1953,7 +1860,6 @@
           "description": "Column 'drg_severity' from drgcodes.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "drgcodes/drg_severity/source",
             "fileObject": {
               "@id": "file_9"
             },
@@ -1969,7 +1875,6 @@
           "description": "Column 'drg_mortality' from drgcodes.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "drgcodes/drg_mortality/source",
             "fileObject": {
               "@id": "file_9"
             },
@@ -1993,7 +1898,6 @@
           "description": "Column 'icd_code' from d_icd_diagnoses.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_icd_diagnoses/icd_code/source",
             "fileObject": {
               "@id": "file_10"
             },
@@ -2009,7 +1913,6 @@
           "description": "Column 'icd_version' from d_icd_diagnoses.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "d_icd_diagnoses/icd_version/source",
             "fileObject": {
               "@id": "file_10"
             },
@@ -2025,7 +1928,6 @@
           "description": "Column 'long_title' from d_icd_diagnoses.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_icd_diagnoses/long_title/source",
             "fileObject": {
               "@id": "file_10"
             },
@@ -2049,7 +1951,6 @@
           "description": "Column 'itemid' from d_labitems.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "d_labitems/itemid/source",
             "fileObject": {
               "@id": "file_11"
             },
@@ -2065,7 +1966,6 @@
           "description": "Column 'label' from d_labitems.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_labitems/label/source",
             "fileObject": {
               "@id": "file_11"
             },
@@ -2081,7 +1981,6 @@
           "description": "Column 'fluid' from d_labitems.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_labitems/fluid/source",
             "fileObject": {
               "@id": "file_11"
             },
@@ -2097,7 +1996,6 @@
           "description": "Column 'category' from d_labitems.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_labitems/category/source",
             "fileObject": {
               "@id": "file_11"
             },
@@ -2121,7 +2019,6 @@
           "description": "Column 'subject_id' from transfers.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "transfers/subject_id/source",
             "fileObject": {
               "@id": "file_12"
             },
@@ -2137,7 +2034,6 @@
           "description": "Column 'hadm_id' from transfers.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "transfers/hadm_id/source",
             "fileObject": {
               "@id": "file_12"
             },
@@ -2153,7 +2049,6 @@
           "description": "Column 'transfer_id' from transfers.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "transfers/transfer_id/source",
             "fileObject": {
               "@id": "file_12"
             },
@@ -2169,7 +2064,6 @@
           "description": "Column 'eventtype' from transfers.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "transfers/eventtype/source",
             "fileObject": {
               "@id": "file_12"
             },
@@ -2185,7 +2079,6 @@
           "description": "Column 'careunit' from transfers.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "transfers/careunit/source",
             "fileObject": {
               "@id": "file_12"
             },
@@ -2201,7 +2094,6 @@
           "description": "Column 'intime' from transfers.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "transfers/intime/source",
             "fileObject": {
               "@id": "file_12"
             },
@@ -2217,7 +2109,6 @@
           "description": "Column 'outtime' from transfers.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "transfers/outtime/source",
             "fileObject": {
               "@id": "file_12"
             },
@@ -2241,7 +2132,6 @@
           "description": "Column 'subject_id' from admissions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "admissions/subject_id/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2257,7 +2147,6 @@
           "description": "Column 'hadm_id' from admissions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "admissions/hadm_id/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2273,7 +2162,6 @@
           "description": "Column 'admittime' from admissions.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "admissions/admittime/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2289,7 +2177,6 @@
           "description": "Column 'dischtime' from admissions.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "admissions/dischtime/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2305,7 +2192,6 @@
           "description": "Column 'deathtime' from admissions.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "admissions/deathtime/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2321,7 +2207,6 @@
           "description": "Column 'admission_type' from admissions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "admissions/admission_type/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2337,7 +2222,6 @@
           "description": "Column 'admit_provider_id' from admissions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "admissions/admit_provider_id/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2353,7 +2237,6 @@
           "description": "Column 'admission_location' from admissions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "admissions/admission_location/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2369,7 +2252,6 @@
           "description": "Column 'discharge_location' from admissions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "admissions/discharge_location/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2385,7 +2267,6 @@
           "description": "Column 'insurance' from admissions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "admissions/insurance/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2401,7 +2282,6 @@
           "description": "Column 'language' from admissions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "admissions/language/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2417,7 +2297,6 @@
           "description": "Column 'marital_status' from admissions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "admissions/marital_status/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2433,7 +2312,6 @@
           "description": "Column 'race' from admissions.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "admissions/race/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2449,7 +2327,6 @@
           "description": "Column 'edregtime' from admissions.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "admissions/edregtime/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2465,7 +2342,6 @@
           "description": "Column 'edouttime' from admissions.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "admissions/edouttime/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2481,7 +2357,6 @@
           "description": "Column 'hospital_expire_flag' from admissions.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "admissions/hospital_expire_flag/source",
             "fileObject": {
               "@id": "file_13"
             },
@@ -2505,7 +2380,6 @@
           "description": "Column 'labevent_id' from labevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "labevents/labevent_id/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2521,7 +2395,6 @@
           "description": "Column 'subject_id' from labevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "labevents/subject_id/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2537,7 +2410,6 @@
           "description": "Column 'hadm_id' from labevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "labevents/hadm_id/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2553,7 +2425,6 @@
           "description": "Column 'specimen_id' from labevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "labevents/specimen_id/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2569,7 +2440,6 @@
           "description": "Column 'itemid' from labevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "labevents/itemid/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2585,7 +2455,6 @@
           "description": "Column 'order_provider_id' from labevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "labevents/order_provider_id/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2601,7 +2470,6 @@
           "description": "Column 'charttime' from labevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "labevents/charttime/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2617,7 +2485,6 @@
           "description": "Column 'storetime' from labevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "labevents/storetime/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2633,7 +2500,6 @@
           "description": "Column 'value' from labevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "labevents/value/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2649,7 +2515,6 @@
           "description": "Column 'valuenum' from labevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "labevents/valuenum/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2665,7 +2530,6 @@
           "description": "Column 'valueuom' from labevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "labevents/valueuom/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2681,7 +2545,6 @@
           "description": "Column 'ref_range_lower' from labevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "labevents/ref_range_lower/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2697,7 +2560,6 @@
           "description": "Column 'ref_range_upper' from labevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "labevents/ref_range_upper/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2713,7 +2575,6 @@
           "description": "Column 'flag' from labevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "labevents/flag/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2729,7 +2590,6 @@
           "description": "Column 'priority' from labevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "labevents/priority/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2745,7 +2605,6 @@
           "description": "Column 'comments' from labevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "labevents/comments/source",
             "fileObject": {
               "@id": "file_14"
             },
@@ -2769,7 +2628,6 @@
           "description": "Column 'subject_id' from pharmacy.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "pharmacy/subject_id/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2785,7 +2643,6 @@
           "description": "Column 'hadm_id' from pharmacy.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "pharmacy/hadm_id/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2801,7 +2658,6 @@
           "description": "Column 'pharmacy_id' from pharmacy.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "pharmacy/pharmacy_id/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2817,7 +2673,6 @@
           "description": "Column 'poe_id' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/poe_id/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2833,7 +2688,6 @@
           "description": "Column 'starttime' from pharmacy.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "pharmacy/starttime/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2849,7 +2703,6 @@
           "description": "Column 'stoptime' from pharmacy.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "pharmacy/stoptime/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2865,7 +2718,6 @@
           "description": "Column 'medication' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/medication/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2881,7 +2733,6 @@
           "description": "Column 'proc_type' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/proc_type/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2897,7 +2748,6 @@
           "description": "Column 'status' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/status/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2913,7 +2763,6 @@
           "description": "Column 'entertime' from pharmacy.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "pharmacy/entertime/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2929,7 +2778,6 @@
           "description": "Column 'verifiedtime' from pharmacy.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "pharmacy/verifiedtime/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2945,7 +2793,6 @@
           "description": "Column 'route' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/route/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2961,7 +2808,6 @@
           "description": "Column 'frequency' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/frequency/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2977,7 +2823,6 @@
           "description": "Column 'disp_sched' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/disp_sched/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -2993,7 +2838,6 @@
           "description": "Column 'infusion_type' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/infusion_type/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3009,7 +2853,6 @@
           "description": "Column 'sliding_scale' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/sliding_scale/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3025,7 +2868,6 @@
           "description": "Column 'lockout_interval' from pharmacy.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "pharmacy/lockout_interval/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3041,7 +2883,6 @@
           "description": "Column 'basal_rate' from pharmacy.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "pharmacy/basal_rate/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3057,7 +2898,6 @@
           "description": "Column 'one_hr_max' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/one_hr_max/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3073,7 +2913,6 @@
           "description": "Column 'doses_per_24_hrs' from pharmacy.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "pharmacy/doses_per_24_hrs/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3089,7 +2928,6 @@
           "description": "Column 'duration' from pharmacy.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "pharmacy/duration/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3105,7 +2943,6 @@
           "description": "Column 'duration_interval' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/duration_interval/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3121,7 +2958,6 @@
           "description": "Column 'expiration_value' from pharmacy.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "pharmacy/expiration_value/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3137,7 +2973,6 @@
           "description": "Column 'expiration_unit' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/expiration_unit/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3153,7 +2988,6 @@
           "description": "Column 'expirationdate' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/expirationdate/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3169,7 +3003,6 @@
           "description": "Column 'dispensation' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/dispensation/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3185,7 +3018,6 @@
           "description": "Column 'fill_quantity' from pharmacy.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "pharmacy/fill_quantity/source",
             "fileObject": {
               "@id": "file_15"
             },
@@ -3209,7 +3041,6 @@
           "description": "Column 'subject_id' from procedures_icd.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedures_icd/subject_id/source",
             "fileObject": {
               "@id": "file_16"
             },
@@ -3225,7 +3056,6 @@
           "description": "Column 'hadm_id' from procedures_icd.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedures_icd/hadm_id/source",
             "fileObject": {
               "@id": "file_16"
             },
@@ -3241,7 +3071,6 @@
           "description": "Column 'seq_num' from procedures_icd.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedures_icd/seq_num/source",
             "fileObject": {
               "@id": "file_16"
             },
@@ -3257,7 +3086,6 @@
           "description": "Column 'chartdate' from procedures_icd.csv.gz",
           "dataType": "sc:Date",
           "source": {
-            "@id": "procedures_icd/chartdate/source",
             "fileObject": {
               "@id": "file_16"
             },
@@ -3273,7 +3101,6 @@
           "description": "Column 'icd_code' from procedures_icd.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "procedures_icd/icd_code/source",
             "fileObject": {
               "@id": "file_16"
             },
@@ -3289,7 +3116,6 @@
           "description": "Column 'icd_version' from procedures_icd.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedures_icd/icd_version/source",
             "fileObject": {
               "@id": "file_16"
             },
@@ -3313,7 +3139,6 @@
           "description": "Column 'subject_id' from hcpcsevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "hcpcsevents/subject_id/source",
             "fileObject": {
               "@id": "file_17"
             },
@@ -3329,7 +3154,6 @@
           "description": "Column 'hadm_id' from hcpcsevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "hcpcsevents/hadm_id/source",
             "fileObject": {
               "@id": "file_17"
             },
@@ -3345,7 +3169,6 @@
           "description": "Column 'chartdate' from hcpcsevents.csv.gz",
           "dataType": "sc:Date",
           "source": {
-            "@id": "hcpcsevents/chartdate/source",
             "fileObject": {
               "@id": "file_17"
             },
@@ -3361,7 +3184,6 @@
           "description": "Column 'hcpcs_cd' from hcpcsevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "hcpcsevents/hcpcs_cd/source",
             "fileObject": {
               "@id": "file_17"
             },
@@ -3377,7 +3199,6 @@
           "description": "Column 'seq_num' from hcpcsevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "hcpcsevents/seq_num/source",
             "fileObject": {
               "@id": "file_17"
             },
@@ -3393,7 +3214,6 @@
           "description": "Column 'short_description' from hcpcsevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "hcpcsevents/short_description/source",
             "fileObject": {
               "@id": "file_17"
             },
@@ -3417,7 +3237,6 @@
           "description": "Column 'subject_id' from services.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "services/subject_id/source",
             "fileObject": {
               "@id": "file_18"
             },
@@ -3433,7 +3252,6 @@
           "description": "Column 'hadm_id' from services.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "services/hadm_id/source",
             "fileObject": {
               "@id": "file_18"
             },
@@ -3449,7 +3267,6 @@
           "description": "Column 'transfertime' from services.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "services/transfertime/source",
             "fileObject": {
               "@id": "file_18"
             },
@@ -3465,7 +3282,6 @@
           "description": "Column 'prev_service' from services.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "services/prev_service/source",
             "fileObject": {
               "@id": "file_18"
             },
@@ -3481,7 +3297,6 @@
           "description": "Column 'curr_service' from services.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "services/curr_service/source",
             "fileObject": {
               "@id": "file_18"
             },
@@ -3505,7 +3320,6 @@
           "description": "Column 'icd_code' from d_icd_procedures.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_icd_procedures/icd_code/source",
             "fileObject": {
               "@id": "file_19"
             },
@@ -3521,7 +3335,6 @@
           "description": "Column 'icd_version' from d_icd_procedures.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "d_icd_procedures/icd_version/source",
             "fileObject": {
               "@id": "file_19"
             },
@@ -3537,7 +3350,6 @@
           "description": "Column 'long_title' from d_icd_procedures.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_icd_procedures/long_title/source",
             "fileObject": {
               "@id": "file_19"
             },
@@ -3561,7 +3373,6 @@
           "description": "Column 'subject_id' from omr.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "omr/subject_id/source",
             "fileObject": {
               "@id": "file_20"
             },
@@ -3577,7 +3388,6 @@
           "description": "Column 'chartdate' from omr.csv.gz",
           "dataType": "sc:Date",
           "source": {
-            "@id": "omr/chartdate/source",
             "fileObject": {
               "@id": "file_20"
             },
@@ -3593,7 +3403,6 @@
           "description": "Column 'seq_num' from omr.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "omr/seq_num/source",
             "fileObject": {
               "@id": "file_20"
             },
@@ -3609,7 +3418,6 @@
           "description": "Column 'result_name' from omr.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "omr/result_name/source",
             "fileObject": {
               "@id": "file_20"
             },
@@ -3625,7 +3433,6 @@
           "description": "Column 'result_value' from omr.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "omr/result_value/source",
             "fileObject": {
               "@id": "file_20"
             },
@@ -3649,7 +3456,6 @@
           "description": "Column 'subject_id' from emar.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "emar/subject_id/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3665,7 +3471,6 @@
           "description": "Column 'hadm_id' from emar.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "emar/hadm_id/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3681,7 +3486,6 @@
           "description": "Column 'emar_id' from emar.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar/emar_id/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3697,7 +3501,6 @@
           "description": "Column 'emar_seq' from emar.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "emar/emar_seq/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3713,7 +3516,6 @@
           "description": "Column 'poe_id' from emar.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar/poe_id/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3729,7 +3531,6 @@
           "description": "Column 'pharmacy_id' from emar.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "emar/pharmacy_id/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3745,7 +3546,6 @@
           "description": "Column 'enter_provider_id' from emar.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar/enter_provider_id/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3761,7 +3561,6 @@
           "description": "Column 'charttime' from emar.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "emar/charttime/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3777,7 +3576,6 @@
           "description": "Column 'medication' from emar.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar/medication/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3793,7 +3591,6 @@
           "description": "Column 'event_txt' from emar.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "emar/event_txt/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3809,7 +3606,6 @@
           "description": "Column 'scheduletime' from emar.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "emar/scheduletime/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3825,7 +3621,6 @@
           "description": "Column 'storetime' from emar.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "emar/storetime/source",
             "fileObject": {
               "@id": "file_21"
             },
@@ -3849,7 +3644,6 @@
           "description": "Column 'microevent_id' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/microevent_id/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3865,7 +3659,6 @@
           "description": "Column 'subject_id' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/subject_id/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3881,7 +3674,6 @@
           "description": "Column 'hadm_id' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/hadm_id/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3897,7 +3689,6 @@
           "description": "Column 'micro_specimen_id' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/micro_specimen_id/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3913,7 +3704,6 @@
           "description": "Column 'order_provider_id' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/order_provider_id/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3929,7 +3719,6 @@
           "description": "Column 'chartdate' from microbiologyevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "microbiologyevents/chartdate/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3945,7 +3734,6 @@
           "description": "Column 'charttime' from microbiologyevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "microbiologyevents/charttime/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3961,7 +3749,6 @@
           "description": "Column 'spec_itemid' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/spec_itemid/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3977,7 +3764,6 @@
           "description": "Column 'spec_type_desc' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/spec_type_desc/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -3993,7 +3779,6 @@
           "description": "Column 'test_seq' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/test_seq/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4009,7 +3794,6 @@
           "description": "Column 'storedate' from microbiologyevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "microbiologyevents/storedate/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4025,7 +3809,6 @@
           "description": "Column 'storetime' from microbiologyevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "microbiologyevents/storetime/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4041,7 +3824,6 @@
           "description": "Column 'test_itemid' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/test_itemid/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4057,7 +3839,6 @@
           "description": "Column 'test_name' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/test_name/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4073,7 +3854,6 @@
           "description": "Column 'org_itemid' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/org_itemid/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4089,7 +3869,6 @@
           "description": "Column 'org_name' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/org_name/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4105,7 +3884,6 @@
           "description": "Column 'isolate_num' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/isolate_num/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4121,7 +3899,6 @@
           "description": "Column 'quantity' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/quantity/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4137,7 +3914,6 @@
           "description": "Column 'ab_itemid' from microbiologyevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "microbiologyevents/ab_itemid/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4153,7 +3929,6 @@
           "description": "Column 'ab_name' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/ab_name/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4169,7 +3944,6 @@
           "description": "Column 'dilution_text' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/dilution_text/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4185,7 +3959,6 @@
           "description": "Column 'dilution_comparison' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/dilution_comparison/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4201,7 +3974,6 @@
           "description": "Column 'dilution_value' from microbiologyevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "microbiologyevents/dilution_value/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4217,7 +3989,6 @@
           "description": "Column 'interpretation' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/interpretation/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4233,7 +4004,6 @@
           "description": "Column 'comments' from microbiologyevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "microbiologyevents/comments/source",
             "fileObject": {
               "@id": "file_22"
             },
@@ -4257,7 +4027,6 @@
           "description": "Column 'subject_id' from datetimeevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "datetimeevents/subject_id/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4273,7 +4042,6 @@
           "description": "Column 'hadm_id' from datetimeevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "datetimeevents/hadm_id/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4289,7 +4057,6 @@
           "description": "Column 'stay_id' from datetimeevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "datetimeevents/stay_id/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4305,7 +4072,6 @@
           "description": "Column 'caregiver_id' from datetimeevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "datetimeevents/caregiver_id/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4321,7 +4087,6 @@
           "description": "Column 'charttime' from datetimeevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "datetimeevents/charttime/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4337,7 +4102,6 @@
           "description": "Column 'storetime' from datetimeevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "datetimeevents/storetime/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4353,7 +4117,6 @@
           "description": "Column 'itemid' from datetimeevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "datetimeevents/itemid/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4369,7 +4132,6 @@
           "description": "Column 'value' from datetimeevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "datetimeevents/value/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4385,7 +4147,6 @@
           "description": "Column 'valueuom' from datetimeevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "datetimeevents/valueuom/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4401,7 +4162,6 @@
           "description": "Column 'warning' from datetimeevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "datetimeevents/warning/source",
             "fileObject": {
               "@id": "file_23"
             },
@@ -4425,7 +4185,6 @@
           "description": "Column 'caregiver_id' from caregiver.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "caregiver/caregiver_id/source",
             "fileObject": {
               "@id": "file_24"
             },
@@ -4449,7 +4208,6 @@
           "description": "Column 'subject_id' from ingredientevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "ingredientevents/subject_id/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4465,7 +4223,6 @@
           "description": "Column 'hadm_id' from ingredientevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "ingredientevents/hadm_id/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4481,7 +4238,6 @@
           "description": "Column 'stay_id' from ingredientevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "ingredientevents/stay_id/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4497,7 +4253,6 @@
           "description": "Column 'caregiver_id' from ingredientevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "ingredientevents/caregiver_id/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4513,7 +4268,6 @@
           "description": "Column 'starttime' from ingredientevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "ingredientevents/starttime/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4529,7 +4283,6 @@
           "description": "Column 'endtime' from ingredientevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "ingredientevents/endtime/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4545,7 +4298,6 @@
           "description": "Column 'storetime' from ingredientevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "ingredientevents/storetime/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4561,7 +4313,6 @@
           "description": "Column 'itemid' from ingredientevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "ingredientevents/itemid/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4577,7 +4328,6 @@
           "description": "Column 'amount' from ingredientevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "ingredientevents/amount/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4593,7 +4343,6 @@
           "description": "Column 'amountuom' from ingredientevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "ingredientevents/amountuom/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4609,7 +4358,6 @@
           "description": "Column 'rate' from ingredientevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "ingredientevents/rate/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4625,7 +4373,6 @@
           "description": "Column 'rateuom' from ingredientevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "ingredientevents/rateuom/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4641,7 +4388,6 @@
           "description": "Column 'orderid' from ingredientevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "ingredientevents/orderid/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4657,7 +4403,6 @@
           "description": "Column 'linkorderid' from ingredientevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "ingredientevents/linkorderid/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4673,7 +4418,6 @@
           "description": "Column 'statusdescription' from ingredientevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "ingredientevents/statusdescription/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4689,7 +4433,6 @@
           "description": "Column 'originalamount' from ingredientevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "ingredientevents/originalamount/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4705,7 +4448,6 @@
           "description": "Column 'originalrate' from ingredientevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "ingredientevents/originalrate/source",
             "fileObject": {
               "@id": "file_25"
             },
@@ -4729,7 +4471,6 @@
           "description": "Column 'subject_id' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/subject_id/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4745,7 +4486,6 @@
           "description": "Column 'hadm_id' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/hadm_id/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4761,7 +4501,6 @@
           "description": "Column 'stay_id' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/stay_id/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4777,7 +4516,6 @@
           "description": "Column 'caregiver_id' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/caregiver_id/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4793,7 +4531,6 @@
           "description": "Column 'starttime' from inputevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "inputevents/starttime/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4809,7 +4546,6 @@
           "description": "Column 'endtime' from inputevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "inputevents/endtime/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4825,7 +4561,6 @@
           "description": "Column 'storetime' from inputevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "inputevents/storetime/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4841,7 +4576,6 @@
           "description": "Column 'itemid' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/itemid/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4857,7 +4591,6 @@
           "description": "Column 'amount' from inputevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "inputevents/amount/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4873,7 +4606,6 @@
           "description": "Column 'amountuom' from inputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "inputevents/amountuom/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4889,7 +4621,6 @@
           "description": "Column 'rate' from inputevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "inputevents/rate/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4905,7 +4636,6 @@
           "description": "Column 'rateuom' from inputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "inputevents/rateuom/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4921,7 +4651,6 @@
           "description": "Column 'orderid' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/orderid/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4937,7 +4666,6 @@
           "description": "Column 'linkorderid' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/linkorderid/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4953,7 +4681,6 @@
           "description": "Column 'ordercategoryname' from inputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "inputevents/ordercategoryname/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4969,7 +4696,6 @@
           "description": "Column 'secondaryordercategoryname' from inputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "inputevents/secondaryordercategoryname/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -4985,7 +4711,6 @@
           "description": "Column 'ordercomponenttypedescription' from inputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "inputevents/ordercomponenttypedescription/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5001,7 +4726,6 @@
           "description": "Column 'ordercategorydescription' from inputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "inputevents/ordercategorydescription/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5017,7 +4741,6 @@
           "description": "Column 'patientweight' from inputevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "inputevents/patientweight/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5033,7 +4756,6 @@
           "description": "Column 'totalamount' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/totalamount/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5049,7 +4771,6 @@
           "description": "Column 'totalamountuom' from inputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "inputevents/totalamountuom/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5065,7 +4786,6 @@
           "description": "Column 'isopenbag' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/isopenbag/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5081,7 +4801,6 @@
           "description": "Column 'continueinnextdept' from inputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "inputevents/continueinnextdept/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5097,7 +4816,6 @@
           "description": "Column 'statusdescription' from inputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "inputevents/statusdescription/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5113,7 +4831,6 @@
           "description": "Column 'originalamount' from inputevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "inputevents/originalamount/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5129,7 +4846,6 @@
           "description": "Column 'originalrate' from inputevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "inputevents/originalrate/source",
             "fileObject": {
               "@id": "file_26"
             },
@@ -5153,7 +4869,6 @@
           "description": "Column 'subject_id' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/subject_id/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5169,7 +4884,6 @@
           "description": "Column 'hadm_id' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/hadm_id/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5185,7 +4899,6 @@
           "description": "Column 'stay_id' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/stay_id/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5201,7 +4914,6 @@
           "description": "Column 'caregiver_id' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/caregiver_id/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5217,7 +4929,6 @@
           "description": "Column 'starttime' from procedureevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "procedureevents/starttime/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5233,7 +4944,6 @@
           "description": "Column 'endtime' from procedureevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "procedureevents/endtime/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5249,7 +4959,6 @@
           "description": "Column 'storetime' from procedureevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "procedureevents/storetime/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5265,7 +4974,6 @@
           "description": "Column 'itemid' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/itemid/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5281,7 +4989,6 @@
           "description": "Column 'value' from procedureevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "procedureevents/value/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5297,7 +5004,6 @@
           "description": "Column 'valueuom' from procedureevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "procedureevents/valueuom/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5313,7 +5019,6 @@
           "description": "Column 'location' from procedureevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "procedureevents/location/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5329,7 +5034,6 @@
           "description": "Column 'locationcategory' from procedureevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "procedureevents/locationcategory/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5345,7 +5049,6 @@
           "description": "Column 'orderid' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/orderid/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5361,7 +5064,6 @@
           "description": "Column 'linkorderid' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/linkorderid/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5377,7 +5079,6 @@
           "description": "Column 'ordercategoryname' from procedureevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "procedureevents/ordercategoryname/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5393,7 +5094,6 @@
           "description": "Column 'ordercategorydescription' from procedureevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "procedureevents/ordercategorydescription/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5409,7 +5109,6 @@
           "description": "Column 'patientweight' from procedureevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "procedureevents/patientweight/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5425,7 +5124,6 @@
           "description": "Column 'isopenbag' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/isopenbag/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5441,7 +5139,6 @@
           "description": "Column 'continueinnextdept' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/continueinnextdept/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5457,7 +5154,6 @@
           "description": "Column 'statusdescription' from procedureevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "procedureevents/statusdescription/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5473,7 +5169,6 @@
           "description": "Column 'ORIGINALAMOUNT' from procedureevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "procedureevents/ORIGINALAMOUNT/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5489,7 +5184,6 @@
           "description": "Column 'ORIGINALRATE' from procedureevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "procedureevents/ORIGINALRATE/source",
             "fileObject": {
               "@id": "file_27"
             },
@@ -5513,7 +5207,6 @@
           "description": "Column 'itemid' from d_items.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "d_items/itemid/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5529,7 +5222,6 @@
           "description": "Column 'label' from d_items.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_items/label/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5545,7 +5237,6 @@
           "description": "Column 'abbreviation' from d_items.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_items/abbreviation/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5561,7 +5252,6 @@
           "description": "Column 'linksto' from d_items.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_items/linksto/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5577,7 +5267,6 @@
           "description": "Column 'category' from d_items.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_items/category/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5593,7 +5282,6 @@
           "description": "Column 'unitname' from d_items.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_items/unitname/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5609,7 +5297,6 @@
           "description": "Column 'param_type' from d_items.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "d_items/param_type/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5625,7 +5312,6 @@
           "description": "Column 'lownormalvalue' from d_items.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "d_items/lownormalvalue/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5641,7 +5327,6 @@
           "description": "Column 'highnormalvalue' from d_items.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "d_items/highnormalvalue/source",
             "fileObject": {
               "@id": "file_28"
             },
@@ -5665,7 +5350,6 @@
           "description": "Column 'subject_id' from chartevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "chartevents/subject_id/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5681,7 +5365,6 @@
           "description": "Column 'hadm_id' from chartevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "chartevents/hadm_id/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5697,7 +5380,6 @@
           "description": "Column 'stay_id' from chartevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "chartevents/stay_id/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5713,7 +5395,6 @@
           "description": "Column 'caregiver_id' from chartevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "chartevents/caregiver_id/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5729,7 +5410,6 @@
           "description": "Column 'charttime' from chartevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "chartevents/charttime/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5745,7 +5425,6 @@
           "description": "Column 'storetime' from chartevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "chartevents/storetime/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5761,7 +5440,6 @@
           "description": "Column 'itemid' from chartevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "chartevents/itemid/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5777,7 +5455,6 @@
           "description": "Column 'value' from chartevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "chartevents/value/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5793,7 +5470,6 @@
           "description": "Column 'valuenum' from chartevents.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "chartevents/valuenum/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5809,7 +5485,6 @@
           "description": "Column 'valueuom' from chartevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "chartevents/valueuom/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5825,7 +5500,6 @@
           "description": "Column 'warning' from chartevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "chartevents/warning/source",
             "fileObject": {
               "@id": "file_29"
             },
@@ -5849,7 +5523,6 @@
           "description": "Column 'subject_id' from icustays.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "icustays/subject_id/source",
             "fileObject": {
               "@id": "file_30"
             },
@@ -5865,7 +5538,6 @@
           "description": "Column 'hadm_id' from icustays.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "icustays/hadm_id/source",
             "fileObject": {
               "@id": "file_30"
             },
@@ -5881,7 +5553,6 @@
           "description": "Column 'stay_id' from icustays.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "icustays/stay_id/source",
             "fileObject": {
               "@id": "file_30"
             },
@@ -5897,7 +5568,6 @@
           "description": "Column 'first_careunit' from icustays.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "icustays/first_careunit/source",
             "fileObject": {
               "@id": "file_30"
             },
@@ -5913,7 +5583,6 @@
           "description": "Column 'last_careunit' from icustays.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "icustays/last_careunit/source",
             "fileObject": {
               "@id": "file_30"
             },
@@ -5929,7 +5598,6 @@
           "description": "Column 'intime' from icustays.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "icustays/intime/source",
             "fileObject": {
               "@id": "file_30"
             },
@@ -5945,7 +5613,6 @@
           "description": "Column 'outtime' from icustays.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "icustays/outtime/source",
             "fileObject": {
               "@id": "file_30"
             },
@@ -5961,7 +5628,6 @@
           "description": "Column 'los' from icustays.csv.gz",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "icustays/los/source",
             "fileObject": {
               "@id": "file_30"
             },
@@ -5985,7 +5651,6 @@
           "description": "Column 'subject_id' from outputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "outputevents/subject_id/source",
             "fileObject": {
               "@id": "file_31"
             },
@@ -6001,7 +5666,6 @@
           "description": "Column 'hadm_id' from outputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "outputevents/hadm_id/source",
             "fileObject": {
               "@id": "file_31"
             },
@@ -6017,7 +5681,6 @@
           "description": "Column 'stay_id' from outputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "outputevents/stay_id/source",
             "fileObject": {
               "@id": "file_31"
             },
@@ -6033,7 +5696,6 @@
           "description": "Column 'caregiver_id' from outputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "outputevents/caregiver_id/source",
             "fileObject": {
               "@id": "file_31"
             },
@@ -6049,7 +5711,6 @@
           "description": "Column 'charttime' from outputevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "outputevents/charttime/source",
             "fileObject": {
               "@id": "file_31"
             },
@@ -6065,7 +5726,6 @@
           "description": "Column 'storetime' from outputevents.csv.gz",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "outputevents/storetime/source",
             "fileObject": {
               "@id": "file_31"
             },
@@ -6081,7 +5741,6 @@
           "description": "Column 'itemid' from outputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "outputevents/itemid/source",
             "fileObject": {
               "@id": "file_31"
             },
@@ -6097,7 +5756,6 @@
           "description": "Column 'value' from outputevents.csv.gz",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "outputevents/value/source",
             "fileObject": {
               "@id": "file_31"
             },
@@ -6113,7 +5771,6 @@
           "description": "Column 'valueuom' from outputevents.csv.gz",
           "dataType": "sc:Text",
           "source": {
-            "@id": "outputevents/valueuom/source",
             "fileObject": {
               "@id": "file_31"
             },
