@@ -34,3 +34,28 @@ def test_discover_files_not_a_directory(tmp_path: Path) -> None:
     file_path.write_text("test")
     with pytest.raises(FileNotFoundError, match="is not a directory"):
         discover_files(str(file_path))
+
+
+def test_discover_files_skips_hidden_dirs(tmp_path: Path) -> None:
+    """Test discover_files skips files inside hidden directories."""
+    # Create visible structure
+    (tmp_path / "sub").mkdir()
+    (tmp_path / "file1.txt").write_text("test")
+    (tmp_path / "sub/file2.txt").write_text("test")
+
+    # Create hidden directory with files
+    (tmp_path / ".hidden").mkdir()
+    (tmp_path / ".hidden/file3.txt").write_text("test")
+
+    # Nested hidden directory
+    (tmp_path / "sub/.git").mkdir()
+    (tmp_path / "sub/.git/file4.txt").write_text("test")
+
+    files = discover_files(str(tmp_path))
+
+    expected = {
+        Path("file1.txt"),
+        Path("sub/file2.txt"),
+    }
+
+    assert set(files) == expected
