@@ -105,6 +105,8 @@ class MetadataGenerator:
         date_published: Optional[str] = None,
         creators: Optional[List[Dict[str, str]]] = None,
         count_csv_rows: bool = False,
+        includes: Optional[List[str]] = None,
+        excludes: Optional[List[str]] = None,
     ):
         """
         Initialize the metadata generator for a dataset.
@@ -119,6 +121,9 @@ class MetadataGenerator:
             version: Dataset version
             date_published: Publication date (e.g., "2023-12-15" or "2023-12-15T10:30:00")
             creators: List of creator dictionaries with name, email, url fields
+            count_csv_rows: Whether to count exact row numbers for CSV files
+            includes: Optional list of glob patterns to include. Applies before excludes.
+            excludes: Optional list of glob patterns to exclude. Applies after includes.
 
         Raises:
             ValueError: If the dataset path is not a directory
@@ -136,6 +141,8 @@ class MetadataGenerator:
         self.version = version
         self.date_published = date_published
         self.creators = creators
+        self.includes = includes
+        self.excludes = excludes
         # Generic options dict passed to every handler via **kwargs.
         # Handlers declare what they use; others ignore the rest.
         # To add a new handler-specific flag: add one key here — the call site never changes.
@@ -158,7 +165,11 @@ class MetadataGenerator:
             ValueError: If no supported files are found in the dataset
         """
         # Discover and process files
-        files = discover_files(str(self.dataset_path))
+        files = discover_files(
+            str(self.dataset_path),
+            include_patterns=self.includes,
+            exclude_patterns=self.excludes,
+        )
         file_metadata = []
 
         for file_path in files:

@@ -1,6 +1,7 @@
 """Tests for Croissant Baker CLI."""
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -267,19 +268,144 @@ def test_no_spec_warnings_when_all_fields_provided(
     assert "Warning:" not in result.stderr
 
 
+def _strip_ansi(text: str) -> str:
+    return re.sub(r"\x1b\[[0-9;]*[mGKHF]", "", text)
+
+
 def test_help_and_version() -> None:
     """Test help and version commands."""
-    # Help
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    assert "--creator" in result.stdout
+    stdout = _strip_ansi(result.stdout)
+    assert "--creator" in stdout
+    assert "--include" in stdout
+    assert "--exclude" in stdout
+    assert "--dry-run" in stdout
 
-    # Version
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
     assert "croissant-baker" in result.stdout
 
-    # Usage when no args
     result = runner.invoke(app, [])
     assert result.exit_code == 0
     assert "Usage:" in result.stdout
+
+
+@pytest.fixture
+def mixed_dataset(tmp_path: Path) -> Path:
+    """Create a dataset with multiple file types for filter testing."""
+    dataset_dir = tmp_path / "mixed_dataset"
+    dataset_dir.mkdir()
+    (dataset_dir / "sub").mkdir()
+    (dataset_dir / "data.csv").write_text("id,name\n1,Alice")
+    (dataset_dir / "notes.txt").write_text("notes")
+    (dataset_dir / "sub/more.csv").write_text("id,val\n1,x")
+    (dataset_dir / "sub/temp.csv").write_text("id,val\n1,y")
+    return dataset_dir
+
+
+def test_dry_run_no_creator_required(csv_dataset: Path) -> None:
+    """Dry run should not require --creator."""
+    result = runner.invoke(app, ["--input", str(csv_dataset), "--dry-run"])
+    assert result.exit_code == 0
+
+
+def test_dry_run_no_output_required(csv_dataset: Path) -> None:
+    """Dry run should not require --output and must not create any output file."""
+    result = runner.invoke(app, ["--input", str(csv_dataset), "--dry-run"])
+    assert result.exit_code == 0
+    assert not any(csv_dataset.glob("*.jsonld"))
+
+
+def test_dry_run_lists_processable_files(csv_dataset: Path) -> None:
+    """Dry run lists files that have a registered handler."""
+    result = runner.invoke(app, ["--input", str(csv_dataset), "--dry-run"])
+    assert result.exit_code == 0
+    assert "data.csv" in result.stdout
+    assert "Dry run" in result.stdout
+
+
+def test_dry_run_with_include_filter(mixed_dataset: Path) -> None:
+    """Dry run with --include only reports matching files."""
+    result = runner.invoke(
+        app, ["--input", str(mixed_dataset), "--dry-run", "--include", "*.csv"]
+    )
+    assert result.exit_code == 0
+    assert "data.csv" in result.stdout
+    assert "notes.txt" not in result.stdout
+
+
+def test_dry_run_with_exclude_filter(mixed_dataset: Path) -> None:
+    """Dry run with --exclude omits matching files."""
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(mixed_dataset),
+            "--dry-run",
+            "--exclude",
+            "temp.csv",
+            "--exclude",
+            "sub/temp.csv",
+        ],
+    )
+    assert result.exit_code == 0
+    assert "temp.csv" not in result.stdout
+    assert "data.csv" in result.stdout
+
+
+def test_dry_run_invalid_input() -> None:
+    """Dry run on a non-existent directory exits with error."""
+    result = runner.invoke(app, ["--input", "/no/such/dir", "--dry-run"])
+    assert result.exit_code == 1
+
+
+def test_include_filter_limits_generated_files(
+    mixed_dataset: Path, tmp_path: Path
+) -> None:
+    """--include restricts which files appear in the generated metadata."""
+    output = tmp_path / "out.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(mixed_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test User",
+            "--include",
+            "data.csv",
+        ],
+    )
+    assert result.exit_code == 0
+    metadata = json.loads(output.read_text())
+    names = [d["name"] for d in metadata.get("distribution", [])]
+    assert any("data.csv" in n for n in names)
+    assert not any("temp" in n for n in names)
+
+
+def test_exclude_filter_omits_matching_files(
+    mixed_dataset: Path, tmp_path: Path
+) -> None:
+    """--exclude removes matching files from the generated metadata."""
+    output = tmp_path / "out.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(mixed_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test User",
+            "--exclude",
+            "temp.csv",
+            "--exclude",
+            "sub/temp.csv",
+        ],
+    )
+    assert result.exit_code == 0
+    metadata = json.loads(output.read_text())
+    names = [d["name"] for d in metadata.get("distribution", [])]
+    assert not any("temp" in n for n in names)
