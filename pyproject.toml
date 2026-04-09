@@ -3,14 +3,15 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "croissant-maker"
-version = "0.2.0"
+name = "croissant-baker"
+version = "0.1.0"
 description = "A tool to automatically generate Croissant metadata for datasets."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
   { name = "Rafi Al Attrach", email = "rafiaa@mit.edu" },
   { name = "Tom Pollard", email = "tpollard@mit.edu" },
+  { name = "Sebastian Lobentanzer", email = "sebastian.lobentanzer@gmail.com"},
 ]
 # Runtime dependencies (PEP 508 specifiers, lowercase canonical names).
 # Note: pandas is not a direct dependency — available transitively via wfdb.
@@ -25,7 +26,7 @@ dependencies = [
 ]
 
 [project.scripts]
-croissant-maker = "croissant_maker.__main__:app"
+croissant-baker = "croissant_baker.__main__:app"
 
 # PEP 735 dependency groups — not propagated to downstream consumers.
 # Install with: uv sync --group dev
@@ -38,7 +39,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/croissant_maker"]
+packages = ["src/croissant_baker"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,17 +1,19 @@
-"""Command-line interface for Croissant Maker."""
+"""Command-line interface for Croissant Baker."""
 
+import csv
 import typer
 from pathlib import Path
 import importlib.metadata
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from typing import Optional, List
 
-from croissant_maker.metadata_generator import MetadataGenerator
-from croissant_maker.files import discover_files
+from croissant_baker.metadata_generator import MetadataGenerator
+from croissant_baker.files import discover_files
+from croissant_baker.handlers.registry import find_handler
 
 # Create the Typer application instance
 app = typer.Typer(
-    name="croissant-maker",
+    name="croissant-baker",
     help="🥐 Generate Croissant metadata for datasets with automatic type inference",
     add_completion=False,
     rich_markup_mode="markdown",
@@ -21,7 +23,7 @@ app = typer.Typer(
 def _get_version() -> str:
     """Get version from package metadata."""
     try:
-        return importlib.metadata.version("croissant-maker")
+        return importlib.metadata.version("croissant-baker")
     except importlib.metadata.PackageNotFoundError:
         return "unknown (not installed as package)"
 
@@ -30,6 +32,32 @@ def _get_default_output_name(input_path: str) -> str:
     """Generate default output filename based on input path."""
     dataset_name = Path(input_path).name
     return f"{dataset_name}-croissant.jsonld"
+
+
+# Croissant spec: these CLI flags map to fields that *must* be specified for every dataset.
+# https://docs.mlcommons.org/croissant/docs/croissant-spec.html
+# The tool generates defaults for all of them, but warns when user hasn't explicitly set them.
+_SPEC_REQUIRED_FLAGS = {
+    "creator": "--creator",
+    "description": "--description",
+    "url": "--url",
+    "license": "--license",
+    "date_published": "--date-published",
+}
+
+
+def _warn_missing_spec_fields(**provided: object) -> None:
+    """Warn about spec-required fields that were not explicitly provided."""
+    missing = [
+        flag for key, flag in _SPEC_REQUIRED_FLAGS.items() if not provided.get(key)
+    ]
+    if missing:
+        typer.echo(
+            f"\nWarning: {', '.join(missing)} are required by the Croissant spec but were not provided.\n"
+            "  The tool used defaults — review them before publishing.\n"
+            "  See: https://docs.mlcommons.org/croissant/docs/croissant-spec.html",
+            err=True,
+        )
 
 
 @app.callback(invoke_without_command=True)
@@ -99,22 +127,22 @@ def main(
         help="Perform a dry run to list matching files without generating metadata.",
     ),
 ) -> None:
-    """🥐 **Croissant Maker** - Generate rich metadata for your datasets"""
+    """🥐 **Croissant Baker** - Generate rich metadata for your datasets"""
 
     if version:
-        typer.echo(f"🥐 croissant-maker {_get_version()}")
+        typer.echo(f"🥐 croissant-baker {_get_version()}")
         return
 
     if ctx.invoked_subcommand is not None:
         return
 
     if not input:
-        typer.echo("croissant-maker: try 'croissant-maker --help' for more information")
+        typer.echo("croissant-baker: try 'croissant-baker --help' for more information")
         typer.echo("")
-        typer.echo("Usage: croissant-maker --input <dataset-path> [--output <file>]")
-        typer.echo("       croissant-maker validate <file>")
-        typer.echo("       croissant-maker --version")
-        typer.echo("       croissant-maker --help")
+        typer.echo("Usage: croissant-baker --input <dataset-path> [--output <file>]")
+        typer.echo("       croissant-baker validate <file>")
+        typer.echo("       croissant-baker --version")
+        typer.echo("       croissant-baker --help")
         return
 
     if not output and not dry_run:
@@ -141,28 +169,20 @@ def main(
         )
         raise typer.Exit(code=1)
 
-    # If just listing files, output and exit
+    # Dry run: list files that would be processed, then exit
     if dry_run:
-        from croissant_maker.handlers.registry import (
-            find_handler,
-            register_all_handlers,
-        )
-
         try:
-            register_all_handlers()
             all_files = discover_files(
                 input, include_patterns=include, exclude_patterns=exclude
             )
-            # Only keep files that have a registered handler
             matched_files = [f for f in all_files if find_handler(Path(input) / f)]
-
             typer.echo(
-                f"Dry run: Matched {len(matched_files)} files with registered handlers in '{input}':"
+                f"Dry run: {len(matched_files)} file(s) would be processed in '{input}':"
             )
             for f in matched_files:
                 typer.echo(f"  {f}")
         except Exception as e:
-            typer.echo(f"Error listing files: {e}", err=True)
+            typer.echo(f"Error: {e}", err=True)
             raise typer.Exit(code=1)
         return
 
@@ -179,21 +199,27 @@ def main(
             parsed_creators = []
             if creator:
                 for creator_info in creator:
-                    # Parse format: "Name[,Email[,URL]]"
-                    parts = [part.strip() for part in creator_info.split(",")]
+                    creator_info = creator_info.strip()
 
-                    if not parts[0]:  # Empty name
+                    # Preferred: semicolon
+                    if ";" in creator_info:
+                        creator_parts = [p.strip() for p in creator_info.split(";")]
+
+                    else:
+                        # Use CSV parsing for comma cases (handles quotes properly)
+                        creator_parts = next(csv.reader([creator_info]))
+                        creator_parts = [p.strip() for p in creator_parts]
+
+                    if not creator_parts or not creator_parts[0]:
                         continue
 
-                    creator_obj = {"name": parts[0]}  # Name is required
+                    creator_obj = {"name": creator_parts[0]}
 
-                    # Add optional email if provided and not empty
-                    if len(parts) > 1 and parts[1]:
-                        creator_obj["email"] = parts[1]
+                    if len(creator_parts) > 1 and creator_parts[1]:
+                        creator_obj["email"] = creator_parts[1]
 
-                    # Add optional URL if provided and not empty
-                    if len(parts) > 2 and parts[2]:
-                        creator_obj["url"] = parts[2]
+                    if len(creator_parts) > 2 and creator_parts[2]:
+                        creator_obj["url"] = creator_parts[2]
 
                     parsed_creators.append(creator_obj)
 
@@ -260,8 +286,16 @@ def main(
 
         if not validate:
             typer.echo(
-                f"Tip: Run `croissant-maker validate {output}` to validate later"
+                f"Tip: Run `croissant-baker validate {output}` to validate later"
             )
+
+        _warn_missing_spec_fields(
+            creator=creator,
+            description=description,
+            url=url,
+            license=license,
+            date_published=date_published,
+        )
 
     except ValueError as e:
         typer.echo(f"Error: {e}", err=True)

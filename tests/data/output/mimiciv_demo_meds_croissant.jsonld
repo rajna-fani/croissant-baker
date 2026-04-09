@@ -71,7 +71,7 @@
       "name": "0.parquet",
       "contentSize": "271428",
       "contentUrl": "held_out/0.parquet",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "sha256": "02188079b269327eb9dd93df32cd7f2cb9534de9a128728a9329f647d4b2e518"
     },
     {
@@ -80,7 +80,7 @@
       "name": "0.parquet",
       "contentSize": "4860946",
       "contentUrl": "train/0.parquet",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "sha256": "b02868e5f2e3508baaa53d11241781a37ee11bdea140054b24a8c57a8dfee4f0"
     },
     {
@@ -89,25 +89,25 @@
       "name": "0.parquet",
       "contentSize": "424019",
       "contentUrl": "tuning/0.parquet",
-      "encodingFormat": "application/x-parquet",
+      "encodingFormat": "application/vnd.apache.parquet",
       "sha256": "7476d07c309d1183f4e841996b7c84721e39ca8ee7bf545f6061bb2a73e04190"
     }
   ],
   "recordSet": [
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_0",
-      "name": "0",
+      "@id": "held_out",
+      "name": "held_out",
       "description": "Records from 0.parquet (42554 rows)",
       "field": [
         {
           "@type": "cr:Field",
-          "@id": "file_0_subject_id",
+          "@id": "held_out/subject_id",
           "name": "subject_id",
-          "description": "Column 'subject_id' from 0.parquet",
+          "description": "Column 'subject_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_subject_id",
+            "@id": "held_out/subject_id/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -118,12 +118,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_time",
+          "@id": "held_out/time",
           "name": "time",
-          "description": "Column 'time' from 0.parquet",
+          "description": "Column 'time'",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "file_0_source_time",
+            "@id": "held_out/time/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -134,12 +134,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_code",
+          "@id": "held_out/code",
           "name": "code",
-          "description": "Column 'code' from 0.parquet",
+          "description": "Column 'code'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_code",
+            "@id": "held_out/code/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -150,12 +150,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_numeric_value",
+          "@id": "held_out/numeric_value",
           "name": "numeric_value",
-          "description": "Column 'numeric_value' from 0.parquet",
+          "description": "Column 'numeric_value'",
           "dataType": "cr:Float32",
           "source": {
-            "@id": "file_0_source_numeric_value",
+            "@id": "held_out/numeric_value/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -166,12 +166,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_insurance",
+          "@id": "held_out/insurance",
           "name": "insurance",
-          "description": "Column 'insurance' from 0.parquet",
+          "description": "Column 'insurance'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_insurance",
+            "@id": "held_out/insurance/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -182,12 +182,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_language",
+          "@id": "held_out/language",
           "name": "language",
-          "description": "Column 'language' from 0.parquet",
+          "description": "Column 'language'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_language",
+            "@id": "held_out/language/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -198,12 +198,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_marital_status",
+          "@id": "held_out/marital_status",
           "name": "marital_status",
-          "description": "Column 'marital_status' from 0.parquet",
+          "description": "Column 'marital_status'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_marital_status",
+            "@id": "held_out/marital_status/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -214,12 +214,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_race",
+          "@id": "held_out/race",
           "name": "race",
-          "description": "Column 'race' from 0.parquet",
+          "description": "Column 'race'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_race",
+            "@id": "held_out/race/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -230,12 +230,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_hadm_id",
+          "@id": "held_out/hadm_id",
           "name": "hadm_id",
-          "description": "Column 'hadm_id' from 0.parquet",
+          "description": "Column 'hadm_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_hadm_id",
+            "@id": "held_out/hadm_id/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -246,12 +246,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_drg_severity",
+          "@id": "held_out/drg_severity",
           "name": "drg_severity",
-          "description": "Column 'drg_severity' from 0.parquet",
+          "description": "Column 'drg_severity'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_drg_severity",
+            "@id": "held_out/drg_severity/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -262,12 +262,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_drg_mortality",
+          "@id": "held_out/drg_mortality",
           "name": "drg_mortality",
-          "description": "Column 'drg_mortality' from 0.parquet",
+          "description": "Column 'drg_mortality'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_drg_mortality",
+            "@id": "held_out/drg_mortality/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -278,12 +278,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_emar_id",
+          "@id": "held_out/emar_id",
           "name": "emar_id",
-          "description": "Column 'emar_id' from 0.parquet",
+          "description": "Column 'emar_id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_emar_id",
+            "@id": "held_out/emar_id/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -294,12 +294,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_emar_seq",
+          "@id": "held_out/emar_seq",
           "name": "emar_seq",
-          "description": "Column 'emar_seq' from 0.parquet",
+          "description": "Column 'emar_seq'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_emar_seq",
+            "@id": "held_out/emar_seq/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -310,12 +310,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_text_value",
+          "@id": "held_out/text_value",
           "name": "text_value",
-          "description": "Column 'text_value' from 0.parquet",
+          "description": "Column 'text_value'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_text_value",
+            "@id": "held_out/text_value/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -326,12 +326,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_priority",
+          "@id": "held_out/priority",
           "name": "priority",
-          "description": "Column 'priority' from 0.parquet",
+          "description": "Column 'priority'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_priority",
+            "@id": "held_out/priority/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -342,12 +342,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_route",
+          "@id": "held_out/route",
           "name": "route",
-          "description": "Column 'route' from 0.parquet",
+          "description": "Column 'route'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_route",
+            "@id": "held_out/route/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -358,12 +358,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_frequency",
+          "@id": "held_out/frequency",
           "name": "frequency",
-          "description": "Column 'frequency' from 0.parquet",
+          "description": "Column 'frequency'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_frequency",
+            "@id": "held_out/frequency/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -374,12 +374,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_doses_per_24_hrs",
+          "@id": "held_out/doses_per_24_hrs",
           "name": "doses_per_24_hrs",
-          "description": "Column 'doses_per_24_hrs' from 0.parquet",
+          "description": "Column 'doses_per_24_hrs'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_doses_per_24_hrs",
+            "@id": "held_out/doses_per_24_hrs/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -390,12 +390,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_poe_id",
+          "@id": "held_out/poe_id",
           "name": "poe_id",
-          "description": "Column 'poe_id' from 0.parquet",
+          "description": "Column 'poe_id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_poe_id",
+            "@id": "held_out/poe_id/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -406,12 +406,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_icustay_id",
+          "@id": "held_out/icustay_id",
           "name": "icustay_id",
-          "description": "Column 'icustay_id' from 0.parquet",
+          "description": "Column 'icustay_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_icustay_id",
+            "@id": "held_out/icustay_id/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -422,12 +422,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_order_id",
+          "@id": "held_out/order_id",
           "name": "order_id",
-          "description": "Column 'order_id' from 0.parquet",
+          "description": "Column 'order_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_order_id",
+            "@id": "held_out/order_id/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -438,12 +438,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_link_order_id",
+          "@id": "held_out/link_order_id",
           "name": "link_order_id",
-          "description": "Column 'link_order_id' from 0.parquet",
+          "description": "Column 'link_order_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_link_order_id",
+            "@id": "held_out/link_order_id/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -454,12 +454,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_unit",
+          "@id": "held_out/unit",
           "name": "unit",
-          "description": "Column 'unit' from 0.parquet",
+          "description": "Column 'unit'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_unit",
+            "@id": "held_out/unit/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -470,12 +470,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_ordercategorydescription",
+          "@id": "held_out/ordercategorydescription",
           "name": "ordercategorydescription",
-          "description": "Column 'ordercategorydescription' from 0.parquet",
+          "description": "Column 'ordercategorydescription'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_ordercategorydescription",
+            "@id": "held_out/ordercategorydescription/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -486,12 +486,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_statusdescription",
+          "@id": "held_out/statusdescription",
           "name": "statusdescription",
-          "description": "Column 'statusdescription' from 0.parquet",
+          "description": "Column 'statusdescription'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_statusdescription",
+            "@id": "held_out/statusdescription/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -504,18 +504,18 @@
     },
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_1",
-      "name": "0",
+      "@id": "train",
+      "name": "train",
       "description": "Records from 0.parquet (803992 rows)",
       "field": [
         {
           "@type": "cr:Field",
-          "@id": "file_1_subject_id",
+          "@id": "train/subject_id",
           "name": "subject_id",
-          "description": "Column 'subject_id' from 0.parquet",
+          "description": "Column 'subject_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_subject_id",
+            "@id": "train/subject_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -526,12 +526,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_time",
+          "@id": "train/time",
           "name": "time",
-          "description": "Column 'time' from 0.parquet",
+          "description": "Column 'time'",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "file_1_source_time",
+            "@id": "train/time/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -542,12 +542,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_code",
+          "@id": "train/code",
           "name": "code",
-          "description": "Column 'code' from 0.parquet",
+          "description": "Column 'code'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_code",
+            "@id": "train/code/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -558,12 +558,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_numeric_value",
+          "@id": "train/numeric_value",
           "name": "numeric_value",
-          "description": "Column 'numeric_value' from 0.parquet",
+          "description": "Column 'numeric_value'",
           "dataType": "cr:Float32",
           "source": {
-            "@id": "file_1_source_numeric_value",
+            "@id": "train/numeric_value/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -574,12 +574,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_insurance",
+          "@id": "train/insurance",
           "name": "insurance",
-          "description": "Column 'insurance' from 0.parquet",
+          "description": "Column 'insurance'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_insurance",
+            "@id": "train/insurance/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -590,12 +590,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_language",
+          "@id": "train/language",
           "name": "language",
-          "description": "Column 'language' from 0.parquet",
+          "description": "Column 'language'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_language",
+            "@id": "train/language/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -606,12 +606,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_marital_status",
+          "@id": "train/marital_status",
           "name": "marital_status",
-          "description": "Column 'marital_status' from 0.parquet",
+          "description": "Column 'marital_status'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_marital_status",
+            "@id": "train/marital_status/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -622,12 +622,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_race",
+          "@id": "train/race",
           "name": "race",
-          "description": "Column 'race' from 0.parquet",
+          "description": "Column 'race'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_race",
+            "@id": "train/race/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -638,12 +638,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_hadm_id",
+          "@id": "train/hadm_id",
           "name": "hadm_id",
-          "description": "Column 'hadm_id' from 0.parquet",
+          "description": "Column 'hadm_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_hadm_id",
+            "@id": "train/hadm_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -654,12 +654,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_drg_severity",
+          "@id": "train/drg_severity",
           "name": "drg_severity",
-          "description": "Column 'drg_severity' from 0.parquet",
+          "description": "Column 'drg_severity'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_drg_severity",
+            "@id": "train/drg_severity/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -670,12 +670,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_drg_mortality",
+          "@id": "train/drg_mortality",
           "name": "drg_mortality",
-          "description": "Column 'drg_mortality' from 0.parquet",
+          "description": "Column 'drg_mortality'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_drg_mortality",
+            "@id": "train/drg_mortality/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -686,12 +686,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_emar_id",
+          "@id": "train/emar_id",
           "name": "emar_id",
-          "description": "Column 'emar_id' from 0.parquet",
+          "description": "Column 'emar_id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_emar_id",
+            "@id": "train/emar_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -702,12 +702,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_emar_seq",
+          "@id": "train/emar_seq",
           "name": "emar_seq",
-          "description": "Column 'emar_seq' from 0.parquet",
+          "description": "Column 'emar_seq'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_emar_seq",
+            "@id": "train/emar_seq/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -718,12 +718,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_text_value",
+          "@id": "train/text_value",
           "name": "text_value",
-          "description": "Column 'text_value' from 0.parquet",
+          "description": "Column 'text_value'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_text_value",
+            "@id": "train/text_value/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -734,12 +734,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_priority",
+          "@id": "train/priority",
           "name": "priority",
-          "description": "Column 'priority' from 0.parquet",
+          "description": "Column 'priority'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_priority",
+            "@id": "train/priority/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -750,12 +750,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_route",
+          "@id": "train/route",
           "name": "route",
-          "description": "Column 'route' from 0.parquet",
+          "description": "Column 'route'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_route",
+            "@id": "train/route/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -766,12 +766,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_frequency",
+          "@id": "train/frequency",
           "name": "frequency",
-          "description": "Column 'frequency' from 0.parquet",
+          "description": "Column 'frequency'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_frequency",
+            "@id": "train/frequency/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -782,12 +782,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_doses_per_24_hrs",
+          "@id": "train/doses_per_24_hrs",
           "name": "doses_per_24_hrs",
-          "description": "Column 'doses_per_24_hrs' from 0.parquet",
+          "description": "Column 'doses_per_24_hrs'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_doses_per_24_hrs",
+            "@id": "train/doses_per_24_hrs/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -798,12 +798,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_poe_id",
+          "@id": "train/poe_id",
           "name": "poe_id",
-          "description": "Column 'poe_id' from 0.parquet",
+          "description": "Column 'poe_id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_poe_id",
+            "@id": "train/poe_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -814,12 +814,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_icustay_id",
+          "@id": "train/icustay_id",
           "name": "icustay_id",
-          "description": "Column 'icustay_id' from 0.parquet",
+          "description": "Column 'icustay_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_icustay_id",
+            "@id": "train/icustay_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -830,12 +830,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_order_id",
+          "@id": "train/order_id",
           "name": "order_id",
-          "description": "Column 'order_id' from 0.parquet",
+          "description": "Column 'order_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_order_id",
+            "@id": "train/order_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -846,12 +846,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_link_order_id",
+          "@id": "train/link_order_id",
           "name": "link_order_id",
-          "description": "Column 'link_order_id' from 0.parquet",
+          "description": "Column 'link_order_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_1_source_link_order_id",
+            "@id": "train/link_order_id/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -862,12 +862,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_unit",
+          "@id": "train/unit",
           "name": "unit",
-          "description": "Column 'unit' from 0.parquet",
+          "description": "Column 'unit'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_unit",
+            "@id": "train/unit/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -878,12 +878,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_ordercategorydescription",
+          "@id": "train/ordercategorydescription",
           "name": "ordercategorydescription",
-          "description": "Column 'ordercategorydescription' from 0.parquet",
+          "description": "Column 'ordercategorydescription'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_ordercategorydescription",
+            "@id": "train/ordercategorydescription/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -894,12 +894,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_1_statusdescription",
+          "@id": "train/statusdescription",
           "name": "statusdescription",
-          "description": "Column 'statusdescription' from 0.parquet",
+          "description": "Column 'statusdescription'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_1_source_statusdescription",
+            "@id": "train/statusdescription/source",
             "fileObject": {
               "@id": "file_1"
             },
@@ -912,18 +912,18 @@
     },
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_2",
-      "name": "0",
+      "@id": "tuning",
+      "name": "tuning",
       "description": "Records from 0.parquet (69620 rows)",
       "field": [
         {
           "@type": "cr:Field",
-          "@id": "file_2_subject_id",
+          "@id": "tuning/subject_id",
           "name": "subject_id",
-          "description": "Column 'subject_id' from 0.parquet",
+          "description": "Column 'subject_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_subject_id",
+            "@id": "tuning/subject_id/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -934,12 +934,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_time",
+          "@id": "tuning/time",
           "name": "time",
-          "description": "Column 'time' from 0.parquet",
+          "description": "Column 'time'",
           "dataType": "sc:DateTime",
           "source": {
-            "@id": "file_2_source_time",
+            "@id": "tuning/time/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -950,12 +950,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_code",
+          "@id": "tuning/code",
           "name": "code",
-          "description": "Column 'code' from 0.parquet",
+          "description": "Column 'code'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_code",
+            "@id": "tuning/code/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -966,12 +966,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_numeric_value",
+          "@id": "tuning/numeric_value",
           "name": "numeric_value",
-          "description": "Column 'numeric_value' from 0.parquet",
+          "description": "Column 'numeric_value'",
           "dataType": "cr:Float32",
           "source": {
-            "@id": "file_2_source_numeric_value",
+            "@id": "tuning/numeric_value/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -982,12 +982,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_insurance",
+          "@id": "tuning/insurance",
           "name": "insurance",
-          "description": "Column 'insurance' from 0.parquet",
+          "description": "Column 'insurance'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_insurance",
+            "@id": "tuning/insurance/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -998,12 +998,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_language",
+          "@id": "tuning/language",
           "name": "language",
-          "description": "Column 'language' from 0.parquet",
+          "description": "Column 'language'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_language",
+            "@id": "tuning/language/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1014,12 +1014,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_marital_status",
+          "@id": "tuning/marital_status",
           "name": "marital_status",
-          "description": "Column 'marital_status' from 0.parquet",
+          "description": "Column 'marital_status'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_marital_status",
+            "@id": "tuning/marital_status/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1030,12 +1030,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_race",
+          "@id": "tuning/race",
           "name": "race",
-          "description": "Column 'race' from 0.parquet",
+          "description": "Column 'race'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_race",
+            "@id": "tuning/race/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1046,12 +1046,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_hadm_id",
+          "@id": "tuning/hadm_id",
           "name": "hadm_id",
-          "description": "Column 'hadm_id' from 0.parquet",
+          "description": "Column 'hadm_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_hadm_id",
+            "@id": "tuning/hadm_id/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1062,12 +1062,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_drg_severity",
+          "@id": "tuning/drg_severity",
           "name": "drg_severity",
-          "description": "Column 'drg_severity' from 0.parquet",
+          "description": "Column 'drg_severity'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_drg_severity",
+            "@id": "tuning/drg_severity/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1078,12 +1078,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_drg_mortality",
+          "@id": "tuning/drg_mortality",
           "name": "drg_mortality",
-          "description": "Column 'drg_mortality' from 0.parquet",
+          "description": "Column 'drg_mortality'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_drg_mortality",
+            "@id": "tuning/drg_mortality/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1094,12 +1094,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_emar_id",
+          "@id": "tuning/emar_id",
           "name": "emar_id",
-          "description": "Column 'emar_id' from 0.parquet",
+          "description": "Column 'emar_id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_emar_id",
+            "@id": "tuning/emar_id/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1110,12 +1110,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_emar_seq",
+          "@id": "tuning/emar_seq",
           "name": "emar_seq",
-          "description": "Column 'emar_seq' from 0.parquet",
+          "description": "Column 'emar_seq'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_emar_seq",
+            "@id": "tuning/emar_seq/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1126,12 +1126,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_text_value",
+          "@id": "tuning/text_value",
           "name": "text_value",
-          "description": "Column 'text_value' from 0.parquet",
+          "description": "Column 'text_value'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_text_value",
+            "@id": "tuning/text_value/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1142,12 +1142,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_priority",
+          "@id": "tuning/priority",
           "name": "priority",
-          "description": "Column 'priority' from 0.parquet",
+          "description": "Column 'priority'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_priority",
+            "@id": "tuning/priority/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1158,12 +1158,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_route",
+          "@id": "tuning/route",
           "name": "route",
-          "description": "Column 'route' from 0.parquet",
+          "description": "Column 'route'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_route",
+            "@id": "tuning/route/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1174,12 +1174,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_frequency",
+          "@id": "tuning/frequency",
           "name": "frequency",
-          "description": "Column 'frequency' from 0.parquet",
+          "description": "Column 'frequency'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_frequency",
+            "@id": "tuning/frequency/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1190,12 +1190,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_doses_per_24_hrs",
+          "@id": "tuning/doses_per_24_hrs",
           "name": "doses_per_24_hrs",
-          "description": "Column 'doses_per_24_hrs' from 0.parquet",
+          "description": "Column 'doses_per_24_hrs'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_doses_per_24_hrs",
+            "@id": "tuning/doses_per_24_hrs/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1206,12 +1206,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_poe_id",
+          "@id": "tuning/poe_id",
           "name": "poe_id",
-          "description": "Column 'poe_id' from 0.parquet",
+          "description": "Column 'poe_id'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_poe_id",
+            "@id": "tuning/poe_id/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1222,12 +1222,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_icustay_id",
+          "@id": "tuning/icustay_id",
           "name": "icustay_id",
-          "description": "Column 'icustay_id' from 0.parquet",
+          "description": "Column 'icustay_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_icustay_id",
+            "@id": "tuning/icustay_id/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1238,12 +1238,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_order_id",
+          "@id": "tuning/order_id",
           "name": "order_id",
-          "description": "Column 'order_id' from 0.parquet",
+          "description": "Column 'order_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_order_id",
+            "@id": "tuning/order_id/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1254,12 +1254,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_link_order_id",
+          "@id": "tuning/link_order_id",
           "name": "link_order_id",
-          "description": "Column 'link_order_id' from 0.parquet",
+          "description": "Column 'link_order_id'",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_2_source_link_order_id",
+            "@id": "tuning/link_order_id/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1270,12 +1270,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_unit",
+          "@id": "tuning/unit",
           "name": "unit",
-          "description": "Column 'unit' from 0.parquet",
+          "description": "Column 'unit'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_unit",
+            "@id": "tuning/unit/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1286,12 +1286,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_ordercategorydescription",
+          "@id": "tuning/ordercategorydescription",
           "name": "ordercategorydescription",
-          "description": "Column 'ordercategorydescription' from 0.parquet",
+          "description": "Column 'ordercategorydescription'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_ordercategorydescription",
+            "@id": "tuning/ordercategorydescription/source",
             "fileObject": {
               "@id": "file_2"
             },
@@ -1302,12 +1302,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_2_statusdescription",
+          "@id": "tuning/statusdescription",
           "name": "statusdescription",
-          "description": "Column 'statusdescription' from 0.parquet",
+          "description": "Column 'statusdescription'",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_2_source_statusdescription",
+            "@id": "tuning/statusdescription/source",
             "fileObject": {
               "@id": "file_2"
             },

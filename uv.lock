@@ -576,7 +576,7 @@ wheels = [
 ]
 
 [[package]]
-name = "croissant-maker"
+name = "croissant-baker"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

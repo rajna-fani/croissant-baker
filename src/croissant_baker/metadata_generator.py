@@ -2,14 +2,20 @@
 
 import json
 import tempfile
+from collections import defaultdict
 from pathlib import Path
 from datetime import datetime
 from typing import Optional, List, Dict
 import mlcroissant as mlc
 
-from croissant_maker.files import discover_files
-from croissant_maker.handlers.registry import find_handler, register_all_handlers
-from croissant_maker.handlers.utils import get_clean_record_name, sanitize_id
+from croissant_baker.files import discover_files
+from croissant_baker.handlers.registry import find_handler, register_all_handlers
+from croissant_baker.handlers.utils import (
+    get_clean_record_name,
+    is_arrow_list,
+    map_arrow_type,
+    sanitize_id,
+)
 
 # Register all handlers
 register_all_handlers()
@@ -20,6 +26,62 @@ def serialize_datetime(obj):
     if isinstance(obj, datetime):
         return obj.isoformat()
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
+
+def _build_fields(
+    arrow_schema,
+    parent_id: str,
+    source_ref: dict,
+    col_path_prefix: str = "",
+) -> list:
+    """Recursively build mlc.Field objects from a PyArrow schema or struct type.
+
+    Handles three cases:
+    - Scalar column: maps to a Croissant type via map_arrow_type().
+    - List column: sets is_array=True; recurses on the element type.
+    - Struct column: recurses to produce sub_fields.
+    """
+    import pyarrow.types as patypes
+
+    fields = []
+    for arrow_field in arrow_schema:
+        col_name = arrow_field.name
+        arrow_type = arrow_field.type
+        safe_name = sanitize_id(col_name)
+        field_id = f"{parent_id}/{safe_name}"
+        col_path = f"{col_path_prefix}/{col_name}" if col_path_prefix else col_name
+
+        is_array = is_arrow_list(arrow_type)
+        inner_type = arrow_type.value_type if is_array else arrow_type
+
+        source = mlc.Source(
+            id=f"{field_id}/source",
+            extract=mlc.Extract(column=col_path),
+            **source_ref,
+        )
+
+        if patypes.is_struct(inner_type):
+            sub_fields = _build_fields(inner_type, field_id, source_ref, col_path)
+            field = mlc.Field(
+                id=field_id,
+                name=col_name,
+                description=f"Column '{col_name}'",
+                is_array=True if is_array else None,
+                source=source,
+                sub_fields=sub_fields,
+            )
+        else:
+            col_type = map_arrow_type(inner_type)
+            field = mlc.Field(
+                id=field_id,
+                name=col_name,
+                description=f"Column '{col_name}'",
+                data_types=[col_type],
+                is_array=True if is_array else None,
+                source=source,
+            )
+        fields.append(field)
+    return fields
 
 
 class MetadataGenerator:
@@ -233,12 +295,28 @@ class MetadataGenerator:
         # related_files, so enumerate(i) would cause ID conflicts. The counter
         # increments for every FileObject created, not just per iteration.
         file_counter = 0
-        recordset_counter = 0
 
         # Collect image file IDs so we can build one FileSet + summary
         # RecordSet after the per-file loop (images are grouped, not per-file).
         image_file_ids = []
         image_metas = []
+
+        # Pre-group parquet files by parent directory to detect partitioned tables.
+        # A directory with >=2 .parquet files is treated as one logical table:
+        # one FileSet + one RecordSet (schema from first partition). Individual
+        # FileObjects are still emitted for each partition to preserve checksums.
+        # Root-level parquet files (parent == ".") are never grouped.
+        _parquet_by_dir: dict[str, list] = defaultdict(list)
+        for _fm in file_metadata:
+            if _fm.get("encoding_format") == "application/vnd.apache.parquet":
+                _parent = str(Path(_fm["relative_path"]).parent)
+                if _parent != ".":
+                    _parquet_by_dir[_parent].append(_fm)
+        _partitioned_dirs: set[str] = {
+            d for d, metas in _parquet_by_dir.items() if len(metas) >= 2
+        }
+        # Accumulates (file_id, file_meta) per partitioned directory during the loop.
+        _parquet_groups: dict[str, list] = defaultdict(list)
 
         for file_meta in file_metadata:
             file_id = f"file_{file_counter}"
@@ -281,39 +359,68 @@ class MetadataGenerator:
 
             # --- RecordSet creation per file type ---
 
-            # Tabular data (CSV, Parquet): one RecordSet per file with column fields
+            # Tabular data (CSV, Parquet): one RecordSet per file with column fields.
+            # Partitioned parquet tables (>=2 files in the same directory) are deferred:
+            # their FileObjects are still created above, but RecordSet emission is
+            # handled after the loop via FileSets (one per directory).
             #
             # TODO: Add support for more advanced Croissant features.
             # - references: Detect and add `references` for foreign key relationships
             #   (e.g., subject_id, hadm_id). This is high-impact.
             # - enumerations: For categorical columns, generate sc:Enumeration RecordSets.
             if "column_types" in file_meta:
-                fields = []
-                for col_name, col_type in file_meta["column_types"].items():
-                    safe_name = sanitize_id(col_name)
-                    field = mlc.Field(
-                        id=f"{file_id}_{safe_name}",
-                        name=col_name,
-                        description=f"Column '{col_name}' from {file_meta['file_name']}",
-                        data_types=[col_type],
-                        source=mlc.Source(
-                            id=f"{file_id}_source_{safe_name}",
-                            file_object=file_id,
-                            extract=mlc.Extract(column=col_name),
-                        ),
-                    )
-                    fields.append(field)
-
-                num_rows = file_meta.get("num_rows")
-                row_desc = f" ({num_rows} rows)" if num_rows is not None else ""
-                record_set = mlc.RecordSet(
-                    id=f"recordset_{recordset_counter}",
-                    name=get_clean_record_name(file_meta["file_name"]),
-                    description=f"Records from {file_meta['file_name']}{row_desc}",
-                    fields=fields,
+                _rel_dir = str(Path(file_meta["relative_path"]).parent)
+                _is_partitioned = (
+                    file_meta.get("encoding_format") == "application/vnd.apache.parquet"
+                    and _rel_dir in _partitioned_dirs
                 )
-                record_sets.append(record_set)
-                recordset_counter += 1
+                if _is_partitioned:
+                    _parquet_groups[_rel_dir].append((file_id, file_meta))
+                else:
+                    # For parquet files in a subdirectory, prefer the directory name
+                    # over the partition file name (e.g. "drug_molecule" over "part-00000").
+                    if (
+                        file_meta.get("encoding_format")
+                        == "application/vnd.apache.parquet"
+                        and _rel_dir != "."
+                    ):
+                        rs_name = Path(_rel_dir).name
+                    else:
+                        rs_name = get_clean_record_name(file_meta["file_name"])
+                    rs_id = sanitize_id(rs_name)
+                    if "arrow_schema" in file_meta:
+                        fields = _build_fields(
+                            file_meta["arrow_schema"],
+                            rs_id,
+                            {"file_object": file_id},
+                        )
+                    else:
+                        fields = []
+                        for col_name, col_type in file_meta["column_types"].items():
+                            safe_name = sanitize_id(col_name)
+                            field_id = f"{rs_id}/{safe_name}"
+                            field = mlc.Field(
+                                id=field_id,
+                                name=col_name,
+                                description=f"Column '{col_name}' from {file_meta['file_name']}",
+                                data_types=[col_type],
+                                source=mlc.Source(
+                                    id=f"{field_id}/source",
+                                    file_object=file_id,
+                                    extract=mlc.Extract(column=col_name),
+                                ),
+                            )
+                            fields.append(field)
+
+                    num_rows = file_meta.get("num_rows")
+                    row_desc = f" ({num_rows} rows)" if num_rows is not None else ""
+                    record_set = mlc.RecordSet(
+                        id=rs_id,
+                        name=rs_name,
+                        description=f"Records from {file_meta['file_name']}{row_desc}",
+                        fields=fields,
+                    )
+                    record_sets.append(record_set)
 
             # Signal data (e.g., WFDB physiological waveforms)
             elif "signal_types" in file_meta:
@@ -337,13 +444,12 @@ class MetadataGenerator:
                 sampling_freq = file_meta.get("sampling_frequency", 0)
 
                 record_set = mlc.RecordSet(
-                    id=f"recordset_{recordset_counter}",
+                    id=sanitize_id(file_meta["record_name"]),
                     name=file_meta["record_name"],
                     description=f"WFDB record {file_meta['record_name']}: {file_meta.get('num_signals', 0)} signals at {sampling_freq} Hz, {num_samples} samples ({duration:.2f} seconds)",
                     fields=fields,
                 )
                 record_sets.append(record_set)
-                recordset_counter += 1
 
             # Image data: defer to summary RecordSet after the loop
             elif "image_properties" in file_meta:
@@ -355,7 +461,7 @@ class MetadataGenerator:
         # The FileSet groups them by glob pattern so the RecordSet source can
         # reference all images at once, following the Croissant spec PASS example.
         if image_file_ids:
-            from croissant_maker.handlers.image_handler import collect_image_summary
+            from croissant_baker.handlers.image_handler import collect_image_summary
 
             summary = collect_image_summary(image_metas)
             w_lo, w_hi = summary["width_range"]
@@ -413,13 +519,71 @@ class MetadataGenerator:
             ]
 
             image_record_set = mlc.RecordSet(
-                id=f"recordset_{recordset_counter}",
+                id="images",
                 name="images",
                 description=f"{summary['num_images']} images ({dims}{bands_note}): {formats_str}",
                 fields=image_fields,
             )
             record_sets.append(image_record_set)
-            recordset_counter += 1
+
+        # Emit one FileSet + one RecordSet per partitioned parquet directory.
+        # Schema is taken from the first partition; all partitions must share the
+        # same schema (standard for Spark/OT-style partitioned datasets).
+        # Individual FileObjects (with checksums) were already appended in the loop.
+        for dir_path, id_meta_pairs in _parquet_groups.items():
+            _, first_meta = id_meta_pairs[0]
+            table_name = Path(dir_path).name
+            dir_id = sanitize_id(dir_path)
+            fileset_id = f"{dir_id}-fileset"
+
+            # Derive the glob suffix from actual filenames so double-extension
+            # files like "part-00000.snappy.parquet" are correctly matched.
+            _sample_name = id_meta_pairs[0][1]["file_name"]
+            _suffix = "".join(Path(_sample_name).suffixes)
+            file_objects.append(
+                mlc.FileSet(
+                    id=fileset_id,
+                    name=f"{table_name} partition files",
+                    description=f"{len(id_meta_pairs)} Parquet partition files for table '{table_name}'",
+                    encoding_formats=["application/vnd.apache.parquet"],
+                    includes=[f"{dir_path}/*{_suffix}"],
+                )
+            )
+
+            if "arrow_schema" in first_meta:
+                fields = _build_fields(
+                    first_meta["arrow_schema"],
+                    sanitize_id(table_name),
+                    {"file_set": fileset_id},
+                )
+            else:
+                fields = []
+                for col_name, col_type in first_meta["column_types"].items():
+                    safe_name = sanitize_id(col_name)
+                    field_id = f"{dir_id}/{safe_name}"
+                    fields.append(
+                        mlc.Field(
+                            id=field_id,
+                            name=col_name,
+                            description=f"Column '{col_name}' from table '{table_name}'",
+                            data_types=[col_type],
+                            source=mlc.Source(
+                                id=f"{field_id}/source",
+                                file_set=fileset_id,
+                                extract=mlc.Extract(column=col_name),
+                            ),
+                        )
+                    )
+
+            num_rows = sum(m.get("num_rows", 0) for _, m in id_meta_pairs)
+            record_sets.append(
+                mlc.RecordSet(
+                    id=sanitize_id(table_name),
+                    name=table_name,
+                    description=f"Partitioned table '{table_name}' ({len(id_meta_pairs)} Parquet files, {num_rows} total rows)",
+                    fields=fields,
+                )
+            )
 
         metadata.distribution = file_objects
         metadata.record_sets = record_sets

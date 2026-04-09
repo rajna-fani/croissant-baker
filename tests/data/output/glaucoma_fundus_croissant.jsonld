@@ -188,18 +188,18 @@
   "recordSet": [
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_0",
+      "@id": "Labels",
       "name": "Labels",
       "description": "Records from Labels.csv",
       "field": [
         {
           "@type": "cr:Field",
-          "@id": "file_0_Image_Name",
+          "@id": "Labels/Image_Name",
           "name": "Image Name",
           "description": "Column 'Image Name' from Labels.csv",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_Image_Name",
+            "@id": "Labels/Image_Name/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -210,12 +210,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_Patient",
+          "@id": "Labels/Patient",
           "name": "Patient",
           "description": "Column 'Patient' from Labels.csv",
           "dataType": "cr:Int64",
           "source": {
-            "@id": "file_0_source_Patient",
+            "@id": "Labels/Patient/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -226,12 +226,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_Label",
+          "@id": "Labels/Label",
           "name": "Label",
           "description": "Column 'Label' from Labels.csv",
           "dataType": "sc:Text",
           "source": {
-            "@id": "file_0_source_Label",
+            "@id": "Labels/Label/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -242,12 +242,12 @@
         },
         {
           "@type": "cr:Field",
-          "@id": "file_0_Quality_Score",
+          "@id": "Labels/Quality_Score",
           "name": "Quality Score",
           "description": "Column 'Quality Score' from Labels.csv",
           "dataType": "cr:Float64",
           "source": {
-            "@id": "file_0_source_Quality_Score",
+            "@id": "Labels/Quality_Score/source",
             "fileObject": {
               "@id": "file_0"
             },
@@ -260,7 +260,7 @@
     },
     {
       "@type": "cr:RecordSet",
-      "@id": "recordset_1",
+      "@id": "images",
       "name": "images",
       "description": "12 images (1875-1935x1875-1935): JPEG (12)",
       "field": [

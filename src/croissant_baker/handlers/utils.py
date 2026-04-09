@@ -93,11 +93,21 @@ def map_arrow_type(arrow_type: pa.DataType) -> str:
         if patypes.is_null(arrow_type):
             return "sc:Text"
 
+        # List/large-list: caller sets is_array=True; return the inner element type.
+        if patypes.is_list(arrow_type) or patypes.is_large_list(arrow_type):
+            return map_arrow_type(arrow_type.value_type)
+
     except Exception:
         pass
 
-    # Fallback for any unrecognized or exotic types
+    # Fallback for any unrecognized or exotic types (including struct — callers
+    # that want nested sub_fields should detect is_struct before calling this).
     return "sc:Text"
+
+
+def is_arrow_list(arrow_type: pa.DataType) -> bool:
+    """Return True if the Arrow type is a list or large-list."""
+    return patypes.is_list(arrow_type) or patypes.is_large_list(arrow_type)
 
 
 def infer_column_types_from_arrow_schema(schema: pa.Schema) -> Dict[str, str]:

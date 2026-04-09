@@ -4,8 +4,8 @@ from pathlib import Path
 
 from pyarrow.parquet import ParquetFile
 
-from croissant_maker.handlers.base_handler import FileTypeHandler
-from croissant_maker.handlers.utils import (
+from croissant_baker.handlers.base_handler import FileTypeHandler
+from croissant_baker.handlers.utils import (
     compute_file_hash,
     infer_column_types_from_arrow_schema,
 )
@@ -30,13 +30,13 @@ class ParquetHandler(FileTypeHandler):
             raise FileNotFoundError(f"Parquet file not found: {file_path}")
 
         try:
-            pq = ParquetFile(str(file_path))
-            schema = pq.schema_arrow
-            num_rows = pq.metadata.num_rows if pq.metadata is not None else 0
+            with ParquetFile(str(file_path)) as pq:
+                schema = pq.schema_arrow
+                num_rows = pq.metadata.num_rows if pq.metadata is not None else 0
 
-            # Use the shared Arrow type mapper (same as CSV handler)
-            column_types = infer_column_types_from_arrow_schema(schema)
-            columns = [field.name for field in schema]
+                # Use the shared Arrow type mapper (same as CSV handler)
+                column_types = infer_column_types_from_arrow_schema(schema)
+                columns = [field.name for field in schema]
 
             file_size = file_path.stat().st_size
             sha256_hash = compute_file_hash(file_path)
@@ -46,8 +46,9 @@ class ParquetHandler(FileTypeHandler):
                 "file_name": file_path.name,
                 "file_size": file_size,
                 "sha256": sha256_hash,
-                "encoding_format": "application/x-parquet",
+                "encoding_format": "application/vnd.apache.parquet",
                 "column_types": column_types,
+                "arrow_schema": schema,
                 "num_rows": num_rows,
                 "num_columns": len(columns),
                 "columns": columns,

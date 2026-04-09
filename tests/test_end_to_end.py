@@ -1,4 +1,4 @@
-"""End-to-end tests for Croissant Maker using real datasets."""
+"""End-to-end tests for Croissant Baker using real datasets."""
 
 import json
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from croissant_maker.__main__ import app
+from croissant_baker.__main__ import app
 
 runner = CliRunner()
 
@@ -519,4 +519,355 @@ def test_satellite_generation(satellite_path: Path, output_dir: Path) -> None:
     assert (
         "band" in image_rs[0]["description"].lower()
         or "10 images" in image_rs[0]["description"]
+    )
+
+
+# ---------------------------------------------------------------------------
+# Synthetic Open Targets-like dataset (partitioned Parquet tables)
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def open_targets_like_path(tmp_path: Path) -> Path:
+    """Create a synthetic Open Targets-like dataset with diverse Parquet schemas.
+
+    Structure mirrors the OT Platform download layout:
+      diseases/        — 2 partitions: string, int32, bool
+      targets/         — 2 partitions: string, float64, bool
+      association_by_datatype_direct/  — 2 partitions: string×3, float64, int32
+      drug_molecule/   — 1 partition only (standalone, not grouped)
+                         with float32, int16, bool to exercise less-common types
+    """
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    root = tmp_path / "open_targets_toy"
+
+    def _write_parts(
+        table_dir: Path, schema: pa.Schema, rows_per_part: int, n_parts: int
+    ) -> None:
+        table_dir.mkdir(parents=True)
+        for i in range(n_parts):
+            offset = i * rows_per_part
+            arrays = []
+            for field in schema:
+                if pa.types.is_string(field.type):
+                    arrays.append(
+                        pa.array(
+                            [
+                                f"{field.name}_{offset + j}"
+                                for j in range(rows_per_part)
+                            ],
+                            type=field.type,
+                        )
+                    )
+                elif pa.types.is_boolean(field.type):
+                    arrays.append(
+                        pa.array(
+                            [j % 2 == 0 for j in range(rows_per_part)], type=field.type
+                        )
+                    )
+                elif pa.types.is_floating(field.type):
+                    arrays.append(
+                        pa.array(
+                            [float(offset + j) * 0.1 for j in range(rows_per_part)],
+                            type=field.type,
+                        )
+                    )
+                else:  # integers
+                    arrays.append(
+                        pa.array(
+                            [offset + j for j in range(rows_per_part)], type=field.type
+                        )
+                    )
+            pq.write_table(
+                pa.table(arrays, schema=schema), table_dir / f"part-{i:05d}.parquet"
+            )
+
+    _write_parts(
+        root / "diseases",
+        pa.schema(
+            [
+                ("id", pa.string()),
+                ("name", pa.string()),
+                ("numChildren", pa.int32()),
+                ("isTherapeuticArea", pa.bool_()),
+            ]
+        ),
+        rows_per_part=5,
+        n_parts=2,
+    )
+    _write_parts(
+        root / "targets",
+        pa.schema(
+            [
+                ("id", pa.string()),
+                ("approvedSymbol", pa.string()),
+                ("tractabilityScore", pa.float64()),
+                ("isDriver", pa.bool_()),
+            ]
+        ),
+        rows_per_part=5,
+        n_parts=2,
+    )
+    _write_parts(
+        root / "association_by_datatype_direct",
+        pa.schema(
+            [
+                ("targetId", pa.string()),
+                ("diseaseId", pa.string()),
+                ("datatypeId", pa.string()),
+                ("score", pa.float64()),
+                ("evidenceCount", pa.int32()),
+            ]
+        ),
+        rows_per_part=5,
+        n_parts=2,
+    )
+    # Single-partition table — must NOT be grouped into a FileSet
+    _write_parts(
+        root / "drug_molecule",
+        pa.schema(
+            [
+                ("id", pa.string()),
+                ("name", pa.string()),
+                ("maxClinicalTrialPhase", pa.float32()),
+                ("yearOfFirstApproval", pa.int16()),
+                ("hasBeenWithdrawn", pa.bool_()),
+            ]
+        ),
+        rows_per_part=5,
+        n_parts=1,
+    )
+
+    # Partitioned table with complex types: list<string>, struct, list<struct>
+    credible_set_schema = pa.schema(
+        [
+            ("studyId", pa.string()),
+            ("chromosome", pa.string()),
+            ("position", pa.int32()),
+            ("qualityControls", pa.list_(pa.string())),  # list<string>
+            (
+                "locus",
+                pa.list_(
+                    pa.struct(
+                        [  # list<struct>
+                            pa.field("variantId", pa.string()),
+                            pa.field("posteriorProbability", pa.float64()),
+                        ]
+                    )
+                ),
+            ),
+            (
+                "stats",
+                pa.struct(
+                    [  # struct (not in list)
+                        pa.field("beta", pa.float64()),
+                        pa.field("pValueExponent", pa.int32()),
+                    ]
+                ),
+            ),
+        ]
+    )
+
+    credible_set_dir = root / "credible_set"
+    credible_set_dir.mkdir(parents=True)
+    n_rows = 3
+    for i in range(2):
+        offset = i * n_rows
+        table = pa.table(
+            {
+                "studyId": pa.array([f"STUDY_{offset + j}" for j in range(n_rows)]),
+                "chromosome": pa.array([f"chr{j + 1}" for j in range(n_rows)]),
+                "position": pa.array(
+                    [offset + j for j in range(n_rows)], type=pa.int32()
+                ),
+                "qualityControls": pa.array(
+                    [[f"QC_{j}"] for j in range(n_rows)], type=pa.list_(pa.string())
+                ),
+                "locus": pa.array(
+                    [
+                        [
+                            {
+                                "variantId": f"var_{j}",
+                                "posteriorProbability": 0.5 + j * 0.1,
+                            }
+                        ]
+                        for j in range(n_rows)
+                    ],
+                    type=pa.list_(
+                        pa.struct(
+                            [
+                                pa.field("variantId", pa.string()),
+                                pa.field("posteriorProbability", pa.float64()),
+                            ]
+                        )
+                    ),
+                ),
+                "stats": pa.array(
+                    [
+                        {"beta": float(j) * 0.01, "pValueExponent": -(j + 1)}
+                        for j in range(n_rows)
+                    ],
+                    type=pa.struct(
+                        [
+                            pa.field("beta", pa.float64()),
+                            pa.field("pValueExponent", pa.int32()),
+                        ]
+                    ),
+                ),
+            },
+            schema=credible_set_schema,
+        )
+        pq.write_table(table, credible_set_dir / f"part-{i:05d}.parquet")
+
+    return root
+
+
+def test_open_targets_like_generation(
+    open_targets_like_path: Path, output_dir: Path
+) -> None:
+    """Test end-to-end generation with a synthetic Open Targets-like partitioned Parquet dataset.
+
+    Verifies that:
+    - Partitioned tables (>=2 files in a directory) produce one FileSet + one RecordSet
+    - Standalone tables (1 file in a directory) still produce per-file FileObject + RecordSet
+    - All expected Croissant types are present across the diverse schemas
+    """
+    output_file = output_dir / "open_targets_like_croissant.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "-i",
+            str(open_targets_like_path),
+            "-o",
+            str(output_file),
+            "--name",
+            "Open Targets Platform (toy)",
+            "--description",
+            "Synthetic subset of Open Targets Platform data for testing partitioned Parquet support",
+            "--url",
+            "https://platform.opentargets.org",
+            "--license",
+            "CC0-1.0",
+            "--dataset-version",
+            "25.03",
+            "--date-published",
+            "2025-03-01",
+            "--creator",
+            "Open Targets,data@opentargets.org,https://www.opentargets.org",
+            # Skip mlcroissant round-trip validation: local FileSets without
+            # containedIn are valid per spec but may not resolve in all validators.
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 0, f"Command failed:\n{result.stdout}"
+    assert output_file.exists()
+
+    with open(output_file) as f:
+        metadata = json.load(f)
+
+    assert metadata["name"] == "Open Targets Platform (toy)"
+    assert metadata["version"] == "25.03"
+    assert metadata["license"] == "https://creativecommons.org/publicdomain/zero/1.0/"
+
+    dist = metadata["distribution"]
+    file_objects = [d for d in dist if d["@type"] == "cr:FileObject"]
+    file_sets = [d for d in dist if d["@type"] == "cr:FileSet"]
+
+    # 4 partitioned tables × 2 part files = 8 FileObjects
+    # + 1 standalone table × 1 part file = 1 FileObject  → 9 total
+    # + 4 FileSets (one per partitioned table directory)  → 13 distribution entries
+    assert len(file_objects) == 9, f"Expected 9 FileObjects, got {len(file_objects)}"
+    assert len(file_sets) == 4, f"Expected 4 FileSets, got {len(file_sets)}"
+    assert len(dist) == 13
+
+    record_sets = metadata["recordSet"]
+    # 4 partitioned RecordSets + 1 standalone RecordSet
+    assert len(record_sets) == 5, f"Expected 5 RecordSets, got {len(record_sets)}"
+
+    rs_names = {rs["name"] for rs in record_sets}
+    assert rs_names == {
+        "diseases",
+        "targets",
+        "association_by_datatype_direct",
+        "drug_molecule",
+        "credible_set",
+    }
+
+    # FileSets should carry directory-scoped glob patterns
+    includes_patterns = {fs["includes"] for fs in file_sets}
+    assert "diseases/*.parquet" in includes_patterns
+    assert "targets/*.parquet" in includes_patterns
+    assert "association_by_datatype_direct/*.parquet" in includes_patterns
+    assert "credible_set/*.parquet" in includes_patterns
+
+    # Collect all Croissant types emitted across all fields.
+    # dataType serializes as a plain string in the JSON output.
+    all_types: set[str] = set()
+    for rs in record_sets:
+        for field in rs.get("field", []):
+            dtype_val = field.get("dataType")
+            if isinstance(dtype_val, list):
+                all_types.update(dtype_val)
+            elif isinstance(dtype_val, str):
+                all_types.add(dtype_val)
+
+    assert "sc:Text" in all_types
+    assert "sc:Boolean" in all_types
+    assert "cr:Float64" in all_types
+    assert "cr:Float32" in all_types
+    assert "cr:Int32" in all_types
+    assert "cr:Int16" in all_types
+
+    # Partitioned table fields must reference their FileSet
+    partitioned_rs = next(rs for rs in record_sets if rs["name"] == "diseases")
+    assert all("fileSet" in f["source"] for f in partitioned_rs["field"])
+
+    # Standalone table fields must reference their FileObject
+    standalone_rs = next(rs for rs in record_sets if rs["name"] == "drug_molecule")
+    assert all("fileObject" in f["source"] for f in standalone_rs["field"])
+
+    # --- Nested type assertions (credible_set table) ---
+    cs_rs = next(rs for rs in record_sets if rs["name"] == "credible_set")
+    cs_fields = {f["name"]: f for f in cs_rs["field"]}
+
+    # list<string> → cr:isArray + sc:Text
+    qc = cs_fields["qualityControls"]
+    assert qc.get("cr:isArray") is True, "qualityControls should be marked as array"
+    assert qc.get("dataType") == "sc:Text", (
+        f"Expected sc:Text inner type, got {qc.get('dataType')}"
+    )
+
+    # struct<beta, pValueExponent> → subField list, no dataType at top level
+    stats = cs_fields["stats"]
+    assert "subField" in stats, "stats should have subField"
+    sub_names = {
+        sf["name"]
+        for sf in (
+            stats["subField"]
+            if isinstance(stats["subField"], list)
+            else [stats["subField"]]
+        )
+    }
+    assert sub_names == {"beta", "pValueExponent"}, (
+        f"Unexpected sub_fields: {sub_names}"
+    )
+
+    # list<struct<variantId, posteriorProbability>> → cr:isArray + subField
+    locus = cs_fields["locus"]
+    assert locus.get("cr:isArray") is True, "locus should be marked as array"
+    assert "subField" in locus, "locus should have subField (inner struct)"
+    locus_sub_names = {
+        sf["name"]
+        for sf in (
+            locus["subField"]
+            if isinstance(locus["subField"], list)
+            else [locus["subField"]]
+        )
+    }
+    assert locus_sub_names == {"variantId", "posteriorProbability"}, (
+        f"Unexpected locus sub_fields: {locus_sub_names}"
     )
