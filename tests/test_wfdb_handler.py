@@ -61,3 +61,26 @@ def test_missing_dat_file_raises_error(tmp_path):
 
     with pytest.raises(ValueError, match="WFDB data file missing"):
         handler.extract_metadata(hea_file)
+
+
+# ---------------------------------------------------------------------------
+# build_croissant
+# ---------------------------------------------------------------------------
+
+
+def test_wfdb_build_croissant() -> None:
+    handler = WFDBHandler()
+    meta = {
+        "record_name": "100",
+        "signal_types": {"MLII": "sc:Float", "V5": "sc:Float"},
+        "num_signals": 2,
+        "sampling_frequency": 360,
+        "num_samples": 650000,
+        "duration_seconds": 1805.56,
+    }
+    filesets, record_sets = handler.build_croissant([meta], ["file_0"])
+
+    assert filesets == []
+    assert len(record_sets) == 1
+    assert record_sets[0].name == "100"
+    assert {f.name for f in record_sets[0].fields} == {"MLII", "V5"}

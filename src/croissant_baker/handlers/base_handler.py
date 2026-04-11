@@ -59,7 +59,11 @@ class FileTypeHandler(ABC):
         pass
 
     @abstractmethod
-    def build_croissant(self, file_metas: list, file_ids: list) -> tuple:
+    def build_croissant(
+        self,
+        file_metas: list[dict],
+        file_ids: list[str],
+    ) -> tuple[list, list]:  # (list[FileSet], list[RecordSet])
         """Build Croissant FileSets and RecordSets for all files this handler processed.
 
         Called once per handler after the FileObject loop. Receives all metadata

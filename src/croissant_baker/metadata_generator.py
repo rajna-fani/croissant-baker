@@ -45,6 +45,28 @@ class MetadataGenerator:
         includes: Optional[List[str]] = None,
         excludes: Optional[List[str]] = None,
     ):
+        """
+        Initialize the metadata generator for a dataset.
+
+        Args:
+            dataset_path: Path to the directory containing dataset files.
+            name: Dataset name (defaults to directory name).
+            description: Dataset description.
+            url: Dataset URL.
+            license: License URL or SPDX identifier (e.g. "CC-BY-4.0").
+            citation: Citation text, preferably BibTeX format.
+            version: Dataset version string.
+            date_published: Publication date in ISO format ("2023-12-15" or
+                "2023-12-15T10:30:00").
+            creators: List of dicts with "name", "email", and/or "url" keys.
+            count_csv_rows: If True, scan each CSV fully for exact row counts.
+                Defaults to False for performance.
+            includes: Glob patterns to include. Applied before excludes.
+            excludes: Glob patterns to exclude. Applied after includes.
+
+        Raises:
+            ValueError: If dataset_path is not a directory.
+        """
         self.dataset_path = Path(dataset_path).resolve()
         if not self.dataset_path.is_dir():
             raise ValueError(f"Dataset path {dataset_path} is not a directory")
@@ -74,9 +96,9 @@ class MetadataGenerator:
             exclude_patterns=self.excludes,
         )
 
-        # Extract metadata, tracking which handler produced each entry.
-        file_metadata = []
-        meta_handler_map = {}
+        # Extract metadata as (handler, meta) pairs so handler identity is
+        # stored by reference, not by id() — no fragility if dicts are copied.
+        file_metadata: list[tuple] = []
         for file_path in files:
             full_path = self.dataset_path / file_path
             handler = find_handler(full_path)
@@ -84,8 +106,7 @@ class MetadataGenerator:
                 try:
                     meta = handler.extract_metadata(full_path, **self._handler_kwargs)
                     meta["relative_path"] = str(file_path)
-                    file_metadata.append(meta)
-                    meta_handler_map[id(meta)] = handler
+                    file_metadata.append((handler, meta))
                 except Exception as e:
                     print(f"Warning: Failed to process {file_path}: {e}")
 
@@ -113,7 +134,7 @@ class MetadataGenerator:
         file_counter = 0
         _batch_handlers: dict = defaultdict(list)
 
-        for file_meta in file_metadata:
+        for handler, file_meta in file_metadata:
             file_id = f"file_{file_counter}"
             file_counter += 1
 
@@ -147,9 +168,7 @@ class MetadataGenerator:
                         )
                     )
 
-            _h = meta_handler_map.get(id(file_meta))
-            if _h is not None:
-                _batch_handlers[_h].append((file_id, file_meta))
+            _batch_handlers[handler].append((file_id, file_meta))
 
         # Each handler builds its FileSets + RecordSets and returns them.
         # Handlers never return FileObjects — those are owned by the generator.
@@ -159,12 +178,15 @@ class MetadataGenerator:
         #   - enumerations: for low-cardinality categorical columns, emit
         #     sc:Enumeration RecordSets.
         for _h, pairs in _batch_handlers.items():
-            filesets, rs = _h.build_croissant(
-                [m for _, m in pairs],
-                [fid for fid, _ in pairs],
-            )
-            distributions.extend(filesets)
-            record_sets.extend(rs)
+            try:
+                filesets, rs = _h.build_croissant(
+                    [m for _, m in pairs],
+                    [fid for fid, _ in pairs],
+                )
+                distributions.extend(filesets)
+                record_sets.extend(rs)
+            except Exception as e:
+                print(f"Warning: {type(_h).__name__}.build_croissant failed: {e}")
 
         metadata.distribution = distributions
         metadata.record_sets = record_sets
@@ -178,7 +200,7 @@ class MetadataGenerator:
     def _build_description(self, file_metadata: list) -> str:
         if self.description:
             return self.description
-        file_types = {m.get("encoding_format", "unknown") for m in file_metadata}
+        file_types = {m.get("encoding_format", "unknown") for _, m in file_metadata}
         return (
             f"Dataset containing {len(file_metadata)} files "
             f"({', '.join(sorted(file_types))}) with automatically inferred types and structure"
@@ -229,7 +251,15 @@ class MetadataGenerator:
             )
 
     def save_metadata(self, output_path: str, validate: bool = True) -> None:
-        """Generate and save Croissant metadata to a file."""
+        """Generate and save Croissant metadata to a file.
+
+        Args:
+            output_path: Path where the JSON-LD metadata file will be written.
+            validate: If True (default), validates with mlcroissant before saving.
+
+        Raises:
+            ValueError: If validation fails or the file cannot be saved.
+        """
         metadata_dict = self.generate_metadata()
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)

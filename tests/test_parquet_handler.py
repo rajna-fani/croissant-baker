@@ -107,3 +107,46 @@ def test_extract_metadata_not_found(handler: ParquetHandler) -> None:
     """Test that missing file raises FileNotFoundError."""
     with pytest.raises(FileNotFoundError):
         handler.extract_metadata(Path("/nonexistent/data.parquet"))
+
+
+# ---------------------------------------------------------------------------
+# build_croissant
+# ---------------------------------------------------------------------------
+
+
+def _pq_meta(name, rel_path, cols=None):
+    return {
+        "file_name": name,
+        "relative_path": rel_path,
+        "column_types": cols or {"id": "sc:Text", "value": "cr:Float64"},
+        "num_rows": 10,
+        "encoding_format": "application/vnd.apache.parquet",
+    }
+
+
+def test_parquet_build_croissant_standalone(handler: ParquetHandler) -> None:
+    filesets, record_sets = handler.build_croissant(
+        [_pq_meta("data.parquet", "data.parquet")], ["file_0"]
+    )
+    assert filesets == []
+    assert record_sets[0].name == "data"
+
+
+def test_parquet_build_croissant_single_file_in_subdir(handler: ParquetHandler) -> None:
+    filesets, record_sets = handler.build_croissant(
+        [_pq_meta("part-00000.parquet", "events/part-00000.parquet")], ["file_0"]
+    )
+    assert filesets == []
+    assert record_sets[0].name == "events"
+
+
+def test_parquet_build_croissant_partitioned(handler: ParquetHandler) -> None:
+    metas = [
+        _pq_meta("part-00000.parquet", "events/part-00000.parquet"),
+        _pq_meta("part-00001.parquet", "events/part-00001.parquet"),
+    ]
+    filesets, record_sets = handler.build_croissant(metas, ["file_0", "file_1"])
+    assert len(filesets) == 1
+    assert len(record_sets) == 1
+    assert record_sets[0].name == "events"
+    assert "events/*.parquet" in filesets[0].includes

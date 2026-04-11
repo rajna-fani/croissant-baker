@@ -71,3 +71,47 @@ def test_csv_handler_data_types(tmp_path: Path) -> None:
     assert column_types["bool_col"] == "sc:Boolean"
     assert column_types["float_col"] == "cr:Float64"
     assert column_types["text_col"] == "sc:Text"
+
+
+# ---------------------------------------------------------------------------
+# build_croissant
+# ---------------------------------------------------------------------------
+
+
+def test_csv_build_croissant_single_file() -> None:
+    handler = CSVHandler()
+    meta = {
+        "file_name": "patients.csv",
+        "relative_path": "patients.csv",
+        "column_types": {"id": "sc:Text", "age": "cr:Int64", "dob": "sc:Date"},
+        "num_rows": 100,
+    }
+    filesets, record_sets = handler.build_croissant([meta], ["file_0"])
+
+    assert filesets == []
+    assert len(record_sets) == 1
+    assert record_sets[0].name == "patients"
+    assert len(record_sets[0].fields) == 3
+
+
+def test_csv_build_croissant_multiple_files() -> None:
+    handler = CSVHandler()
+    metas = [
+        {
+            "file_name": "a.csv",
+            "relative_path": "a.csv",
+            "column_types": {"x": "sc:Text"},
+            "num_rows": None,
+        },
+        {
+            "file_name": "b.csv",
+            "relative_path": "b.csv",
+            "column_types": {"y": "cr:Float64"},
+            "num_rows": 50,
+        },
+    ]
+    filesets, record_sets = handler.build_croissant(metas, ["file_0", "file_1"])
+
+    assert filesets == []
+    assert len(record_sets) == 2
+    assert {rs.name for rs in record_sets} == {"a", "b"}

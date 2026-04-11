@@ -222,3 +222,41 @@ def test_image_handler_registered() -> None:
     assert find_handler(Path("photo.jpg")) is not None
     assert find_handler(Path("scan.png")) is not None
     assert find_handler(Path("satellite.tiff")) is not None
+
+
+# ---------------------------------------------------------------------------
+# build_croissant
+# ---------------------------------------------------------------------------
+
+
+def _img_meta(name, fmt="JPEG", mime="image/jpeg", w=100, h=100, bands=3):
+    return {
+        "file_name": name,
+        "encoding_format": mime,
+        "image_properties": {
+            "width": w,
+            "height": h,
+            "num_bands": bands,
+            "image_format": fmt,
+        },
+    }
+
+
+def test_image_build_croissant(handler: ImageHandler) -> None:
+    metas = [_img_meta("a.jpg"), _img_meta("b.jpg")]
+    filesets, record_sets = handler.build_croissant(metas, ["file_0", "file_1"])
+
+    assert len(filesets) == 1
+    assert len(record_sets) == 1
+    assert record_sets[0].name == "images"
+    assert "**/*.jpg" in filesets[0].includes
+
+
+def test_image_build_croissant_multiband(handler: ImageHandler) -> None:
+    metas = [
+        _img_meta(f"tile_{i}.tif", fmt="TIFF", mime="image/tiff", bands=12)
+        for i in range(3)
+    ]
+    _, record_sets = handler.build_croissant(metas, [f"file_{i}" for i in range(3)])
+
+    assert "band" in record_sets[0].description
