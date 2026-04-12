@@ -191,6 +191,7 @@ def test_open_targets_evaluation() -> None:
     comparison_file = OUTPUT_DIR / "open_targets_comparison.json"
     with open(comparison_file, "w") as f:
         json.dump(summary, f, indent=2)
+        f.write("\n")
 
     assert summary["recordsets_matched"] == summary["recordsets_gt"], (
         f"RecordSet mismatch: matched {summary['recordsets_matched']} "

@@ -873,7 +873,6 @@ def test_open_targets_like_generation(
     )
 
 
-
 # ---------------------------------------------------------------------------
 # Real Open Targets subset (committed Parquet, no download required)
 # ---------------------------------------------------------------------------
@@ -888,9 +887,7 @@ def open_targets_subset_path() -> Path:
     return dataset_path
 
 
-def test_open_targets_subset(
-    open_targets_subset_path: Path, output_dir: Path
-) -> None:
+def test_open_targets_subset(open_targets_subset_path: Path, output_dir: Path) -> None:
     """Test generation and mlcroissant validation on real Open Targets Parquet data.
 
     Uses a small committed subset (drug_warning, so, disease_hpo) to verify that
