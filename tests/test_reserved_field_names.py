@@ -99,8 +99,6 @@ def test_reserved_name_struct_fields_validate(
             "Test Author",
             "--url",
             "https://example.com/reserved-name-test",
-            # Fixed metadata so committed tests/data/output/reserved_names_croissant.jsonld
-            # does not change on every run (defaults use datetime.now() and current year).
             "--date-published",
             "2025-01-01",
             "--citation",
