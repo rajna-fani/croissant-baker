@@ -49,14 +49,14 @@
   "name": "Reserved-name regression test",
   "description": "Dataset containing 1 files (application/vnd.apache.parquet) with automatically inferred types and structure",
   "conformsTo": "http://mlcommons.org/croissant/1.0",
-  "citeAs": "Dataset Creator. (2026). Reserved-name regression test Dataset. Generated with automated type inference.",
+  "citeAs": "Test Author. (2025). Reserved-name regression test.",
   "creator": {
     "@type": "sc:Person",
     "name": "Test Author"
   },
-  "datePublished": "2026-04-11T11:12:48.290147",
+  "datePublished": "2025-01-01T00:00:00",
   "license": "https://creativecommons.org/licenses/by/4.0/",
-  "url": "file:///private/var/folders/t2/64zmxnp511vdl4pwg5frfck40000gn/T/pytest-of-rafraf/pytest-14/test_reserved_name_struct_fiel0/reserved_names",
+  "url": "https://example.com/reserved-name-test",
   "version": "1.0.0",
   "distribution": [
     {

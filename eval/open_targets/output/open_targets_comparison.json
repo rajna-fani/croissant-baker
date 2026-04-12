@@ -1,0 +1,16 @@
+{
+  "file_objects": 2255,
+  "file_sets": 34,
+  "parquet_files": 2255,
+  "recordsets_gt": 55,
+  "recordsets_gen": 55,
+  "recordsets_matched": 55,
+  "fields_gt": 819,
+  "fields_gen": 819,
+  "fields_matched": 819,
+  "strict_type_agree": 693,
+  "strict_type_agree_pct": 84.6,
+  "semantic_type_agree": 798,
+  "semantic_type_agree_pct": 97.4,
+  "true_mismatches": 21
+}

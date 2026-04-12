@@ -43,6 +43,8 @@ packages = ["src/croissant_baker"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Ensure `src/` layout resolves when a global PYTHONPATH shadows the editable .pth
+pythonpath = ["src"]
 # Suppress rdflib warning from mlcroissant (external dependency)
 filterwarnings = ["ignore::DeprecationWarning:rdflib.*"]
 

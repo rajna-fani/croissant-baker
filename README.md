@@ -104,6 +104,19 @@ uv run pytest -v
 uv run pytest tests/test_cli.py::test_creator_formats -v
 ```
 
+End-to-end tests in `tests/test_end_to_end.py` run Croissant Baker on datasets under `tests/data/input/` and validate the generated Croissant metadata with `mlcroissant`. Covered datasets include MIMIC-IV, eICU, MIT-BIH, MEDS, OMOP, glaucoma fundus, satellite imagery, a synthetic partitioned-Parquet layout, and a committed subset of Open Targets (3 datasets, ~2 MB). JSON-LD outputs are written to `tests/data/output/`.
+
+### External evaluation
+
+The `eval/` directory holds full-scale datasets used to evaluate output quality against independently authored Croissant metadata (see [`eval/README.md`](eval/README.md)). These are separate from the test suite and must be invoked explicitly. Open Targets is the first evaluation case:
+
+```bash
+bash eval/open_targets/download.sh          # one-time, ~20-30 GB
+uv run pytest eval/open_targets/ -v
+```
+
+The evaluation compares generated metadata against the human-authored ground truth across all 55 Open Targets datasets, reporting RecordSet coverage, field matching, and type agreement. Generated outputs are written to `eval/open_targets/output/`.
+
 ## Pre-Commit Hooks & Code Quality
 
 This project uses `pre-commit` with [Ruff](https://docs.astral.sh/ruff/) to automatically lint and format Python code before commits. Basic configuration file checks (TOML, YAML) are also included.

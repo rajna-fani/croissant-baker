@@ -97,6 +97,12 @@ def test_reserved_name_struct_fields_validate(
             "Reserved-name regression test",
             "--creator",
             "Test Author",
+            "--url",
+            "https://example.com/reserved-name-test",
+            "--date-published",
+            "2025-01-01",
+            "--citation",
+            "Test Author. (2025). Reserved-name regression test.",
         ],
     )
 

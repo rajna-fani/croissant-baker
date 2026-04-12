@@ -871,3 +871,79 @@ def test_open_targets_like_generation(
     assert locus_sub_names == {"variantId", "posteriorProbability"}, (
         f"Unexpected locus sub_fields: {locus_sub_names}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Real Open Targets subset (committed Parquet, no download required)
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def open_targets_subset_path() -> Path:
+    """Path to the committed Open Targets subset (drug_warning, so, disease_hpo)."""
+    dataset_path = Path(__file__).parent / "data" / "input" / "open_targets_subset"
+    if not dataset_path.exists():
+        pytest.skip(f"Open Targets subset not found at {dataset_path}")
+    return dataset_path
+
+
+def test_open_targets_subset(open_targets_subset_path: Path, output_dir: Path) -> None:
+    """Test generation and mlcroissant validation on real Open Targets Parquet data.
+
+    Uses a small committed subset (drug_warning, so, disease_hpo) to verify that
+    Croissant Baker handles real-world schemas including nested structs with
+    reserved-name subfields and produces output that passes mlcroissant validation.
+    """
+    output_file = output_dir / "open_targets_subset_croissant.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "-i",
+            str(open_targets_subset_path),
+            "-o",
+            str(output_file),
+            "--name",
+            "Open Targets Platform (subset)",
+            "--creator",
+            "Open Targets",
+            "--description",
+            "Subset of Open Targets Platform for testing",
+            "--url",
+            "https://platform.opentargets.org",
+            "--license",
+            "https://platform-docs.opentargets.org/licence",
+            "--date-published",
+            "2025-01-01",
+            "--citation",
+            "Open Targets. (2025). Open Targets Platform (subset).",
+        ],
+    )
+
+    assert result.exit_code == 0, f"Command failed:\n{result.stdout}"
+    assert output_file.exists(), "Output file was not created"
+
+    with open(output_file) as f:
+        metadata = json.load(f)
+
+    assert metadata["name"] == "Open Targets Platform (subset)"
+
+    record_sets = metadata["recordSet"]
+    rs_names = {rs["name"] for rs in record_sets}
+    assert rs_names == {"drug_warning", "so", "disease_hpo"}
+
+    rs_by_name = {rs["name"]: rs for rs in record_sets}
+
+    # drug_warning: 11 columns including nested struct with 'source' subfield
+    dw_fields = rs_by_name["drug_warning"]["field"]
+    dw_field_names = {f["name"] for f in dw_fields}
+    assert "references" in dw_field_names
+    assert len(dw_fields) == 11
+
+    # so: 2 flat columns
+    so_fields = rs_by_name["so"]["field"]
+    assert len(so_fields) == 2
+
+    # disease_hpo: 6 columns with list types
+    dhpo_fields = rs_by_name["disease_hpo"]["field"]
+    assert len(dhpo_fields) == 6
