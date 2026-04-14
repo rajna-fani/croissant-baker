@@ -58,11 +58,19 @@ def register_all_handlers() -> None:
     """
     # Import and register all handlers here
     from croissant_baker.handlers.csv_handler import CSVHandler
+    from croissant_baker.handlers.fhir_handler import FHIRHandler
+    from croissant_baker.handlers.json_handler import JSONHandler
     from croissant_baker.handlers.wfdb_handler import WFDBHandler
     from croissant_baker.handlers.parquet_handler import ParquetHandler
     from croissant_baker.handlers.image_handler import ImageHandler
 
     register_handler(CSVHandler())
+    # FHIRHandler must be registered before JSONHandler.
+    # Both claim .json files; FHIRHandler uses content sniffing to confirm FHIR
+    # resources before accepting, so a future generic JSON handler must go after it
+    # or it would silently win the race for FHIR .json files.
+    register_handler(FHIRHandler())
+    register_handler(JSONHandler())
     register_handler(WFDBHandler())
     register_handler(ParquetHandler())
     register_handler(ImageHandler())
