@@ -135,6 +135,17 @@ uv run pytest tests/test_cli.py::test_creator_formats -v
 
 End-to-end tests in `tests/test_end_to_end.py` run Croissant Baker on datasets under `tests/data/input/` and validate the generated Croissant metadata with `mlcroissant`. Covered datasets include MIMIC-IV, eICU, MIT-BIH, MEDS, OMOP, glaucoma fundus, satellite imagery, a synthetic partitioned-Parquet layout, and a committed subset of Open Targets (3 datasets, ~2 MB). JSON-LD outputs are written to `tests/data/output/`.
 
+### Supported file formats
+
+| Format | Extensions | Notes |
+|--------|------------|-------|
+| CSV | `.csv`, `.csv.gz`, `.csv.bz2`, `.csv.xz` | Streaming with automatic type inference |
+| Parquet | `.parquet` | Partitioned datasets supported |
+| FHIR | `.ndjson`, `.ndjson.gz`, `.json` (FHIR Bundle) | NDJSON bulk export and JSON Bundle formats |
+| JSON / JSONL | `.json`, `.json.gz`, `.jsonl`, `.jsonl.gz` | Arrays of objects, single objects, and JSON Lines |
+| WFDB | `.hea` + `.dat` / `.atr` | PhysioNet waveform data |
+| Images | `.png`, `.jpg`, `.tiff`, `.bmp`, `.gif`, `.webp` | Dimensions and format extracted via Pillow |
+
 ### External evaluation
 
 The `eval/` directory holds full-scale datasets used to evaluate output quality against independently authored Croissant metadata (see [`eval/README.md`](eval/README.md)). These are separate from the test suite and must be invoked explicitly. Open Targets is the first evaluation case:

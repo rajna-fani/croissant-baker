@@ -1,5 +1,6 @@
 """Shared utilities for file handlers."""
 
+import gzip
 import hashlib
 import logging
 import re
@@ -11,6 +12,19 @@ import pyarrow as pa
 import pyarrow.types as patypes
 
 logger = logging.getLogger(__name__)
+
+# Records sampled per file for schema inference in JSON-based handlers.
+# Row counting always sees all records; only schema inference is capped.
+# 500 covers typical field diversity while keeping memory bounded.
+SCHEMA_SAMPLE = 500
+
+
+def open_text_file(file_path: Path):
+    """Return a text file handle, transparently decompressing gzip files."""
+    if file_path.name.lower().endswith(".gz"):
+        return gzip.open(file_path, "rt", encoding="utf-8")
+    return open(file_path, "r", encoding="utf-8")
+
 
 # Characters that are invalid in Croissant @id values.
 # mlcroissant rejects whitespace and URI-unsafe characters like >, (, ), %.
@@ -220,6 +234,197 @@ def _build_fields(
     return fields
 
 
+# ---------------------------------------------------------------------------
+# JSON / FHIR type inference — shared by FHIRHandler and JSONHandler
+# ---------------------------------------------------------------------------
+
+_DATETIME_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T")
+_DATE_RE = re.compile(r"^\d{4}(-\d{2}(-\d{2})?)?$")
+_URL_PREFIXES = ("http://", "https://", "urn:")
+
+
+def infer_croissant_type(value) -> str:
+    """Map a scalar JSON value to a Croissant type string.
+
+    Only handles primitives. Callers must unwrap dicts/lists before calling.
+    """
+    if isinstance(value, bool):
+        return "sc:Boolean"
+    if isinstance(value, int):
+        return "cr:Int64"
+    if isinstance(value, float):
+        return "cr:Float64"
+    if isinstance(value, str):
+        if _DATETIME_RE.match(value):
+            return "sc:DateTime"
+        if _DATE_RE.match(value):
+            return "sc:Date"
+        if value.startswith(_URL_PREFIXES):
+            return "sc:URL"
+        return "sc:Text"
+    return "sc:Text"
+
+
+def infer_field_type(values: list):
+    """Infer the type of a single JSON field from its sampled values.
+
+    Returns one of:
+    - a type string for scalar primitive fields (e.g. ``"sc:Date"``)
+    - ``{"type": str, "is_array": True}`` for arrays of primitives
+    - ``{"fields": {...}, "is_array": bool}`` for struct / array-of-struct fields
+
+    Array detection: any observed list value establishes 0..* cardinality.
+    """
+    if not values:
+        return "sc:Text"
+
+    is_array = any(isinstance(v, list) for v in values)
+
+    if is_array:
+        inner = [
+            item
+            for v in values
+            if isinstance(v, list)
+            for item in v
+            if item is not None
+        ]
+        if not inner:
+            return "sc:Text"
+        if sum(1 for v in inner if isinstance(v, dict)) > len(inner) / 2:
+            return {
+                "fields": infer_json_schema(inner, _top_level=False),
+                "is_array": True,
+            }
+        votes: dict = {}
+        for v in inner:
+            t = infer_croissant_type(v)
+            votes[t] = votes.get(t, 0) + 1
+        return {
+            "type": max(votes, key=votes.get) if votes else "sc:Text",
+            "is_array": True,
+        }
+
+    if sum(1 for v in values if isinstance(v, dict)) > len(values) / 2:
+        return {
+            "fields": infer_json_schema(values, _top_level=False),
+            "is_array": False,
+        }
+
+    votes = {}
+    for v in values:
+        t = infer_croissant_type(v)
+        votes[t] = votes.get(t, 0) + 1
+    return max(votes, key=votes.get) if votes else "sc:Text"
+
+
+def infer_json_schema(records: list, _top_level: bool = True) -> dict:
+    """Infer a column schema from a list of JSON/FHIR resource dicts.
+
+    Uses majority-vote so minority null/unexpected values don't override the
+    dominant type. The ``resourceType`` discriminator is excluded at the top
+    level. Recursively expands dict and list-of-dict fields into sub-schemas.
+
+    Args:
+        records: JSON object dicts (top level) or nested sub-objects.
+        _top_level: When True, skips the ``resourceType`` key (FHIR discriminator).
+
+    Returns:
+        Dict mapping field name → type string or ``{"fields": ..., "is_array": bool}``.
+    """
+    from collections import defaultdict as _defaultdict
+
+    if not records:
+        return {}
+    field_values: dict = _defaultdict(list)
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        for key, val in record.items():
+            if _top_level and key == "resourceType":
+                continue
+            if val is not None:
+                field_values[key].append(val)
+    return {
+        key: infer_field_type(vals)
+        for key, vals in sorted(field_values.items())
+        if vals
+    }
+
+
+def build_fields_from_json_schema(
+    col_schema: dict,
+    parent_id: str,
+    source_ref: dict,
+    description_prefix: str = "Column",
+    _col_path_prefix: str = "",
+) -> list:
+    """Recursively build mlc.Field objects from a JSON column schema dict.
+
+    Scalar primitive  → data_types=[type_string].
+    Primitive array   → data_types=[type_string], is_array=True.
+    Struct            → sub_fields (no data_types).
+    Array-of-struct   → sub_fields + is_array=True.
+
+    Args:
+        col_schema: Schema dict as returned by ``infer_json_schema``.
+        parent_id: Croissant @id of the parent RecordSet or Field.
+        source_ref: Dict with either ``file_object=`` or ``file_set=`` key.
+        description_prefix: Label prefix for field descriptions (default "Column").
+        _col_path_prefix: Internal prefix for nested column paths; callers omit.
+
+    Returns:
+        List of ``mlc.Field`` objects.
+    """
+    fields = []
+    for col_name, type_info in col_schema.items():
+        safe_name = sanitize_id(col_name)
+        field_id = f"{parent_id}/{safe_name}"
+        col_path = f"{_col_path_prefix}/{col_name}" if _col_path_prefix else col_name
+        source = mlc.Source(extract=mlc.Extract(column=col_path), **source_ref)
+
+        if isinstance(type_info, dict) and "fields" in type_info:
+            is_array = type_info.get("is_array", False)
+            sub_fields = build_fields_from_json_schema(
+                type_info["fields"],
+                field_id,
+                source_ref,
+                description_prefix="Field",
+                _col_path_prefix=col_path,
+            )
+            fields.append(
+                mlc.Field(
+                    id=field_id,
+                    name=col_name,
+                    description=f"{description_prefix} '{col_name}'",
+                    is_array=True if is_array else None,
+                    source=source,
+                    sub_fields=sub_fields or None,
+                )
+            )
+        elif isinstance(type_info, dict) and "type" in type_info:
+            fields.append(
+                mlc.Field(
+                    id=field_id,
+                    name=col_name,
+                    description=f"{description_prefix} '{col_name}'",
+                    data_types=[type_info["type"]],
+                    is_array=True,
+                    source=source,
+                )
+            )
+        else:
+            fields.append(
+                mlc.Field(
+                    id=field_id,
+                    name=col_name,
+                    description=f"{description_prefix} '{col_name}'",
+                    data_types=[type_info],
+                    source=source,
+                )
+            )
+    return fields
+
+
 def get_clean_record_name(file_name: str) -> str:
     """
     Generate a clean record set name from a file name.
@@ -250,7 +455,7 @@ def get_clean_record_name(file_name: str) -> str:
         name = name[:-4]
 
     # Remove common data file extensions
-    extensions = [".csv", ".tsv", ".json", ".parquet", ".txt", ".dat"]
+    extensions = [".csv", ".tsv", ".ndjson", ".json", ".parquet", ".txt", ".dat"]
     for ext in extensions:
         if name.endswith(ext):
             name = name[: -len(ext)]

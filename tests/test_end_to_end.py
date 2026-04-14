@@ -947,3 +947,189 @@ def test_open_targets_subset(open_targets_subset_path: Path, output_dir: Path) -
     # disease_hpo: 6 columns with list types
     dhpo_fields = rs_by_name["disease_hpo"]["field"]
     assert len(dhpo_fields) == 6
+
+
+# ---------------------------------------------------------------------------
+# MIMIC-IV FHIR Demo (NDJSON bulk export, gzip-compressed)
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def mimiciv_fhir_demo_path() -> Path:
+    """Path to MIMIC-IV FHIR Demo dataset (fhir/ subdirectory).
+
+    Download with:
+        wget -r -N -c -np https://physionet.org/files/mimic-iv-fhir-demo/2.1.0/ \\
+             -P tests/data/input/mimiciv_fhir/
+    """
+    dataset_path = (
+        Path(__file__).parent
+        / "data"
+        / "input"
+        / "mimiciv_fhir"
+        / "physionet.org"
+        / "files"
+        / "mimic-iv-fhir-demo"
+        / "2.1.0"
+        / "fhir"
+    )
+    if not dataset_path.exists():
+        pytest.skip(f"MIMIC-IV FHIR demo not found at {dataset_path}")
+    return dataset_path
+
+
+def test_mimiciv_fhir_demo_generation(
+    mimiciv_fhir_demo_path: Path, output_dir: Path
+) -> None:
+    """End-to-end metadata generation for MIMIC-IV FHIR Demo (NDJSON bulk export)."""
+    output_file = output_dir / "mimiciv_fhir_demo_croissant.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "-i",
+            str(mimiciv_fhir_demo_path),
+            "-o",
+            str(output_file),
+            "--name",
+            "MIMIC-IV Clinical Database Demo on FHIR",
+            "--description",
+            "100-patient demo of MIMIC-IV represented as FHIR R4 NDJSON resources",
+            "--url",
+            "https://physionet.org/content/mimic-iv-fhir-demo/2.1.0/",
+            "--license",
+            "https://physionet.org/content/mimic-iv-fhir-demo/2.1.0/LICENSE.txt",
+            "--dataset-version",
+            "2.1.0",
+            "--date-published",
+            "2023-10-23",
+            "--creator",
+            "Alistair Johnson,aewj@mit.edu,https://physionet.org/",
+            "--creator",
+            "Lucas Bulgarelli,,https://mit.edu/",
+            "--citation",
+            "Johnson, A., Bulgarelli, L., et al. (2023). MIMIC-IV Clinical Database Demo on FHIR (version 2.1.0). PhysioNet. https://doi.org/10.13026/t74w-kd56",
+        ],
+    )
+
+    assert result.exit_code == 0, f"Command failed:\n{result.stdout}"
+    assert output_file.exists()
+
+    with open(output_file) as f:
+        metadata = json.load(f)
+
+    assert metadata["name"] == "MIMIC-IV Clinical Database Demo on FHIR"
+    assert metadata["version"] == "2.1.0"
+
+    # 30 NDJSON files produce 30 FileObjects plus FileSets for multi-file resource
+    # types (e.g. several files share resourceType "Observation").
+    # RecordSets are one per unique FHIR resourceType, not one per file.
+    assert len(metadata["distribution"]) >= 30
+    assert len(metadata["recordSet"]) >= 10
+
+    # RecordSet names should be FHIR resource types, not raw filenames
+    rs_names = {rs["name"] for rs in metadata["recordSet"]}
+    assert "Patient" in rs_names
+    assert "Observation" in rs_names
+    assert "Condition" in rs_names
+    assert "Encounter" in rs_names
+
+    # Patient RecordSet should have meaningful fields with correct types
+    patient_rs = next(rs for rs in metadata["recordSet"] if rs["name"] == "Patient")
+    field_names = {f["name"] for f in patient_rs.get("field", [])}
+    assert "id" in field_names
+    assert "gender" in field_names
+
+    patient_fields = {f["name"]: f for f in patient_rs.get("field", [])}
+    assert "sc:Date" in patient_fields.get("birthDate", {}).get("dataType", [])
+
+
+# ---------------------------------------------------------------------------
+# GH Archive demo (committed JSONL.GZ fixture — no download required)
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def gharchive_demo_path() -> Path:
+    """Path to the committed GH Archive demo fixture (200 events, 60 KB gzipped).
+
+    The fixture is a 200-line slice of the 2023-01-01-0.json.gz hourly archive
+    from https://www.gharchive.org/.  It covers 11 distinct GitHub event types
+    (PushEvent, PullRequestEvent, IssuesEvent, …) with heterogeneous nested
+    payloads — a good stress-test for JSONHandler schema inference.
+
+    To regenerate:
+        wget https://data.gharchive.org/2023-01-01-0.json.gz -O /tmp/gh.json.gz
+        gzcat /tmp/gh.json.gz | head -200 | gzip > \\
+            tests/data/input/gharchive_demo/2023-01-01-0.jsonl.gz
+    """
+    dataset_path = Path(__file__).parent / "data" / "input" / "gharchive_demo"
+    if not dataset_path.exists() or not list(dataset_path.glob("*.jsonl.gz")):
+        pytest.skip(f"GH Archive demo fixture not found at {dataset_path}")
+    return dataset_path
+
+
+def test_gharchive_demo_generation(gharchive_demo_path: Path, output_dir: Path) -> None:
+    """End-to-end metadata generation for a GH Archive JSONL.GZ slice.
+
+    Verifies that JSONHandler correctly handles:
+    - Compressed JSONL streaming (.jsonl.gz)
+    - Heterogeneous nested payloads (different schemas per event type)
+    - Non-FHIR JSON routed to JSONHandler, not FHIRHandler
+    """
+    output_file = output_dir / "gharchive_demo_croissant.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "-i",
+            str(gharchive_demo_path),
+            "-o",
+            str(output_file),
+            "--name",
+            "GH Archive (demo slice)",
+            "--description",
+            "200-event slice of GitHub Archive hourly JSONL export (2023-01-01 00:00 UTC)",
+            "--url",
+            "https://www.gharchive.org/",
+            "--license",
+            "https://creativecommons.org/licenses/by/4.0/",
+            "--dataset-version",
+            "2023-01-01",
+            "--date-published",
+            "2023-01-01",
+            "--creator",
+            "GitHub Archive,,,https://www.gharchive.org/",
+        ],
+    )
+
+    assert result.exit_code == 0, f"Command failed:\n{result.stdout}"
+    assert output_file.exists()
+
+    with open(output_file) as f:
+        metadata = json.load(f)
+
+    assert metadata["name"] == "GH Archive (demo slice)"
+
+    # One JSONL.GZ file → one FileObject, one RecordSet
+    assert len(metadata["distribution"]) == 1
+    assert len(metadata["recordSet"]) == 1
+
+    rs = metadata["recordSet"][0]
+    field_names = {f["name"] for f in rs.get("field", [])}
+
+    # All GH Archive events share these top-level keys
+    assert "id" in field_names
+    assert "type" in field_names
+    assert "actor" in field_names
+    assert "repo" in field_names
+    assert "created_at" in field_names
+
+    # created_at should be inferred as sc:DateTime (ISO 8601)
+    created_at = next(f for f in rs["field"] if f["name"] == "created_at")
+    assert "sc:DateTime" in created_at.get("dataType", [])
+
+    # actor and repo are nested objects → should produce subField entries
+    actor_field = next((f for f in rs["field"] if f["name"] == "actor"), None)
+    assert actor_field is not None
+    assert "subField" in actor_field, "actor should expand to subFields (nested struct)"
