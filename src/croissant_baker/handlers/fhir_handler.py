@@ -378,19 +378,6 @@ class FHIRHandler(FileTypeHandler):
 
             if chunks:
                 _, first_meta = chunks[0]
-                _rel_dir = str(
-                    Path(
-                        first_meta.get("relative_path", first_meta["file_name"])
-                    ).parent
-                )
-                _ext = (
-                    ".ndjson.gz"
-                    if first_meta["file_name"].lower().endswith(".ndjson.gz")
-                    else ".ndjson"
-                )
-                _prefix = (
-                    f"{_rel_dir}/{resource_type}" if _rel_dir != "." else resource_type
-                )
                 fileset_id = f"fhir-{sanitize_id(resource_type)}-files"
                 additional_distributions.append(
                     mlc.FileSet(
@@ -398,7 +385,9 @@ class FHIRHandler(FileTypeHandler):
                         name=f"{resource_type} NDJSON files",
                         description=f"{len(chunks)} NDJSON chunk files for FHIR {resource_type}",
                         encoding_formats=[first_meta["encoding_format"]],
-                        includes=[f"{_prefix}*{_ext}"],
+                        includes=[
+                            m.get("relative_path", m["file_name"]) for _, m in chunks
+                        ],
                     )
                 )
                 merged = merge_fhir_column_types(
@@ -427,11 +416,6 @@ class FHIRHandler(FileTypeHandler):
                     by_type_col_types[rt].append(group["column_types"])
                     by_type_counts[rt] += group["num_rows"]
 
-            bundle_exts: set = set()
-            for fm in bundle_metas:
-                _n = fm["file_name"].lower()
-                bundle_exts.add(".json.gz" if _n.endswith(".json.gz") else ".json")
-
             bundle_fileset_id = "fhir-bundles"
             additional_distributions.append(
                 mlc.FileSet(
@@ -441,7 +425,9 @@ class FHIRHandler(FileTypeHandler):
                     encoding_formats=sorted(
                         set(fm["encoding_format"] for fm in bundle_metas)
                     ),
-                    includes=[f"*{ext}" for ext in sorted(bundle_exts)],
+                    includes=[
+                        fm.get("relative_path", fm["file_name"]) for fm in bundle_metas
+                    ],
                 )
             )
             for rt in sorted(by_type_col_types.keys()):

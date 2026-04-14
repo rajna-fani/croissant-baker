@@ -51,14 +51,20 @@ class JSONHandler(FileTypeHandler):
         return False
 
     def _sniff_json(self, file_path: Path) -> bool:
-        """Peek at the first 4 KB to confirm the file is non-FHIR JSON."""
+        """Peek at the first 4 KB to confirm the file is non-FHIR JSON.
+
+        FHIR top-level objects always start with ``{``, so the FHIR exclusion
+        check is only applied to ``{``-rooted content. Arrays are always
+        accepted — a nested ``resourceType`` key inside an array element is
+        not a FHIR document.
+        """
         try:
             with open_text_file(file_path) as fh:
                 head = fh.read(4096)
             head = head.strip()
-            if _FHIR_PATTERN.search(head):
-                return False
-            return head.startswith("[") or head.startswith("{")
+            if head.startswith("{"):
+                return not _FHIR_PATTERN.search(head)
+            return head.startswith("[")
         except (OSError, UnicodeDecodeError):
             return False
 
