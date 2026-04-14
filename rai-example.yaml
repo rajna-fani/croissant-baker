@@ -1,0 +1,165 @@
+# RAI metadata for a Croissant dataset
+#
+# This file covers the Responsible AI (RAI) extension of the MLCommons Croissant
+# specification (http://mlcommons.org/croissant/RAI/) and the W3C PROV-O ontology
+# (https://www.w3.org/TR/prov-o/) for dataset-level provenance.
+#
+# Usage:
+#   When generating a new Croissant file:
+#     croissant-maker --input ./my-dataset --creator "Name" --rai-config rai.yaml
+#
+#   When enriching an existing Croissant file:
+#     croissant-maker rai-apply dataset-croissant.jsonld --rai-config rai.yaml
+#
+# All fields are optional. Remove or leave blank any section that does not apply.
+# Fields left blank are omitted from the generated Croissant file.
+#
+# OUTPUT STRUCTURE
+# ----------------
+# ai_fairness fields      → direct rai: properties on the dataset node
+# lineage.source_datasets → prov:wasDerivedFrom on the dataset node
+# lineage.models          → rai:usedBy on the dataset node
+# activities              → prov:wasGeneratedBy (list of prov:Activity)
+#   each activity carries optional agents (prov:wasAssociatedWith)
+#   and optional platforms (rai:usedPlatform)
+# ----------------------------------------------------------------------------
+
+
+# ── AI Safety and Fairness ────────────────────────────────────────────────────
+#
+# These fields are written as direct rai: properties on the dataset node.
+# Each is a free-text field that requires deliberate authorship.
+
+ai_fairness:
+
+  # rai:dataLimitations
+  # Document the dataset's boundaries, known failure modes, and use cases that
+  # should be strictly avoided. Be specific rather than generic.
+  data_limitations: >
+    Dataset originates from a single academic medical centre in the northeastern
+    United States. Findings may not generalise to other hospital systems,
+    countries, or patient demographics. Not intended for direct clinical
+    decision-making.
+
+  # rai:dataBias
+  # Detail specific skews, representational gaps, and known biases — including
+  # the geographic or demographic background of annotators, institutional norms
+  # of the source, and amplified biases in any synthetic data.
+  data_bias: >
+    The patient population skews toward English-speaking adults; paediatric
+    and non-English-speaking patients are under-represented. Annotator pool
+    consisted of clinical experts from a single US institution.
+
+  # rai:personalSensitiveInformation
+  # Explicitly disclose any personal or sensitive information (health, location,
+  # political beliefs, etc.), the legal/ethical basis for inclusion, any
+  # privacy-preserving measures applied, and residual risks.
+  personal_sensitive_information: >
+    The dataset contains de-identified patient health records including
+    diagnoses, procedures, and medications. Re-identification risk has been
+    minimised via HIPAA Safe Harbor procedures. Access is restricted to
+    credentialed researchers who have signed a data use agreement.
+
+  # rai:dataUseCases
+  # Specify the intended tasks and the evidence that proves the dataset is valid
+  # for those tasks. Explicitly list out-of-scope uses that have not been tested.
+  data_use_cases: >
+    Benchmarking clinical natural language processing and machine learning
+    models. Supporting research into hospital readmission, mortality prediction,
+    and clinical decision support. Not intended for direct clinical use.
+
+  # rai:socialImpact
+  # Articulate what new capabilities the dataset enables, who benefits, potential
+  # harms, affected groups, and concrete mitigation steps (licensing, access
+  # controls, usage agreements).
+  social_impact: >
+    This dataset enables research that could improve clinical AI tools and
+    patient outcomes. However, models trained on biased data risk perpetuating
+    health disparities if deployed without careful evaluation. Access is
+    restricted via a data use agreement to mitigate misuse.
+
+  # rai:hasSyntheticData
+  # Set to true if the dataset includes any synthetically generated content.
+  # If true, document the generation process in the activities section below.
+  has_synthetic_data: false
+
+
+# ── Data Lifecycle / Lineage ──────────────────────────────────────────────────
+
+lineage:
+
+  # prov:wasDerivedFrom — datasets this dataset was derived from.
+  # url is required; all other fields are optional.
+  source_datasets:
+    - url: https://physionet.org/content/mimiciii/
+      name: MIMIC-III
+      organisation: PhysioNet
+      license: PhysioNet Credentialed Health Data License 1.5.0
+
+  # rai:usedBy — models or assets that have used this dataset (e.g. for training
+  # or evaluation). url is required; name and id are optional.
+  models: []
+  # models:
+  #   - url: https://huggingface.co/my-org/my-model
+  #     name: My Clinical NLP Model
+  #     id: MODEL-001
+
+
+# ── Activities ────────────────────────────────────────────────────────────────
+#
+# Document each major step in the dataset's creation as a prov:Activity.
+# Each activity is written into prov:wasGeneratedBy on the dataset node.
+#
+# type — one of: data_collection | data_annotation | data_preprocessing
+#
+# collection_types — only for data_collection activities. One or more of:
+#   surveys | interviews | observations | experiments | web_scraping |
+#   crowdsourcing | existing_datasets | simulations | other
+#
+# agents — the humans or automated systems that performed the activity.
+#   is_synthetic: true  → automated / AI agent
+#   is_synthetic: false → human agent (team, crowd workers, domain experts)
+#
+# platforms — tools or systems used during the activity (annotation tools,
+#   data collection systems, processing pipelines, etc.)
+
+activities:
+
+  - id: ACT-001
+    type: data_collection
+    description: >
+      Retrospective electronic health records collected during routine clinical
+      care at Beth Israel Deaconess Medical Center between 2011 and 2019.
+    start_at: "2011-01-01"
+    end_at: "2019-12-31"
+    collection_types:
+      - observations
+      - existing_datasets
+    agents:
+      - name: Beth Israel Deaconess Medical Center Clinical Team
+        url: https://www.bidmc.org
+        description: >
+          Clinical staff who generated the source EHR records as part of
+          routine patient care. No specific demographic data was collected
+          about the care providers.
+        is_synthetic: false
+    platforms:
+      - name: Hospital Electronic Health Record System
+        description: >
+          Institutional EHR system used for routine clinical documentation,
+          from which the raw data was extracted.
+
+  - id: ACT-002
+    type: data_preprocessing
+    description: >
+      Patient identifiers were removed using the HIPAA Safe Harbor method.
+      Dates were shifted by a random per-patient offset (up to 365 days)
+      while preserving relative temporal relationships. Free-text fields
+      were scrubbed with a custom NER-based de-identification model.
+    agents:
+      - name: PhysioNet de-identification and curation pipeline
+        url: https://physionet.org
+        description: >
+          Automated pipeline combining rule-based Safe Harbor de-identification
+          with a trained NER model for free-text scrubbing.
+        is_synthetic: true

@@ -1,15 +1,18 @@
 """Command-line interface for Croissant Baker."""
 
 import csv
+import json
+import tempfile
 import typer
 from pathlib import Path
 import importlib.metadata
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from typing import Optional, List
 
-from croissant_baker.metadata_generator import MetadataGenerator
+from croissant_baker.metadata_generator import MetadataGenerator, serialize_datetime
 from croissant_baker.files import discover_files
 from croissant_baker.handlers.registry import find_handler
+import mlcroissant as mlc
 
 # Create the Typer application instance
 app = typer.Typer(
@@ -18,6 +21,65 @@ app = typer.Typer(
     add_completion=False,
     rich_markup_mode="markdown",
 )
+
+
+def _save_dict(metadata_dict: dict, output_path: str, validate: bool) -> None:
+    """
+    Save a pre-computed metadata dict to a JSON-LD file, with optional validation.
+
+    This function exists because MetadataGenerator.save_metadata() always calls
+    generate_metadata() internally, regenerating the dict from scratch. That makes
+    it unusable once the dict has already been built and modified — for example,
+    after RAI attributes have been injected via inject_rai(). This function takes
+    the already-computed dict and handles the save + validation step directly,
+    keeping MetadataGenerator unchanged.
+
+    It is used in two places:
+      - The main generate command, when --rai-config is provided (or not, to keep
+        a single consistent save path after generate_metadata() is called once).
+      - The rai-apply command, which loads an existing .jsonld, injects RAI, and
+        saves it back without invoking MetadataGenerator at all.
+
+    Args:
+        metadata_dict: Already-computed Croissant metadata dict (may include RAI).
+        output_path:   Path where the JSON-LD file should be written.
+        validate:      When True, validates via mlcroissant before writing.
+
+    Raises:
+        ValueError: If mlcroissant validation fails.
+    """
+    output_file = Path(output_path)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
+    if validate:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".jsonld", delete=False
+        ) as tmp:
+            json.dump(
+                metadata_dict,
+                tmp,
+                indent=2,
+                ensure_ascii=False,
+                default=serialize_datetime,
+            )
+            tmp_path = tmp.name
+        try:
+            mlc.Dataset(tmp_path)
+            _write_jsonld(metadata_dict, output_file)
+        except Exception as e:
+            raise ValueError(f"Validation failed: {e}")
+        finally:
+            Path(tmp_path).unlink(missing_ok=True)
+    else:
+        _write_jsonld(metadata_dict, output_file)
+
+
+def _write_jsonld(metadata_dict: dict, output_file: Path) -> None:
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(
+            metadata_dict, f, indent=2, ensure_ascii=False, default=serialize_datetime
+        )
+        f.write("\n")
 
 
 def _get_version() -> str:
@@ -109,6 +171,13 @@ def main(
         "--count-csv-rows",
         help="Count exact row numbers for CSV files (slow for large datasets)",
     ),
+    rai_config: Optional[Path] = typer.Option(
+        None,
+        "--rai-config",
+        help="Path to a RAI config YAML file (see rai-example.yaml for the template)",
+        exists=True,
+        dir_okay=False,
+    ),
     include: Optional[List[str]] = typer.Option(
         None,
         "--include",
@@ -141,6 +210,9 @@ def main(
         typer.echo("")
         typer.echo("Usage: croissant-baker --input <dataset-path> [--output <file>]")
         typer.echo("       croissant-baker validate <file>")
+        typer.echo(
+            "       croissant-baker rai-apply <file.jsonld> --rai-config rai.yaml"
+        )
         typer.echo("       croissant-baker --version")
         typer.echo("       croissant-baker --help")
         return
@@ -258,19 +330,23 @@ def main(
             progress.update(metadata_progress, description="Generating metadata...")
             metadata_dict = generator.generate_metadata()
 
-            # Save and optionally validate
-            output_file = Path(output)
-            output_file.parent.mkdir(parents=True, exist_ok=True)
+            # Inject RAI attributes when a config file is provided
+            if rai_config:
+                from croissant_baker.rai import inject_rai, load_rai_config
 
+                rai = load_rai_config(rai_config)
+                metadata_dict = inject_rai(metadata_dict, rai)
+
+            # Save and optionally validate
             if validate:
                 progress.update(
                     metadata_progress, description="Validating and saving..."
                 )
-                generator.save_metadata(output, validate=True)
+                _save_dict(metadata_dict, output, validate=True)
                 progress.update(metadata_progress, description="Validation completed!")
             else:
                 progress.update(metadata_progress, description="Saving metadata...")
-                generator.save_metadata(output, validate=False)
+                _save_dict(metadata_dict, output, validate=False)
                 progress.update(metadata_progress, description="Save completed!")
 
         # Show results
@@ -296,6 +372,56 @@ def main(
             license=license,
             date_published=date_published,
         )
+
+    except ValueError as e:
+        typer.echo(f"Error: {e}", err=True)
+        raise typer.Exit(code=1)
+    except Exception as e:
+        typer.echo(f"Unexpected error: {e}", err=True)
+        raise typer.Exit(code=1)
+
+
+@app.command(name="rai-apply")
+def rai_apply(
+    file_path: str = typer.Argument(..., help="Croissant metadata file to update"),
+    rai_config: Path = typer.Option(
+        ...,
+        "--rai-config",
+        help="RAI config YAML file",
+        exists=True,
+        dir_okay=False,
+    ),
+    output: Optional[str] = typer.Option(
+        None,
+        "--output",
+        "-o",
+        help="Output path (defaults to overwriting the input file)",
+    ),
+    validate: bool = typer.Option(
+        True, "--validate/--no-validate", help="Validate after applying RAI attributes"
+    ),
+) -> None:
+    """Apply RAI attributes from a config YAML to an existing Croissant file."""
+    from croissant_baker.rai import inject_rai, load_rai_config
+
+    input_path = Path(file_path)
+    if not input_path.is_file():
+        typer.echo(f"Error: '{file_path}' is not a file", err=True)
+        raise typer.Exit(code=1)
+
+    try:
+        with open(input_path, encoding="utf-8") as fh:
+            metadata_dict = json.load(fh)
+
+        rai = load_rai_config(rai_config)
+        metadata_dict = inject_rai(metadata_dict, rai)
+
+        dest = str(Path(output) if output else input_path)
+        _save_dict(metadata_dict, dest, validate=validate)
+
+        typer.echo(f"RAI attributes applied and saved to: {dest}")
+        if not validate:
+            typer.echo(f"Tip: Run `croissant-baker validate {dest}` to validate later")
 
     except ValueError as e:
         typer.echo(f"Error: {e}", err=True)
