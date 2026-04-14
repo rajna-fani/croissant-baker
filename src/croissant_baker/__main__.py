@@ -183,9 +183,7 @@ def _build_native_rai_fields(
     """Collect native mlcroissant RAI fields from CLI options."""
     rai_fields: dict[str, object] = {
         "data_collection": _normalize_optional_text(rai_data_collection),
-        "data_collection_type": _normalize_optional_text_list(
-            rai_data_collection_type
-        ),
+        "data_collection_type": _normalize_optional_text_list(rai_data_collection_type),
         "data_collection_missing_data": _normalize_optional_text(
             rai_data_collection_missing_data
         ),
@@ -328,9 +326,7 @@ def main(
     rai_data_collection_timeframe: Optional[List[str]] = typer.Option(
         None,
         "--rai-data-collection-timeframe",
-        help=(
-            "Collection date or datetime in ISO format. Can be used multiple times."
-        ),
+        help=("Collection date or datetime in ISO format. Can be used multiple times."),
     ),
     rai_data_imputation_protocol: Optional[str] = typer.Option(
         None,
@@ -606,7 +602,9 @@ def main(
                 rai = load_rai_config(rai_config)
                 metadata_dict = inject_rai(metadata_dict, rai)
 
-            _ensure_rai_conforms_to(metadata_dict, force=bool(rai_config or native_rai_fields))
+            _ensure_rai_conforms_to(
+                metadata_dict, force=bool(rai_config or native_rai_fields)
+            )
 
             # Save and optionally validate
             if validate:

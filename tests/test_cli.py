@@ -413,9 +413,7 @@ def test_exclude_filter_omits_matching_files(
     assert not any("temp" in n for n in names)
 
 
-def test_native_rai_flags_generate_metadata(
-    csv_dataset: Path, tmp_path: Path
-) -> None:
+def test_native_rai_flags_generate_metadata(csv_dataset: Path, tmp_path: Path) -> None:
     """Native --rai-* flags should flow into mlcroissant metadata output."""
     output = tmp_path / "output.jsonld"
 
@@ -471,9 +469,7 @@ def test_native_rai_flags_generate_metadata(
     ]
 
 
-def test_native_rai_timeframe_invalid_format(
-    csv_dataset: Path, tmp_path: Path
-) -> None:
+def test_native_rai_timeframe_invalid_format(csv_dataset: Path, tmp_path: Path) -> None:
     """Invalid native RAI timeframe values should fail with a clear error."""
     output = tmp_path / "output.jsonld"
 
@@ -496,9 +492,7 @@ def test_native_rai_timeframe_invalid_format(
     assert "Invalid date format for --rai-data-collection-timeframe" in result.stderr
 
 
-def test_native_rai_flags_conflict_with_yaml(
-    csv_dataset: Path, tmp_path: Path
-) -> None:
+def test_native_rai_flags_conflict_with_yaml(csv_dataset: Path, tmp_path: Path) -> None:
     """Users must choose either native --rai-* flags or --rai-config."""
     output = tmp_path / "output.jsonld"
     rai_yaml = tmp_path / "rai.yaml"
