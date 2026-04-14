@@ -116,7 +116,7 @@ class MetadataGenerator:
         metadata = mlc.Metadata(
             name=self.name or self.dataset_path.name,
             description=self._build_description(file_metadata),
-            url=self.url or f"file://{self.dataset_path}",
+            url=self.url,
             license=self._resolve_license(),
             creators=self._build_creators(),
             date_published=self._resolve_date(),
