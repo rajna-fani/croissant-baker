@@ -1,0 +1,75 @@
+# RAI metadata for the MIMIC-IV Demo Dataset
+# Generated with croissant-maker rai-apply
+
+ai_fairness:
+
+  data_limitations: >
+    Data originates from a single academic medical centre in the northeastern
+    United States. Findings may not generalise to other hospital systems,
+    countries, or patient demographics. Not intended for direct clinical
+    decision-making.
+
+  data_bias: >
+    The patient population skews toward English-speaking adults; paediatric
+    and non-English-speaking patients are under-represented.
+
+  personal_sensitive_information: >
+    The dataset contains de-identified patient health records. Re-identification
+    risk has been minimised via HIPAA Safe Harbor procedures. Access is
+    restricted to credentialed researchers who have signed a data use agreement.
+
+  data_use_cases: >
+    Benchmarking clinical natural language processing and machine learning
+    models. Supporting research into hospital readmission, mortality
+    prediction, and clinical decision support. Not intended for direct
+    clinical decision-making.
+
+  social_impact: >
+    This dataset enables research that could improve clinical AI tools and
+    patient outcomes. However, models trained on biased data risk perpetuating
+    health disparities if deployed without careful evaluation.
+
+  has_synthetic_data: false
+
+
+lineage:
+
+  source_datasets:
+    - url: https://physionet.org/content/mimiciii/
+      name: MIMIC-III
+      organisation: PhysioNet
+
+  models: []
+
+
+activities:
+
+  - id: ACT-001
+    type: data_collection
+    description: >
+      Retrospective electronic health records collected during routine clinical
+      care at Beth Israel Deaconess Medical Center.
+    start_at: "2011-01-01"
+    end_at: "2019-12-31"
+    collection_types:
+      - observations
+      - existing_datasets
+    agents:
+      - name: Beth Israel Deaconess Medical Center Clinical Team
+        url: https://www.bidmc.org
+        is_synthetic: false
+
+  - id: ACT-002
+    type: data_preprocessing
+    description: >
+      Patient identifiers were removed using the HIPAA Safe Harbor method.
+      Dates were shifted by a random per-patient offset (up to 365 days)
+      while preserving relative temporal relationships. Free-text fields
+      were scrubbed with a custom NER-based de-identification model.
+    agents:
+      - name: PhysioNet de-identification and curation pipeline
+        url: https://physionet.org
+        description: >
+          Automated pipeline combining rule-based Safe Harbor de-identification
+          with a trained NER model for free-text scrubbing.
+        is_synthetic: true

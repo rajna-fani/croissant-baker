@@ -94,6 +94,35 @@ Validation checks that the file can be loaded by `mlcroissant` and conforms to t
 croissant-baker validate my-metadata.jsonld
 ```
 
+### Responsible AI (RAI) Metadata
+
+Croissant Baker supports the [RAI extension](https://github.com/mlcommons/croissant/blob/main/docs/croissant-rai-spec.md) for documenting fairness, lineage, and data collection activities. RAI attributes can be described in a YAML config file and injected into the Croissant JSON-LD output.
+
+**Generate metadata with RAI in one step:**
+
+```bash
+croissant-baker --input /path/to/dataset \
+  --creator "Jane Doe" \
+  --rai-config rai.yaml \
+  --output my-metadata.jsonld
+```
+
+**Or apply RAI to an existing Croissant file:**
+
+```bash
+croissant-baker rai-apply my-metadata.jsonld --rai-config rai.yaml
+```
+
+The YAML config covers three areas:
+
+| Section | What it documents |
+|---|---|
+| `ai_fairness` | Data limitations, bias, sensitive information, use cases, social impact, synthetic data flag |
+| `lineage` | Source datasets and downstream assets usage |
+| `activities` | Data collection, annotation, and preprocessing steps with agents and platforms |
+
+See [`tests/data/input/mimiciv_demo/physionet.org/mimiciv_demo-rai-example.yaml`](tests/data/input/mimiciv_demo/physionet.org/mimiciv_demo-rai-example.yaml) for a complete example using the MIMIC-IV Demo dataset.
+
 ## Testing
 
 ```bash
