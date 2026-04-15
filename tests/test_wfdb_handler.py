@@ -1,6 +1,8 @@
 """Tests for WFDB handler."""
 
 from pathlib import Path
+from unittest.mock import patch
+
 import pytest
 
 from croissant_baker.handlers.wfdb_handler import WFDBHandler
@@ -61,6 +63,19 @@ def test_missing_dat_file_raises_error(tmp_path):
 
     with pytest.raises(ValueError, match="WFDB data file missing"):
         handler.extract_metadata(hea_file)
+
+
+def test_rdheader_failure_is_wrapped(tmp_path):
+    handler = WFDBHandler()
+    hea_file = tmp_path / "test.hea"
+    hea_file.write_text("test 1 360 1000")
+
+    with patch(
+        "croissant_baker.handlers.wfdb_handler.wfdb.rdheader",
+        side_effect=RuntimeError("boom"),
+    ):
+        with pytest.raises(ValueError, match="Failed to read WFDB header"):
+            handler.extract_metadata(hea_file)
 
 
 # ---------------------------------------------------------------------------
