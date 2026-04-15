@@ -115,3 +115,68 @@ def test_csv_build_croissant_multiple_files() -> None:
     assert filesets == []
     assert len(record_sets) == 2
     assert {rs.name for rs in record_sets} == {"a", "b"}
+
+
+# ---------------------------------------------------------------------------
+# _parse_conflict and probe fallback (#48)
+# ---------------------------------------------------------------------------
+
+
+def test_parse_conflict_known_format() -> None:
+    idx, inferred = CSVHandler._parse_conflict(
+        "In CSV column #2: CSV conversion error to int64"
+    )
+    assert idx == 2
+    assert inferred == "int64"
+
+
+def test_parse_conflict_unknown_returns_none() -> None:
+    """Unrecognized message returns (None, None); caller handles the probe."""
+    idx, inferred = CSVHandler._parse_conflict("completely unrecognized error text")
+    assert idx is None
+    assert inferred is None
+
+
+def test_parse_conflict_unknown_falls_back_to_all_string(tmp_path: Path) -> None:
+    """Unknown conflict messages must fall back to all-string types."""
+    from unittest.mock import patch
+    import pyarrow as pa
+
+    csv_file = tmp_path / "typed.csv"
+    csv_file.write_text("a,b,c\n1,2,3\n")
+    seen_overrides = []
+
+    def fake_read(file_path, convert_options, count_rows=False, delimiter=","):
+        overrides = {k: str(v) for k, v in (convert_options.column_types or {}).items()}
+        seen_overrides.append(overrides)
+        if overrides == {"a": "string", "b": "string", "c": "string"}:
+            return (
+                {"a": "sc:Text", "b": "sc:Text", "c": "sc:Text"},
+                ["a", "b", "c"],
+                None,
+            )
+        raise pa.lib.ArrowInvalid("future pyarrow changed this message")
+
+    with patch.object(CSVHandler, "_parse_conflict", return_value=(None, None)):
+        with patch.object(CSVHandler, "_header", return_value=["a", "b", "c"]):
+            with patch.object(CSVHandler, "_read_streaming", side_effect=fake_read):
+                meta = CSVHandler().extract_metadata(csv_file)
+
+    assert meta["column_types"] == {"a": "sc:Text", "b": "sc:Text", "c": "sc:Text"}
+    assert seen_overrides == [{}, {"a": "string", "b": "string", "c": "string"}]
+
+
+def test_no_fd_leak_on_schema_only_reads(tmp_path: Path) -> None:
+    """50 sequential schema-only reads must not raise a resource error (#53).
+
+    CSVStreamingReader supports __exit__ (verified PyArrow 19.0.1); wrapping
+    open_csv in a context manager guarantees fd release on all runtimes.
+    """
+    content = "a,b,c\n1,2.0,hello\n"
+    files = [tmp_path / f"f{i}.csv" for i in range(50)]
+    for f in files:
+        f.write_text(content)
+
+    handler = CSVHandler()
+    for f in files:
+        handler.extract_metadata(f, count_rows=False)

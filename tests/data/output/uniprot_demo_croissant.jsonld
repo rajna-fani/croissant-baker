@@ -1,0 +1,292 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {
+      "@id": "cr:examples",
+      "@type": "@json"
+    },
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "samplingRate": "cr:samplingRate",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "name": "UniProt Human Reviewed (demo)",
+  "description": "200 reviewed human proteins from UniProt Swiss-Prot",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "citeAs": "Dataset Creator. (2026). UniProt Human Reviewed (demo) Dataset. Generated with automated type inference.",
+  "creator": {
+    "@type": "sc:Person",
+    "name": "UniProt Consortium"
+  },
+  "datePublished": "2025-01-01T00:00:00",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "url": "https://www.uniprot.org/uniprotkb?query=reviewed:true&organism_id=9606",
+  "version": "1.0.0",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "file_0",
+      "name": "uniprot_human_reviewed_200.tsv",
+      "contentSize": "282965",
+      "contentUrl": "uniprot_human_reviewed_200.tsv",
+      "encodingFormat": "text/tab-separated-values",
+      "sha256": "a7f5e1dee9b7186b2884b5838ecdb39657dbe7707cf5b97232f9447a3b4cad44"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "uniprot_human_reviewed_200",
+      "name": "uniprot_human_reviewed_200",
+      "description": "Records from uniprot_human_reviewed_200.tsv",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Entry",
+          "name": "Entry",
+          "description": "Column 'Entry' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Entry"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Entry_Name",
+          "name": "Entry Name",
+          "description": "Column 'Entry Name' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Entry Name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Protein_names",
+          "name": "Protein names",
+          "description": "Column 'Protein names' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Protein names"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Gene_Names",
+          "name": "Gene Names",
+          "description": "Column 'Gene Names' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Gene Names"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Organism",
+          "name": "Organism",
+          "description": "Column 'Organism' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Organism"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Length",
+          "name": "Length",
+          "description": "Column 'Length' from uniprot_human_reviewed_200.tsv",
+          "dataType": "cr:Int64",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Length"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Mass",
+          "name": "Mass",
+          "description": "Column 'Mass' from uniprot_human_reviewed_200.tsv",
+          "dataType": "cr:Int64",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Mass"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Sequence_version",
+          "name": "Sequence version",
+          "description": "Column 'Sequence version' from uniprot_human_reviewed_200.tsv",
+          "dataType": "cr:Int64",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Sequence version"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Signal_peptide",
+          "name": "Signal peptide",
+          "description": "Column 'Signal peptide' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Signal peptide"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Gene_Ontology__biological_process_",
+          "name": "Gene Ontology (biological process)",
+          "description": "Column 'Gene Ontology (biological process)' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Gene Ontology (biological process)"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Gene_Ontology__molecular_function_",
+          "name": "Gene Ontology (molecular function)",
+          "description": "Column 'Gene Ontology (molecular function)' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Gene Ontology (molecular function)"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Gene_Ontology__cellular_component_",
+          "name": "Gene Ontology (cellular component)",
+          "description": "Column 'Gene Ontology (cellular component)' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Gene Ontology (cellular component)"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Subcellular_location__CC_",
+          "name": "Subcellular location [CC]",
+          "description": "Column 'Subcellular location [CC]' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Subcellular location [CC]"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "uniprot_human_reviewed_200/Features",
+          "name": "Features",
+          "description": "Column 'Features' from uniprot_human_reviewed_200.tsv",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "file_0"
+            },
+            "extract": {
+              "column": "Features"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
