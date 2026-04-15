@@ -1,0 +1,94 @@
+# `croissant-baker`
+
+🥐 Generate Croissant metadata for datasets with automatic type inference
+
+**Usage**:
+
+```console
+$ croissant-baker [OPTIONS] COMMAND [ARGS]...
+```
+
+**Options**:
+
+* `-i, --input TEXT`: Directory containing dataset files
+* `-o, --output TEXT`: Output file path
+* `--validate / --no-validate`: Validate metadata before saving  [default: validate]
+* `--version`: Show version and exit
+* `--name TEXT`: Dataset name (defaults to directory name)
+* `--description TEXT`: Dataset description
+* `--url TEXT`: Dataset URL (e.g., https://example.com/dataset)
+* `--license TEXT`: License URL or SPDX identifier (e.g., CC-BY-4.0)
+* `--citation TEXT`: Citation text (preferably BibTeX format)
+* `--dataset-version TEXT`: Dataset version (e.g., 1.0.0)
+* `--date-published TEXT`: Publication date (e.g., 2023-12-15 or 2023-12-15T10:30:00)
+* `--creator TEXT`: Creator information. Format: 'Name[,Email[,URL]]'. Use multiple times for multiple creators. Examples: --creator 'John Doe' --creator 'Jane Smith,jane@example.com,https://jane.com'
+* `--count-csv-rows`: Count exact row numbers for CSV files (slow for large datasets)
+* `--rai-data-collection TEXT`: How and where the data was gathered.
+* `--rai-data-collection-type TEXT`: Collection type, e.g. 'observational'. Can be used multiple times.
+* `--rai-data-collection-missing-data TEXT`: How missing data was handled during collection.
+* `--rai-data-collection-raw-data TEXT`: Description of the raw data before processing.
+* `--rai-data-collection-timeframe TEXT`: Collection date or datetime in ISO format. Can be used multiple times.
+* `--rai-data-imputation-protocol TEXT`: How missing values were imputed.
+* `--rai-data-preprocessing-protocol TEXT`: Preprocessing step. Can be used multiple times.
+* `--rai-data-manipulation-protocol TEXT`: Transformations applied to the data.
+* `--rai-data-annotation-protocol TEXT`: Annotation procedure. Can be used multiple times.
+* `--rai-data-annotation-platform TEXT`: Annotation platform or tool. Can be used multiple times.
+* `--rai-data-annotation-analysis TEXT`: Annotation quality or agreement analysis. Can be used multiple times.
+* `--rai-annotations-per-item TEXT`: Annotation density, e.g. '3 annotators per item'.
+* `--rai-annotator-demographics TEXT`: Annotator demographic note. Can be used multiple times.
+* `--rai-machine-annotation-tools TEXT`: Automated annotation tool. Can be used multiple times.
+* `--rai-data-biases TEXT`: Known bias description. Can be used multiple times.
+* `--rai-data-use-cases TEXT`: Intended use case. Can be used multiple times.
+* `--rai-data-limitations TEXT`: Known limitation. Can be used multiple times.
+* `--rai-data-social-impact TEXT`: Potential social impact of using the dataset.
+* `--rai-personal-sensitive-information TEXT`: Sensitive information note. Can be used multiple times.
+* `--rai-data-release-maintenance-plan TEXT`: How the dataset release will be maintained over time.
+* `--rai-config FILE`: Path to a RAI config YAML file (see rai-example.yaml for the template)
+* `-I, --include TEXT`: Glob pattern to include (e.g., '*.csv'). Can be used multiple times.
+* `-E, --exclude TEXT`: Glob pattern to exclude (e.g., '*.tmp'). Can be used multiple times.
+* `--dry-run`: Perform a dry run to list matching files without generating metadata.
+* `--help`: Show this message and exit.
+
+**Commands**:
+
+* `rai-apply`: Apply RAI attributes from a config YAML to...
+* `validate`: Validate a Croissant metadata file.
+
+## `croissant-baker rai-apply`
+
+Apply RAI attributes from a config YAML to an existing Croissant file.
+
+**Usage**:
+
+```console
+$ croissant-baker rai-apply [OPTIONS] FILE_PATH
+```
+
+**Arguments**:
+
+* `FILE_PATH`: Croissant metadata file to update  [required]
+
+**Options**:
+
+* `--rai-config FILE`: RAI config YAML file  [required]
+* `-o, --output TEXT`: Output path (defaults to overwriting the input file)
+* `--validate / --no-validate`: Validate after applying RAI attributes  [default: validate]
+* `--help`: Show this message and exit.
+
+## `croissant-baker validate`
+
+Validate a Croissant metadata file.
+
+**Usage**:
+
+```console
+$ croissant-baker validate [OPTIONS] FILE_PATH
+```
+
+**Arguments**:
+
+* `FILE_PATH`: Path to Croissant metadata file  [required]
+
+**Options**:
+
+* `--help`: Show this message and exit.
