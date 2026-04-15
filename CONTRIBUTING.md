@@ -11,18 +11,14 @@ Thank you for your interest in contributing to Croissant Baker! This guide will 
 
 ## Getting started
 
-See the [README](README.md) for development setup instructions, including how to install dependencies with `uv` and configure pre-commit hooks.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for setup, testing, releases, and how to add new file handlers.
 
 ## Development workflow
 
 1. Create a branch from `main` for your changes.
-2. Make your changes, ensuring tests pass and pre-commit hooks are satisfied (see [Testing](README.md#testing) and [Pre-Commit Hooks & Code Quality](README.md#pre-commit-hooks--code-quality) in the README).
-3. Commit with a message following the [commit message conventions](README.md#commit-message-conventions).
+2. Make your changes, ensuring tests pass and pre-commit hooks are satisfied.
+3. Commit with a message following the [commit conventions](DEVELOPMENT.md#commit-message-conventions).
 4. Open a pull request against `main`.
-
-## Adding a new file handler
-
-One of the most impactful contributions is adding support for new file formats. The handler system is designed to be extensible. See the "Adding a New Handler" section in [docs/technical_overview.md](docs/technical_overview.md) for a step-by-step guide. The [technical overview](docs/technical_overview.md) also covers the project architecture and directory structure.
 
 ## Testing guidelines
 
@@ -36,7 +32,7 @@ One of the most impactful contributions is adding support for new file formats. 
 1. Ensure all tests pass locally (`uv run pytest -v`).
 2. Ensure pre-commit hooks pass (`uv run pre-commit run --all-files`).
 3. Write a clear PR description explaining what changed and why.
-4. CI will automatically run tests (Python 3.10 and 3.12) and pre-commit checks on your PR.
+4. CI will automatically run tests and pre-commit checks on your PR.
 5. A maintainer will review your PR and may request changes.
 
 ## License
