@@ -64,16 +64,35 @@ def _read_with_tifffile(file_path: Path) -> Dict:
 
     with tifffile.TiffFile(str(file_path)) as tif:
         page = tif.pages[0]
-        shape = page.shape  # (height, width) or (height, width, bands)
+        # Prefer the TIFF tags, which describe the logical image dimensions
+        # directly and are not affected by planar storage order.
+        width = getattr(page, "imagewidth", None)
+        height = getattr(page, "imagelength", None)
+        num_bands = getattr(page, "samplesperpixel", None)
 
-        height = shape[0]
-        width = shape[1]
-        num_bands = shape[2] if len(shape) > 2 else 1
+        if width is None or height is None or num_bands is None:
+            # Some TIFF variants expose dimensions more reliably through axes.
+            shape = getattr(page, "shape", ())
+            axes = getattr(page, "axes", "") or ""
+            shape_map = dict(zip(axes, shape)) if axes else {}
+
+            if width is None:
+                width = shape_map.get("X")
+            if height is None:
+                height = shape_map.get("Y")
+            if num_bands is None:
+                num_bands = shape_map.get("S")
+
+        if width is None or height is None:
+            raise ValueError(f"Unable to determine TIFF dimensions for {file_path}")
+
+        if num_bands is None:
+            num_bands = 1
 
         return {
-            "width": width,
-            "height": height,
-            "num_bands": num_bands,
+            "width": int(width),
+            "height": int(height),
+            "num_bands": int(num_bands),
             "image_format": "TIFF",
         }
 
