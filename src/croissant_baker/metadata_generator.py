@@ -3,9 +3,10 @@
 import json
 import tempfile
 from collections import defaultdict
-from pathlib import Path
 from datetime import datetime
-from typing import Optional, List, Dict
+from pathlib import Path
+from typing import Dict, List, Optional
+
 import mlcroissant as mlc
 
 from croissant_baker.files import discover_files
@@ -44,6 +45,7 @@ class MetadataGenerator:
         count_csv_rows: bool = False,
         includes: Optional[List[str]] = None,
         excludes: Optional[List[str]] = None,
+        rai_fields: Optional[Dict[str, object]] = None,
     ):
         """
         Initialize the metadata generator for a dataset.
@@ -63,6 +65,8 @@ class MetadataGenerator:
                 Defaults to False for performance.
             includes: Glob patterns to include. Applied before excludes.
             excludes: Glob patterns to exclude. Applied after includes.
+            rai_fields: Native mlcroissant RAI metadata fields to pass through
+                to mlc.Metadata unchanged.
 
         Raises:
             ValueError: If dataset_path is not a directory.
@@ -81,6 +85,7 @@ class MetadataGenerator:
         self.creators = creators
         self.includes = includes
         self.excludes = excludes
+        self.rai_fields = rai_fields or {}
         # Generic options forwarded to every handler via **kwargs.
         # Handlers declare what they use; others ignore the rest.
         # To add a new handler-specific flag: add one key here — the call site never changes.
@@ -122,6 +127,7 @@ class MetadataGenerator:
             date_published=self._resolve_date(),
             version=self.version or "1.0.0",
             cite_as=self._build_citation(),
+            **self.rai_fields,
         )
 
         # distributions holds both FileObjects and FileSets — the full contents

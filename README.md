@@ -98,6 +98,23 @@ croissant-baker validate my-metadata.jsonld
 
 Croissant Baker supports the [RAI extension](https://github.com/mlcommons/croissant/blob/main/docs/croissant-rai-spec.md) for documenting fairness, lineage, and data collection activities. RAI attributes can be described in a YAML config file and injected into the Croissant JSON-LD output.
 
+There are two ways to add RAI metadata:
+
+1. Native `--rai-*` flags for the dataset-level RAI fields already supported by `mlcroissant`
+2. `--rai-config` YAML for the richer authored workflow, including provenance and activities
+
+**Use native CLI flags for the common dataset-level fields:**
+
+```bash
+croissant-baker --input /path/to/dataset \
+  --creator "Jane Doe" \
+  --rai-data-biases "Single-site cohort" \
+  --rai-data-limitations "Adults only" \
+  --rai-data-social-impact "May improve care, but may also amplify disparities" \
+  --rai-personal-sensitive-information "De-identified health records" \
+  --output my-metadata.jsonld
+```
+
 **Generate metadata with RAI in one step:**
 
 ```bash
@@ -112,6 +129,8 @@ croissant-baker --input /path/to/dataset \
 ```bash
 croissant-baker rai-apply my-metadata.jsonld --rai-config rai.yaml
 ```
+
+Native `--rai-*` flags and `--rai-config` are intentionally separate workflows and cannot be combined in the same command.
 
 The YAML config covers three areas:
 

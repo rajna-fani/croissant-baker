@@ -1,13 +1,15 @@
 """Command-line interface for Croissant Baker."""
 
 import csv
+from datetime import datetime
 import json
 import tempfile
-import typer
-from pathlib import Path
 import importlib.metadata
+from pathlib import Path
+from typing import List, Optional
+
+import typer
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from typing import Optional, List
 
 from croissant_baker.metadata_generator import MetadataGenerator, serialize_datetime
 from croissant_baker.files import discover_files
@@ -107,6 +109,8 @@ _SPEC_REQUIRED_FLAGS = {
     "date_published": "--date-published",
 }
 
+_RAI_CONFORMS_TO = "http://mlcommons.org/croissant/RAI/1.0"
+
 
 def _warn_missing_spec_fields(**provided: object) -> None:
     """Warn about spec-required fields that were not explicitly provided."""
@@ -120,6 +124,135 @@ def _warn_missing_spec_fields(**provided: object) -> None:
             "  See: https://docs.mlcommons.org/croissant/docs/croissant-spec.html",
             err=True,
         )
+
+
+def _normalize_optional_text(value: Optional[str]) -> Optional[str]:
+    """Strip a text option and collapse empty strings to None."""
+    if value is None:
+        return None
+    value = value.strip()
+    return value or None
+
+
+def _normalize_optional_text_list(values: Optional[List[str]]) -> Optional[List[str]]:
+    """Strip repeated text options and drop empty items."""
+    if not values:
+        return None
+    normalized = [value.strip() for value in values if value and value.strip()]
+    return normalized or None
+
+
+def _validate_iso_datetimes(option_name: str, values: Optional[List[str]]) -> None:
+    """Validate repeated date/datetime options and raise a CLI-friendly error."""
+    if not values:
+        return
+    for value in values:
+        try:
+            datetime.fromisoformat(value)
+        except ValueError as e:
+            raise ValueError(
+                f"Invalid date format for {option_name}: '{value}'. "
+                "Expected ISO format like '2023-12-15' or '2023-12-15T10:30:00'. "
+                f"Error: {e}"
+            )
+
+
+def _build_native_rai_fields(
+    *,
+    rai_data_collection: Optional[str],
+    rai_data_collection_type: Optional[List[str]],
+    rai_data_collection_missing_data: Optional[str],
+    rai_data_collection_raw_data: Optional[str],
+    rai_data_collection_timeframe: Optional[List[str]],
+    rai_data_imputation_protocol: Optional[str],
+    rai_data_preprocessing_protocol: Optional[List[str]],
+    rai_data_manipulation_protocol: Optional[str],
+    rai_data_annotation_protocol: Optional[List[str]],
+    rai_data_annotation_platform: Optional[List[str]],
+    rai_data_annotation_analysis: Optional[List[str]],
+    rai_annotations_per_item: Optional[str],
+    rai_annotator_demographics: Optional[List[str]],
+    rai_machine_annotation_tools: Optional[List[str]],
+    rai_data_biases: Optional[List[str]],
+    rai_data_use_cases: Optional[List[str]],
+    rai_data_limitations: Optional[List[str]],
+    rai_data_social_impact: Optional[str],
+    rai_personal_sensitive_information: Optional[List[str]],
+    rai_data_release_maintenance_plan: Optional[str],
+) -> dict[str, object]:
+    """Collect native mlcroissant RAI fields from CLI options."""
+    rai_fields: dict[str, object] = {
+        "data_collection": _normalize_optional_text(rai_data_collection),
+        "data_collection_type": _normalize_optional_text_list(rai_data_collection_type),
+        "data_collection_missing_data": _normalize_optional_text(
+            rai_data_collection_missing_data
+        ),
+        "data_collection_raw_data": _normalize_optional_text(
+            rai_data_collection_raw_data
+        ),
+        "data_collection_timeframe": _normalize_optional_text_list(
+            rai_data_collection_timeframe
+        ),
+        "data_imputation_protocol": _normalize_optional_text(
+            rai_data_imputation_protocol
+        ),
+        "data_preprocessing_protocol": _normalize_optional_text_list(
+            rai_data_preprocessing_protocol
+        ),
+        "data_manipulation_protocol": _normalize_optional_text(
+            rai_data_manipulation_protocol
+        ),
+        "data_annotation_protocol": _normalize_optional_text_list(
+            rai_data_annotation_protocol
+        ),
+        "data_annotation_platform": _normalize_optional_text_list(
+            rai_data_annotation_platform
+        ),
+        "data_annotation_analysis": _normalize_optional_text_list(
+            rai_data_annotation_analysis
+        ),
+        "annotations_per_item": _normalize_optional_text(rai_annotations_per_item),
+        "annotator_demographics": _normalize_optional_text_list(
+            rai_annotator_demographics
+        ),
+        "machine_annotation_tools": _normalize_optional_text_list(
+            rai_machine_annotation_tools
+        ),
+        "data_biases": _normalize_optional_text_list(rai_data_biases),
+        "data_use_cases": _normalize_optional_text_list(rai_data_use_cases),
+        "data_limitations": _normalize_optional_text_list(rai_data_limitations),
+        "data_social_impact": _normalize_optional_text(rai_data_social_impact),
+        "personal_sensitive_information": _normalize_optional_text_list(
+            rai_personal_sensitive_information
+        ),
+        "data_release_maintenance_plan": _normalize_optional_text(
+            rai_data_release_maintenance_plan
+        ),
+    }
+    _validate_iso_datetimes(
+        "--rai-data-collection-timeframe", rai_fields["data_collection_timeframe"]
+    )
+    return {key: value for key, value in rai_fields.items() if value is not None}
+
+
+def _ensure_rai_conforms_to(metadata_dict: dict, force: bool = False) -> None:
+    """Declare the RAI spec when RAI metadata is present or explicitly requested."""
+    if not force and not any(key.startswith("rai:") for key in metadata_dict):
+        return
+
+    conforms_to = metadata_dict.get("conformsTo")
+    if conforms_to is None:
+        metadata_dict["conformsTo"] = [_RAI_CONFORMS_TO]
+        return
+    if isinstance(conforms_to, str):
+        metadata_dict["conformsTo"] = (
+            [conforms_to]
+            if conforms_to == _RAI_CONFORMS_TO
+            else [conforms_to, _RAI_CONFORMS_TO]
+        )
+        return
+    if isinstance(conforms_to, list) and _RAI_CONFORMS_TO not in conforms_to:
+        conforms_to.append(_RAI_CONFORMS_TO)
 
 
 @app.callback(invoke_without_command=True)
@@ -170,6 +303,105 @@ def main(
         False,
         "--count-csv-rows",
         help="Count exact row numbers for CSV files (slow for large datasets)",
+    ),
+    # Native mlcroissant RAI fields exposed directly as CLI flags.
+    rai_data_collection: Optional[str] = typer.Option(
+        None, "--rai-data-collection", help="How and where the data was gathered."
+    ),
+    rai_data_collection_type: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-collection-type",
+        help="Collection type, e.g. 'observational'. Can be used multiple times.",
+    ),
+    rai_data_collection_missing_data: Optional[str] = typer.Option(
+        None,
+        "--rai-data-collection-missing-data",
+        help="How missing data was handled during collection.",
+    ),
+    rai_data_collection_raw_data: Optional[str] = typer.Option(
+        None,
+        "--rai-data-collection-raw-data",
+        help="Description of the raw data before processing.",
+    ),
+    rai_data_collection_timeframe: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-collection-timeframe",
+        help=("Collection date or datetime in ISO format. Can be used multiple times."),
+    ),
+    rai_data_imputation_protocol: Optional[str] = typer.Option(
+        None,
+        "--rai-data-imputation-protocol",
+        help="How missing values were imputed.",
+    ),
+    rai_data_preprocessing_protocol: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-preprocessing-protocol",
+        help="Preprocessing step. Can be used multiple times.",
+    ),
+    rai_data_manipulation_protocol: Optional[str] = typer.Option(
+        None,
+        "--rai-data-manipulation-protocol",
+        help="Transformations applied to the data.",
+    ),
+    rai_data_annotation_protocol: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-annotation-protocol",
+        help="Annotation procedure. Can be used multiple times.",
+    ),
+    rai_data_annotation_platform: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-annotation-platform",
+        help="Annotation platform or tool. Can be used multiple times.",
+    ),
+    rai_data_annotation_analysis: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-annotation-analysis",
+        help="Annotation quality or agreement analysis. Can be used multiple times.",
+    ),
+    rai_annotations_per_item: Optional[str] = typer.Option(
+        None,
+        "--rai-annotations-per-item",
+        help="Annotation density, e.g. '3 annotators per item'.",
+    ),
+    rai_annotator_demographics: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-annotator-demographics",
+        help="Annotator demographic note. Can be used multiple times.",
+    ),
+    rai_machine_annotation_tools: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-machine-annotation-tools",
+        help="Automated annotation tool. Can be used multiple times.",
+    ),
+    rai_data_biases: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-biases",
+        help="Known bias description. Can be used multiple times.",
+    ),
+    rai_data_use_cases: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-use-cases",
+        help="Intended use case. Can be used multiple times.",
+    ),
+    rai_data_limitations: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-data-limitations",
+        help="Known limitation. Can be used multiple times.",
+    ),
+    rai_data_social_impact: Optional[str] = typer.Option(
+        None,
+        "--rai-data-social-impact",
+        help="Potential social impact of using the dataset.",
+    ),
+    rai_personal_sensitive_information: Optional[List[str]] = typer.Option(
+        None,
+        "--rai-personal-sensitive-information",
+        help="Sensitive information note. Can be used multiple times.",
+    ),
+    rai_data_release_maintenance_plan: Optional[str] = typer.Option(
+        None,
+        "--rai-data-release-maintenance-plan",
+        help="How the dataset release will be maintained over time.",
     ),
     rai_config: Optional[Path] = typer.Option(
         None,
@@ -259,6 +491,38 @@ def main(
         return
 
     try:
+        native_rai_fields = _build_native_rai_fields(
+            rai_data_collection=rai_data_collection,
+            rai_data_collection_type=rai_data_collection_type,
+            rai_data_collection_missing_data=rai_data_collection_missing_data,
+            rai_data_collection_raw_data=rai_data_collection_raw_data,
+            rai_data_collection_timeframe=rai_data_collection_timeframe,
+            rai_data_imputation_protocol=rai_data_imputation_protocol,
+            rai_data_preprocessing_protocol=rai_data_preprocessing_protocol,
+            rai_data_manipulation_protocol=rai_data_manipulation_protocol,
+            rai_data_annotation_protocol=rai_data_annotation_protocol,
+            rai_data_annotation_platform=rai_data_annotation_platform,
+            rai_data_annotation_analysis=rai_data_annotation_analysis,
+            rai_annotations_per_item=rai_annotations_per_item,
+            rai_annotator_demographics=rai_annotator_demographics,
+            rai_machine_annotation_tools=rai_machine_annotation_tools,
+            rai_data_biases=rai_data_biases,
+            rai_data_use_cases=rai_data_use_cases,
+            rai_data_limitations=rai_data_limitations,
+            rai_data_social_impact=rai_data_social_impact,
+            rai_personal_sensitive_information=rai_personal_sensitive_information,
+            rai_data_release_maintenance_plan=rai_data_release_maintenance_plan,
+        )
+
+        if rai_config and native_rai_fields:
+            typer.echo(
+                "Error: native --rai-* flags cannot be combined with --rai-config. "
+                "Use direct flags for native mlcroissant RAI fields, or --rai-config "
+                "for the richer YAML-based workflow.",
+                err=True,
+            )
+            raise typer.Exit(code=1)
+
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
@@ -324,6 +588,7 @@ def main(
                 count_csv_rows=count_csv_rows,
                 includes=include,
                 excludes=exclude,
+                rai_fields=native_rai_fields,
             )
 
             # Generate metadata
@@ -336,6 +601,10 @@ def main(
 
                 rai = load_rai_config(rai_config)
                 metadata_dict = inject_rai(metadata_dict, rai)
+
+            _ensure_rai_conforms_to(
+                metadata_dict, force=bool(rai_config or native_rai_fields)
+            )
 
             # Save and optionally validate
             if validate:
@@ -415,6 +684,7 @@ def rai_apply(
 
         rai = load_rai_config(rai_config)
         metadata_dict = inject_rai(metadata_dict, rai)
+        _ensure_rai_conforms_to(metadata_dict, force=True)
 
         dest = str(Path(output) if output else input_path)
         _save_dict(metadata_dict, dest, validate=validate)

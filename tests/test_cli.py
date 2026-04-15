@@ -278,6 +278,8 @@ def test_help_and_version() -> None:
     assert result.exit_code == 0
     stdout = _strip_ansi(result.stdout)
     assert "--creator" in stdout
+    assert "--rai-data-biases" in stdout
+    assert "--rai-config" in stdout
     assert "--include" in stdout
     assert "--exclude" in stdout
     assert "--dry-run" in stdout
@@ -409,3 +411,149 @@ def test_exclude_filter_omits_matching_files(
     metadata = json.loads(output.read_text())
     names = [d["name"] for d in metadata.get("distribution", [])]
     assert not any("temp" in n for n in names)
+
+
+def test_native_rai_flags_generate_metadata(csv_dataset: Path, tmp_path: Path) -> None:
+    """Native --rai-* flags should flow into mlcroissant metadata output."""
+    output = tmp_path / "output.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Alice Smith",
+            "--rai-data-biases",
+            "Single-site cohort",
+            "--rai-data-biases",
+            "Adults only",
+            "--rai-data-limitations",
+            "Not representative of pediatric patients",
+            "--rai-data-social-impact",
+            "May improve triage research",
+            "--rai-personal-sensitive-information",
+            "Contains de-identified health records",
+            "--rai-data-use-cases",
+            "Benchmarking",
+            "--rai-data-collection-timeframe",
+            "2023-01-01",
+            "--rai-data-collection-timeframe",
+            "2023-06-01T12:30:00",
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+
+    metadata = json.loads(output.read_text())
+
+    assert metadata["rai:dataBiases"] == ["Single-site cohort", "Adults only"]
+    assert metadata["rai:dataLimitations"] == (
+        "Not representative of pediatric patients"
+    )
+    assert metadata["rai:dataSocialImpact"] == "May improve triage research"
+    assert metadata["rai:personalSensitiveInformation"] == (
+        "Contains de-identified health records"
+    )
+    assert metadata["rai:dataUseCases"] == "Benchmarking"
+    assert metadata["conformsTo"] == [
+        "http://mlcommons.org/croissant/1.0",
+        "http://mlcommons.org/croissant/RAI/1.0",
+    ]
+    assert metadata["rai:dataCollectionTimeFrame"] == [
+        "2023-01-01T00:00:00",
+        "2023-06-01T12:30:00",
+    ]
+
+
+def test_native_rai_timeframe_invalid_format(csv_dataset: Path, tmp_path: Path) -> None:
+    """Invalid native RAI timeframe values should fail with a clear error."""
+    output = tmp_path / "output.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Alice Smith",
+            "--rai-data-collection-timeframe",
+            "not-a-date",
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "Invalid date format for --rai-data-collection-timeframe" in result.stderr
+
+
+def test_native_rai_flags_conflict_with_yaml(csv_dataset: Path, tmp_path: Path) -> None:
+    """Users must choose either native --rai-* flags or --rai-config."""
+    output = tmp_path / "output.jsonld"
+    rai_yaml = tmp_path / "rai.yaml"
+    rai_yaml.write_text("ai_fairness:\n  data_bias: Example bias\n", encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Alice Smith",
+            "--rai-config",
+            str(rai_yaml),
+            "--rai-data-biases",
+            "Single-site cohort",
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "cannot be combined with --rai-config" in result.stderr
+
+
+def test_yaml_rai_workflow_declares_rai_conformance(
+    csv_dataset: Path, tmp_path: Path
+) -> None:
+    """The YAML-based RAI workflow should also declare RAI conformance."""
+    output = tmp_path / "output.jsonld"
+    rai_yaml = tmp_path / "rai.yaml"
+    rai_yaml.write_text(
+        """
+lineage:
+  source_datasets:
+    - url: https://example.org/source
+      name: Example source
+""".strip(),
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Alice Smith",
+            "--rai-config",
+            str(rai_yaml),
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+
+    metadata = json.loads(output.read_text())
+    assert metadata["conformsTo"] == [
+        "http://mlcommons.org/croissant/1.0",
+        "http://mlcommons.org/croissant/RAI/1.0",
+    ]
