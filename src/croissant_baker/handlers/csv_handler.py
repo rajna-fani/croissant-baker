@@ -71,6 +71,10 @@ class CSVHandler(FileTypeHandler):
     can_handle(), _delimiter(), and _encoding_format(). See TSVHandler.
     """
 
+    EXTENSIONS = (".csv", ".csv.gz", ".csv.bz2", ".csv.xz")
+    FORMAT_NAME = "CSV"
+    FORMAT_DESCRIPTION = "Column names, inferred types, optional row count"
+
     # Common timestamp formats for medical/clinical data beyond ISO-8601.
     # PyArrow uses ISO8601 by default; these cover additional patterns found
     # in datasets like MIMIC, eICU, and OMOP.

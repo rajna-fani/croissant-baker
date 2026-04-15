@@ -42,6 +42,10 @@ class JSONHandler(FileTypeHandler):
       FHIR resourceType pattern and the content starts with ``[`` (array) or ``{`` (object).
     """
 
+    EXTENSIONS = (".json", ".json.gz", ".jsonl", ".jsonl.gz")
+    FORMAT_NAME = "JSON / JSONL"
+    FORMAT_DESCRIPTION = "Schema inferred from a sample of records"
+
     def can_handle(self, file_path: Path) -> bool:
         name = file_path.name.lower()
         if name.endswith(".jsonl") or name.endswith(".jsonl.gz"):

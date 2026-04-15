@@ -25,6 +25,10 @@ class WFDBHandler(FileTypeHandler):
     cr:FileObject in the Croissant metadata, but they all describe one RecordSet.
     """
 
+    EXTENSIONS = (".hea",)
+    FORMAT_NAME = "WFDB"
+    FORMAT_DESCRIPTION = "Signal names, sampling frequency, duration, number of signals"
+
     def can_handle(self, file_path: Path) -> bool:
         return file_path.suffix.lower() == ".hea"
 

@@ -118,6 +118,10 @@ class FHIRHandler(FileTypeHandler):
       JSON files (e.g. a future OMOP JSON handler) are not claimed here.
     """
 
+    EXTENSIONS = (".ndjson", ".ndjson.gz", ".json", ".json.gz")
+    FORMAT_NAME = "FHIR"
+    FORMAT_DESCRIPTION = "Resource types, field names and types per resource"
+
     def can_handle(self, file_path: Path) -> bool:
         name = file_path.name.lower()
         if name.endswith(".ndjson") or name.endswith(".ndjson.gz"):
