@@ -18,8 +18,21 @@ from croissant_baker.handlers.utils import (
 
 logger = logging.getLogger(__name__)
 
-# Pattern for extracting the column index and inferred type from ArrowInvalid.
-# PyArrow does not expose this via API; format may change in future versions.
+# Pattern for extracting column index and inferred type from an ArrowInvalid
+# exception message. PyArrow exposes no structured attributes on ArrowInvalid
+# (verified PyArrow 19.0.1: only .args, .add_note, .with_traceback), so the
+# message string is the only source of column information.
+#
+# Two alternatives were evaluated and ruled out:
+#   DuckDB  — automatic type promotion with no regex, but does not support
+#             .csv.bz2 or .csv.xz (upstream issue duckdb/duckdb#12232, open
+#             as of 2026-04). Keeping both libraries would add ~40 MB for a
+#             net capability regression.
+#   Polars  — structured Schema object, no message parsing. However,
+#             collect_schema() on a 35 MB .csv.gz uses ~200 MB RSS vs ~11 MB
+#             for PyArrow's block-based streaming reader. Unacceptable at
+#             MIMIC-IV scale. If .bz2/.xz support is ever dropped, DuckDB's
+#             read_csv_auto is the right long-term replacement.
 _ARROW_COL_RE = re.compile(r"In CSV column #(\d+): CSV conversion error to (\w+)")
 
 # Max promotions before falling back to all-string types. One retry per conflicting
@@ -50,8 +63,12 @@ class CSVHandler(FileTypeHandler):
        (e.g. a float in an integer column), the affected column is promoted
        to a wider type and the file is re-read. Integer columns are first
        widened to float64; any remaining conflicts fall back to string.
-       Only the conflicting column is overridden -- all others keep their
-       inferred types.
+       Only the conflicting column is overridden — all others keep their
+       inferred types. If the conflicting column cannot be identified, the
+       file falls back to all-string types to preserve correctness.
+
+    Subclass this to support other delimiter-separated formats — override
+    can_handle(), _delimiter(), and _encoding_format(). See TSVHandler.
     """
 
     # Common timestamp formats for medical/clinical data beyond ISO-8601.
@@ -72,8 +89,9 @@ class CSVHandler(FileTypeHandler):
 
     def _stream_csv(self, file_path: Path, count_rows: bool = False):
         """Return (column_types, columns, num_rows) by streaming the CSV."""
-        overrides = {}
-        col_names = None
+        overrides: dict = {}
+        col_names: list | None = None
+        delimiter = self._delimiter(file_path)
 
         for _ in range(_MAX_TYPE_CONFLICT_RETRIES):
             opts = pa_csv.ConvertOptions(
@@ -81,7 +99,9 @@ class CSVHandler(FileTypeHandler):
                 column_types=overrides or None,
             )
             try:
-                result = self._read_streaming(file_path, opts, count_rows=count_rows)
+                result = self._read_streaming(
+                    file_path, opts, count_rows=count_rows, delimiter=delimiter
+                )
                 if overrides:
                     logger.info(
                         "%s: promoted %d column(s) due to type conflicts",
@@ -90,33 +110,31 @@ class CSVHandler(FileTypeHandler):
                     )
                 return result
             except pa.lib.ArrowInvalid as exc:
-                idx, inferred = self._parse_conflict(str(exc))
-                if idx is None:
-                    break
-
                 if col_names is None:
-                    col_names = self._header(file_path)
-                if idx >= len(col_names):
-                    break
+                    col_names = self._header(file_path, delimiter=delimiter)
 
-                name = col_names[idx]
-                # int/uint → float64 preserves numeric; other types → string
-                if inferred.startswith(("int", "uint")) and name not in overrides:
-                    overrides[name] = pa.float64()
+                idx, inferred = self._parse_conflict(str(exc))
+
+                if idx is not None and idx < len(col_names):
+                    # Known conflict: promote the specific column.
+                    name = col_names[idx]
+                    # int/uint → float64 preserves numeric; other types → string.
+                    if inferred.startswith(("int", "uint")) and name not in overrides:
+                        overrides[name] = pa.float64()
+                    else:
+                        overrides[name] = pa.string()
+                    logger.debug(
+                        "%s: promoted column '%s' to %s",
+                        file_path.name,
+                        name,
+                        overrides[name],
+                    )
                 else:
-                    overrides[name] = pa.string()
-
-                logger.debug(
-                    "%s: promoted column '%s' to %s",
-                    file_path.name,
-                    name,
-                    overrides[name],
-                )
-                continue
+                    break
 
         # Last resort: read everything as strings.
         if col_names is None:
-            col_names = self._header(file_path)
+            col_names = self._header(file_path, delimiter=delimiter)
         if len(overrides) >= _MAX_TYPE_CONFLICT_RETRIES:
             logger.warning(
                 "%s: hit type conflict limit (%d), falling back to all-string types",
@@ -131,43 +149,78 @@ class CSVHandler(FileTypeHandler):
         opts = pa_csv.ConvertOptions(
             column_types={n: pa.string() for n in col_names},
         )
-        return self._read_streaming(file_path, opts, count_rows=count_rows)
+        return self._read_streaming(
+            file_path, opts, count_rows=count_rows, delimiter=delimiter
+        )
 
     @staticmethod
-    def _read_streaming(file_path: Path, convert_options, count_rows: bool = False):
-        """Open a streaming CSV reader, extract schema, and optionally count rows."""
+    def _read_streaming(
+        file_path: Path,
+        convert_options,
+        count_rows: bool = False,
+        delimiter: str = ",",
+    ):
+        """Open a streaming reader, extract schema, and optionally count rows.
+
+        Uses a context manager so the file descriptor is released immediately
+        on exit — whether count_rows is True or False. Without it, CPython's
+        reference-counting GC closes the fd on function return, but this is not
+        guaranteed under PyPy or when an exception traceback holds a reference
+        to the local frame. CSVStreamingReader implements __enter__/__exit__
+        and has done so since PyArrow 3.x.
+        """
+        parse_options = pa_csv.ParseOptions(delimiter=delimiter)
         try:
-            reader = pa_csv.open_csv(
+            reader_cm = pa_csv.open_csv(
                 str(file_path),
                 convert_options=convert_options,
+                parse_options=parse_options,
             )
         except UnicodeDecodeError as exc:
             raise ValueError(f"Encoding error in {file_path}: {exc}")
 
-        schema = reader.schema
-        column_types = infer_column_types_from_arrow_schema(schema)
-        columns = schema.names
-
-        if count_rows:
-            num_rows = 0
-            for batch in reader:
-                num_rows += batch.num_rows
-        else:
-            num_rows = None
+        with reader_cm as reader:
+            schema = reader.schema
+            column_types = infer_column_types_from_arrow_schema(schema)
+            columns = schema.names
+            num_rows = sum(batch.num_rows for batch in reader) if count_rows else None
 
         return column_types, columns, num_rows
 
     @staticmethod
-    def _parse_conflict(msg):
+    def _parse_conflict(msg: str):
+        """Extract (column_index, inferred_type) from an ArrowInvalid message.
+
+        Returns (None, None) when the message doesn't match the known format.
+        The caller then falls back to all-string types for correctness.
+        """
         m = _ARROW_COL_RE.search(msg)
         return (int(m.group(1)), m.group(2)) if m else (None, None)
 
     @staticmethod
-    def _header(file_path: Path):
-        reader = pa_csv.open_csv(str(file_path))
-        names = reader.schema.names
-        del reader
-        return names
+    def _header(file_path: Path, delimiter: str = ",") -> list[str]:
+        with pa_csv.open_csv(
+            str(file_path),
+            parse_options=pa_csv.ParseOptions(delimiter=delimiter),
+        ) as reader:
+            return reader.schema.names
+
+    @staticmethod
+    def _delimiter(file_path: Path) -> str:  # noqa: ARG004
+        """Return the field delimiter for this file. Override in subclasses."""
+        return ","
+
+    @staticmethod
+    def _encoding_format(file_path: Path) -> str:
+        """Return the IANA media type for this file. Override in subclasses."""
+        name_lower = file_path.name.lower()
+        if name_lower.endswith(".csv.gz"):
+            return "application/gzip"
+        if name_lower.endswith(".csv.bz2"):
+            return "application/x-bzip2"
+        if name_lower.endswith(".csv.xz"):
+            return "application/x-xz"
+        return "text/csv"
 
     # ------------------------------------------------------------------
     # FileTypeHandler interface
@@ -230,15 +283,7 @@ class CSVHandler(FileTypeHandler):
         sha256_hash = compute_file_hash(file_path)
 
         # Determine encoding format based on file extension
-        name_lower = file_path.name.lower()
-        if name_lower.endswith(".csv.gz"):
-            encoding_format = "application/gzip"
-        elif name_lower.endswith(".csv.bz2"):
-            encoding_format = "application/x-bzip2"
-        elif name_lower.endswith(".csv.xz"):
-            encoding_format = "application/x-xz"
-        else:
-            encoding_format = "text/csv"
+        encoding_format = self._encoding_format(file_path)
 
         return {
             "file_path": str(file_path),

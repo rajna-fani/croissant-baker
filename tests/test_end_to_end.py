@@ -1133,3 +1133,75 @@ def test_gharchive_demo_generation(gharchive_demo_path: Path, output_dir: Path) 
     actor_field = next((f for f in rs["field"] if f["name"] == "actor"), None)
     assert actor_field is not None
     assert "subField" in actor_field, "actor should expand to subFields (nested struct)"
+
+
+# ---------------------------------------------------------------------------
+# UniProt TSV — real-world TSV end-to-end
+# ---------------------------------------------------------------------------
+#
+# Dataset: UniProt reviewed human proteins (Swiss-Prot)
+# Columns: 14 — integers (Length, Mass), free text, GO terms, empty cells
+# To refresh:
+#   curl "https://rest.uniprot.org/uniprotkb/search?query=reviewed:true+AND+organism_id:9606&format=tsv&size=200&fields=accession,id,protein_name,gene_names,organism_name,length,mass,sequence_version,ft_signal,go_p,go_f,go_c,cc_subcellular_location,feature_count" \
+#     -o tests/data/input/uniprot_demo/uniprot_human_reviewed_200.tsv
+
+
+@pytest.fixture
+def uniprot_demo_path() -> Path:
+    p = Path(__file__).parent / "data" / "input" / "uniprot_demo"
+    if not p.exists():
+        pytest.skip("UniProt demo dataset not found")
+    return p
+
+
+def test_uniprot_tsv_generation(uniprot_demo_path: Path, output_dir: Path) -> None:
+    """End-to-end generation from a real-world TSV dataset (UniProt Swiss-Prot).
+
+    Tests: TSVHandler type inference, correct MIME type, Croissant output structure,
+    and that integer columns (Length, Mass) are not inferred as strings.
+    """
+    output_file = output_dir / "uniprot_demo_croissant.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "-i",
+            str(uniprot_demo_path),
+            "-o",
+            str(output_file),
+            "--name",
+            "UniProt Human Reviewed (demo)",
+            "--description",
+            "200 reviewed human proteins from UniProt Swiss-Prot",
+            "--url",
+            "https://www.uniprot.org/uniprotkb?query=reviewed:true&organism_id=9606",
+            "--date-published",
+            "2025-01-01",
+            "--creator",
+            "UniProt Consortium",
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 0, f"CLI failed:\n{result.output}"
+    assert output_file.exists()
+
+    with open(output_file) as f:
+        metadata = json.load(f)
+
+    record_sets = metadata.get("recordSet", [])
+    assert len(record_sets) == 1
+
+    fields = {
+        f["name"]: (
+            [f["dataType"]]
+            if isinstance(f.get("dataType"), str)
+            else f.get("dataType", [])
+        )
+        for f in record_sets[0].get("field", [])
+    }
+    assert len(fields) == 14
+
+    # Length and Mass are integers in UniProt — must not fall back to sc:Text
+    assert any("Int" in t for t in fields.get("Length", [])), fields.get("Length")
+    assert any("Int" in t for t in fields.get("Mass", [])), fields.get("Mass")
