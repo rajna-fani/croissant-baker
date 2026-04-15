@@ -33,7 +33,10 @@ class WFDBHandler(FileTypeHandler):
             raise FileNotFoundError(f"WFDB header file not found: {file_path}")
 
         record_path = file_path.with_suffix("")
-        record = wfdb.rdheader(str(record_path))
+        try:
+            record = wfdb.rdheader(str(record_path))
+        except Exception as e:
+            raise ValueError(f"Failed to read WFDB header {file_path}: {e}") from e
 
         dat_file = file_path.with_suffix(".dat")
         if not dat_file.exists():
