@@ -5785,10 +5785,10 @@
     }
   ],
   "rai:dataLimitations": "Data originates from a single academic medical centre in the northeastern United States. Findings may not generalise to other hospital systems, countries, or patient demographics. Not intended for direct clinical decision-making.",
-  "rai:dataBias": "The patient population skews toward English-speaking adults; paediatric and non-English-speaking patients are under-represented.",
+  "rai:dataBiases": "The patient population skews toward English-speaking adults; paediatric and non-English-speaking patients are under-represented.",
   "rai:personalSensitiveInformation": "The dataset contains de-identified patient health records. Re-identification risk has been minimised via HIPAA Safe Harbor procedures. Access is restricted to credentialed researchers who have signed a data use agreement.",
   "rai:dataUseCases": "Benchmarking clinical natural language processing and machine learning models. Supporting research into hospital readmission, mortality prediction, and clinical decision support. Not intended for direct clinical decision-making.",
-  "rai:socialImpact": "This dataset enables research that could improve clinical AI tools and patient outcomes. However, models trained on biased data risk perpetuating health disparities if deployed without careful evaluation.",
+  "rai:dataSocialImpact": "This dataset enables research that could improve clinical AI tools and patient outcomes. However, models trained on biased data risk perpetuating health disparities if deployed without careful evaluation.",
   "rai:hasSyntheticData": false,
   "prov:wasDerivedFrom": [
     {

@@ -28,10 +28,10 @@ MIMICIV_PATH = (
 _RAI_PROV_KEYS = [
     "prov:wasGeneratedBy",
     "rai:dataLimitations",
-    "rai:dataBias",
+    "rai:dataBiases",
     "rai:personalSensitiveInformation",
     "rai:dataUseCases",
-    "rai:socialImpact",
+    "rai:dataSocialImpact",
     "prov:wasDerivedFrom",
 ]
 

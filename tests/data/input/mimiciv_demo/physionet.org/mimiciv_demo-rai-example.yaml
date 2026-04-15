@@ -9,7 +9,7 @@ ai_fairness:
     countries, or patient demographics. Not intended for direct clinical
     decision-making.
 
-  data_bias: >
+  data_biases: >
     The patient population skews toward English-speaking adults; paediatric
     and non-English-speaking patients are under-represented.
 
@@ -24,7 +24,7 @@ ai_fairness:
     prediction, and clinical decision support. Not intended for direct
     clinical decision-making.
 
-  social_impact: >
+  data_social_impact: >
     This dataset enables research that could improve clinical AI tools and
     patient outcomes. However, models trained on biased data risk perpetuating
     health disparities if deployed without careful evaluation.

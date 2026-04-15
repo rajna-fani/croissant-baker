@@ -12,10 +12,10 @@ from typing import Optional
 @dataclass
 class AIFairnessConfig:
     data_limitations: Optional[str] = None
-    data_bias: Optional[str] = None
+    data_biases: Optional[str] = None
     personal_sensitive_information: Optional[str] = None
     data_use_cases: Optional[str] = None
-    social_impact: Optional[str] = None
+    data_social_impact: Optional[str] = None
     has_synthetic_data: Optional[bool] = None
 
 

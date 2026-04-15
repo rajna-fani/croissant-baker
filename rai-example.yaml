@@ -41,11 +41,11 @@ ai_fairness:
     countries, or patient demographics. Not intended for direct clinical
     decision-making.
 
-  # rai:dataBias
+  # rai:dataBiases
   # Detail specific skews, representational gaps, and known biases — including
   # the geographic or demographic background of annotators, institutional norms
   # of the source, and amplified biases in any synthetic data.
-  data_bias: >
+  data_biases: >
     The patient population skews toward English-speaking adults; paediatric
     and non-English-speaking patients are under-represented. Annotator pool
     consisted of clinical experts from a single US institution.
@@ -68,7 +68,7 @@ ai_fairness:
     models. Supporting research into hospital readmission, mortality prediction,
     and clinical decision support. Not intended for direct clinical use.
 
-  # rai:socialImpact
+  # rai:dataSocialImpact
   # Articulate what new capabilities the dataset enables, who benefits, potential
   # harms, affected groups, and concrete mitigation steps (licensing, access
   # controls, usage agreements).
