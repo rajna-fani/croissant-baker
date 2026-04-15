@@ -12,6 +12,7 @@ Generates:
 """
 
 import inspect
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -19,11 +20,14 @@ from pathlib import Path
 DOCS_DIR = Path(__file__).parent
 GENERATED_DIR = DOCS_DIR / "_generated"
 PROJECT_ROOT = DOCS_DIR.parent
+SRC_DIR = str(PROJECT_ROOT / "src")
 
 
 def generate_cli_reference() -> None:
     """Generate CLI reference from the typer app."""
     cli_path = DOCS_DIR / "reference" / "cli.md"
+    env = os.environ.copy()
+    env["PYTHONPATH"] = SRC_DIR + os.pathsep + env.get("PYTHONPATH", "")
     subprocess.run(
         [
             sys.executable,
@@ -36,6 +40,7 @@ def generate_cli_reference() -> None:
             str(cli_path),
         ],
         check=True,
+        env=env,
     )
     # Prepend auto-generated comment
     content = cli_path.read_text()
@@ -48,7 +53,7 @@ def generate_cli_reference() -> None:
 
 def generate_formats_table() -> None:
     """Generate the supported formats table from the handler registry."""
-    sys.path.insert(0, str(PROJECT_ROOT / "src"))
+    sys.path.insert(0, SRC_DIR)
     from croissant_baker.handlers.registry import (
         get_registered_handlers,
         register_all_handlers,
@@ -76,7 +81,7 @@ def generate_formats_table() -> None:
 
 def generate_rai_flags_table() -> None:
     """Generate the RAI CLI flags table from typer parameter inspection."""
-    sys.path.insert(0, str(PROJECT_ROOT / "src"))
+    sys.path.insert(0, SRC_DIR)
     from croissant_baker.__main__ import main
 
     lines = [
