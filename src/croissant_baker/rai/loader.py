@@ -35,12 +35,12 @@ def load_rai_config(path: Path) -> RAIConfig:
     af_raw = raw.get("ai_fairness") or {}
     ai_fairness = AIFairnessConfig(
         data_limitations=_str(af_raw.get("data_limitations")),
-        data_bias=_str(af_raw.get("data_bias")),
+        data_biases=_str(af_raw.get("data_biases")),
         personal_sensitive_information=_str(
             af_raw.get("personal_sensitive_information")
         ),
         data_use_cases=_str(af_raw.get("data_use_cases")),
-        social_impact=_str(af_raw.get("social_impact")),
+        data_social_impact=_str(af_raw.get("data_social_impact")),
         has_synthetic_data=bool(af_raw["has_synthetic_data"])
         if "has_synthetic_data" in af_raw
         else None,

@@ -33,14 +33,14 @@ def inject_rai(metadata: dict, config: RAIConfig) -> dict:
     af = config.ai_fairness
     if af.data_limitations:
         metadata["rai:dataLimitations"] = af.data_limitations
-    if af.data_bias:
-        metadata["rai:dataBias"] = af.data_bias
+    if af.data_biases:
+        metadata["rai:dataBiases"] = af.data_biases
     if af.personal_sensitive_information:
         metadata["rai:personalSensitiveInformation"] = af.personal_sensitive_information
     if af.data_use_cases:
         metadata["rai:dataUseCases"] = af.data_use_cases
-    if af.social_impact:
-        metadata["rai:socialImpact"] = af.social_impact
+    if af.data_social_impact:
+        metadata["rai:dataSocialImpact"] = af.data_social_impact
     if af.has_synthetic_data is not None:
         metadata["rai:hasSyntheticData"] = af.has_synthetic_data
 
