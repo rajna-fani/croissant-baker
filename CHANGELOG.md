@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.2](https://github.com/MIT-LCP/croissant-baker/compare/croissant-baker-v0.1.1...croissant-baker-v0.1.2) (2026-04-16)
+
+
+### Bug Fixes
+
+* Add Absolute URLs ([860b99e](https://github.com/MIT-LCP/croissant-baker/commit/860b99e7cc28ee19ec6bd06ec0fb789b46491e86))
+* use absolute URL for PyPI logo ([070465a](https://github.com/MIT-LCP/croissant-baker/commit/070465ab9e03d7913c8ac55506f17995084c5f9d))
+* use absolute URL for PyPI logo and markdown docs ([e98df54](https://github.com/MIT-LCP/croissant-baker/commit/e98df54bf8489b8972f4d4bf3f18234c954e36fc))
+
 ## [0.1.1](https://github.com/MIT-LCP/croissant-baker/compare/croissant-baker-v0.1.0...croissant-baker-v0.1.1) (2026-04-16)
 
 
