@@ -18,7 +18,16 @@ class FileTypeHandler(ABC):
 
     Adding a new format: subclass this, implement all three methods,
     register the instance in registry.py — no other files need to change.
+
+    Subclasses should also set these class attributes for documentation:
+    - EXTENSIONS: tuple of file extensions this handler claims (e.g. (".csv",))
+    - FORMAT_NAME: short display name for docs (e.g. "CSV")
+    - FORMAT_DESCRIPTION: one-line summary of what metadata is extracted
     """
+
+    EXTENSIONS: tuple[str, ...] = ()
+    FORMAT_NAME: str = ""
+    FORMAT_DESCRIPTION: str = ""
 
     @abstractmethod
     def can_handle(self, file_path: Path) -> bool:
@@ -34,7 +43,7 @@ class FileTypeHandler(ABC):
         pass
 
     @abstractmethod
-    def extract_metadata(self, file_path: Path, **kwargs) -> dict:
+    def extract_metadata(self, file_path: Path, **kwargs: object) -> dict:
         """
         Extract comprehensive metadata from a single file.
 

@@ -111,6 +111,20 @@ class ImageHandler(FileTypeHandler):
     - Returns metadata with ``image_properties`` key for the builder
     """
 
+    EXTENSIONS = (
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".gif",
+        ".bmp",
+        ".webp",
+        ".ico",
+        ".tiff",
+        ".tif",
+    )
+    FORMAT_NAME = "Images"
+    FORMAT_DESCRIPTION = "Dimensions, color mode, encoding format"
+
     def can_handle(self, file_path: Path) -> bool:
         return file_path.suffix.lower() in SUPPORTED_EXTENSIONS
 

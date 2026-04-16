@@ -26,6 +26,10 @@ class ParquetHandler(FileTypeHandler):
     - Keeps memory usage minimal (schema-only)
     """
 
+    EXTENSIONS = (".parquet",)
+    FORMAT_NAME = "Parquet"
+    FORMAT_DESCRIPTION = "Arrow schema, column names and types, row count"
+
     def can_handle(self, file_path: Path) -> bool:
         return file_path.suffix.lower() == ".parquet"
 

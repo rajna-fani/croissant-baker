@@ -21,6 +21,10 @@ class TSVHandler(CSVHandler):
     in registry.py. No other files need to change.
     """
 
+    EXTENSIONS = (".tsv", ".tsv.gz", ".tsv.bz2", ".tsv.xz")
+    FORMAT_NAME = "TSV"
+    FORMAT_DESCRIPTION = "Column names, inferred types, optional row count"
+
     def can_handle(self, file_path: Path) -> bool:
         name_lower = file_path.name.lower()
         return (
