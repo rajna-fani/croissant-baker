@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/MIT-LCP/croissant-baker/compare/croissant-baker-v0.1.0...croissant-baker-v0.1.1) (2026-04-16)
+
+
+### Bug Fixes
+
+* update README docs link for PyPI page ([af55746](https://github.com/MIT-LCP/croissant-baker/commit/af55746a09454120077ca62a1c95fc31ce8f35ee))
+* update README for PyPI page rendering ([cb760ac](https://github.com/MIT-LCP/croissant-baker/commit/cb760acedcf48ea56be81fe2fe08c0c3de099633))
+
 ## [0.1.0](https://github.com/MIT-LCP/croissant-baker/compare/croissant-baker-v0.0.1...croissant-baker-v0.1.0) (2026-04-16)
 
 
