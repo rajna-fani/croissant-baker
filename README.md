@@ -9,6 +9,7 @@
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+"></a>
   <a href="https://docs.astral.sh/uv/"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json" alt="uv"></a>
   <a href="https://github.com/MIT-LCP/croissant-baker/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://pypi.org/project/croissant-baker/"><img src="https://img.shields.io/pypi/v/croissant-baker?logo=pypi" alt="PyPI"></a>
   <a href="https://github.com/MIT-LCP/croissant-baker/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 
@@ -16,20 +17,27 @@
   Automatically generate <a href="https://mlcommons.org/working-groups/data/croissant/">Croissant</a> JSON-LD metadata for ML datasets — e.g. for <a href="https://physionet.org/">PhysioNet</a>, <a href="https://neurips.cc/Conferences/2026/EvaluationsDatasetsHosting">NeurIPS Datasets &amp; Benchmarks</a> submissions, or any platform that benefits from standardized dataset metadata.
 </p>
 
-<!-- TODO: Replace with actual hosted URL once GitHub Pages is enabled.
-     Steps: Settings → Pages → Source: "Deploy from a branch" → Branch: gh-pages → Save.
-     Then the docs CI workflow (phase 4) will auto-deploy on push to main. -->
 <p align="center">
-  <a href="https://mit-lcp.github.io/croissant-baker/"><strong>Documentation</strong></a>
+  <a href="https://lcp.mit.edu/croissant-baker/"><strong>Documentation</strong></a>
 </p>
 
 ---
 
-## Quick start
+## Installation
 
 ```bash
 pip install croissant-baker
+```
 
+or with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv add croissant-baker
+```
+
+## Quick start
+
+```bash
 croissant-baker \
   --input /path/to/dataset \
   --creator "Your Name,you@example.com" \
@@ -75,7 +83,7 @@ croissant-baker validate mimic-iv-demo-croissant.jsonld
 - **Validation** against the Croissant spec via `mlcroissant`
 - **Dry-run mode**, include/exclude glob filters, multiple creators
 
-See the [documentation](https://mit-lcp.github.io/croissant-baker/) for full CLI reference, examples, and RAI configuration.
+See the [documentation](https://lcp.mit.edu/croissant-baker/) for full CLI reference, examples, and RAI configuration.
 
 ## Contributing
 
