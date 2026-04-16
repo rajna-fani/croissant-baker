@@ -27,6 +27,7 @@ jobs:
     needs: release-please
     if: needs.release-please.outputs.release_created == 'true'
     runs-on: ubuntu-latest
+    environment: pypi
     steps:
       - uses: actions/checkout@v6
 
@@ -34,9 +35,8 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Build package
-        run: uv build
+        run: uv build --wheel
 
-      # Uncomment when ready to publish to PyPI:
       - name: Publish to PyPI
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
