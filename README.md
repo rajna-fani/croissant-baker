@@ -87,8 +87,8 @@ See the [documentation](https://lcp.mit.edu/croissant-baker/) for full CLI refer
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [DEVELOPMENT.md](DEVELOPMENT.md) for setup, testing, releases, and how to add new file handlers.
+See [CONTRIBUTING.md](https://raw.githubusercontent.com/MIT-LCP/croissant-baker/main/CONTRIBUTING.md) for guidelines and [DEVELOPMENT.md](https://raw.githubusercontent.com/MIT-LCP/croissant-baker/main/DEVELOPMENT.md) for setup, testing, releases, and how to add new file handlers.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file.
+MIT License - see [LICENSE](https://raw.githubusercontent.com/MIT-LCP/croissant-baker/main/LICENSE) file.
