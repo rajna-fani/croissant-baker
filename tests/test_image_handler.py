@@ -2,8 +2,11 @@
 
 from pathlib import Path
 
+import numpy as np
 import pytest
+import tifffile
 
+import croissant_baker.handlers.image_handler as image_handler_module
 from croissant_baker.handlers.image_handler import (
     ImageHandler,
     collect_image_summary,
@@ -116,6 +119,50 @@ def test_extract_metadata_tiff(
     assert props["width"] > 0
     assert props["height"] > 0
     # Sentinel-2 images have 12 bands
+    assert props["num_bands"] == 12
+    assert props["image_format"] == "TIFF"
+
+
+@pytest.fixture
+def separate_planar_tiff_path(tmp_path: Path) -> Path:
+    """Create a multi-band TIFF that forces the tifffile fallback path."""
+    path = tmp_path / "separate_planar.tiff"
+    data = np.zeros((12, 5, 7), dtype=np.uint8)
+    tifffile.imwrite(
+        str(path),
+        data,
+        photometric="minisblack",
+        planarconfig="separate",
+    )
+    return path
+
+
+def test_extract_metadata_separate_planar_tiff(
+    handler: ImageHandler,
+    separate_planar_tiff_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Regression test for TIFFs whose band axis is stored first."""
+
+    def _force_tifffile_fallback(_path: Path) -> None:
+        raise RuntimeError("force tifffile fallback")
+
+    monkeypatch.setattr(
+        image_handler_module,
+        "_read_with_pillow",
+        _force_tifffile_fallback,
+    )
+
+    meta = handler.extract_metadata(separate_planar_tiff_path)
+
+    assert meta["file_name"] == "separate_planar.tiff"
+    assert meta["encoding_format"] == "image/tiff"
+    assert meta["file_size"] > 0
+    assert len(meta["sha256"]) == 64
+
+    props = meta["image_properties"]
+    assert props["width"] == 7
+    assert props["height"] == 5
     assert props["num_bands"] == 12
     assert props["image_format"] == "TIFF"
 
