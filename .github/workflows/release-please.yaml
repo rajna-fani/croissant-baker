@@ -37,7 +37,7 @@ jobs:
         run: uv build
 
       # Uncomment when ready to publish to PyPI:
-      # - name: Publish to PyPI
-      #   env:
-      #     UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-      #   run: uv publish
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: uv publish
