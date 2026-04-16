@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="https://lcp.mit.edu/croissant-baker/"><strong>Documentation</strong></a>
+  <a href="https://lcp.mit.edu/croissant-baker/"><strong>📖 Documentation</strong></a>
 </p>
 
 ---
