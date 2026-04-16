@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/baker_logo.png" alt="croissant-baker" width="200">
+  <img src="https://raw.githubusercontent.com/MIT-LCP/croissant-baker/main/docs/assets/baker_logo.png" alt="croissant-baker" width="200">
 </p>
 
 <h1 align="center">Croissant Baker</h1>
