@@ -1,5 +1,5 @@
 site_name: croissant-baker
-site_url: https://mit-lcp.github.io/croissant-baker/
+site_url: https://lcp.mit.edu/croissant-baker/
 site_description: Automatic Croissant JSON-LD metadata generation for ML datasets
 site_author: MIT Laboratory for Computational Physiology
 repo_url: https://github.com/MIT-LCP/croissant-baker
@@ -57,6 +57,18 @@ markdown_extensions:
       alternate_style: true
   - admonition
   - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/MIT-LCP/croissant-baker
+      name: GitHub
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/croissant-baker/
+      name: PyPI
 
 nav:
   - Home: index.md

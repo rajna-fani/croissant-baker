@@ -14,6 +14,7 @@ repos:
 
     # Checks YAML files (like this one) for basic syntax errors
     -   id: check-yaml
+        args: ['--unsafe']
 
 # Ruff for Python linting and formatting
 -   repo: https://github.com/astral-sh/ruff-pre-commit
