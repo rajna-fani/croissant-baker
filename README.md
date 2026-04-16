@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/baker_logo.png" alt="croissant-baker" width="200">
+  <img src="https://raw.githubusercontent.com/MIT-LCP/croissant-baker/main/docs/assets/baker_logo.png" alt="croissant-baker" width="200">
 </p>
 
 <h1 align="center">Croissant Baker</h1>
@@ -87,8 +87,8 @@ See the [documentation](https://lcp.mit.edu/croissant-baker/) for full CLI refer
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [DEVELOPMENT.md](DEVELOPMENT.md) for setup, testing, releases, and how to add new file handlers.
+See [CONTRIBUTING.md](https://raw.githubusercontent.com/MIT-LCP/croissant-baker/main/CONTRIBUTING.md) for guidelines and [DEVELOPMENT.md](https://raw.githubusercontent.com/MIT-LCP/croissant-baker/main/DEVELOPMENT.md) for setup, testing, releases, and how to add new file handlers.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file.
+MIT License - see [LICENSE](https://raw.githubusercontent.com/MIT-LCP/croissant-baker/main/LICENSE) file.
