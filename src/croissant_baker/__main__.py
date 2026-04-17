@@ -9,7 +9,13 @@ from pathlib import Path
 from typing import List, Optional
 
 import typer
-from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+)
 
 from croissant_baker.metadata_generator import MetadataGenerator, serialize_datetime
 from croissant_baker.files import discover_files
@@ -523,100 +529,120 @@ def main(
             )
             raise typer.Exit(code=1)
 
+        # Parse creators following mlcroissant specification
+        # Allows flexible Person/Organization objects with optional properties
+        parsed_creators = []
+        if creator:
+            for creator_info in creator:
+                creator_info = creator_info.strip()
+
+                # Preferred: semicolon
+                if ";" in creator_info:
+                    creator_parts = [p.strip() for p in creator_info.split(";")]
+
+                else:
+                    # Use CSV parsing for comma cases (handles quotes properly)
+                    creator_parts = next(csv.reader([creator_info]))
+                    creator_parts = [p.strip() for p in creator_parts]
+
+                if not creator_parts or not creator_parts[0]:
+                    continue
+
+                creator_obj = {"name": creator_parts[0]}
+
+                if len(creator_parts) > 1 and creator_parts[1]:
+                    creator_obj["email"] = creator_parts[1]
+
+                if len(creator_parts) > 2 and creator_parts[2]:
+                    creator_obj["url"] = creator_parts[2]
+
+                parsed_creators.append(creator_obj)
+
+        # Warn early if --count-csv-rows is set but dataset has no CSV files
+        if count_csv_rows:
+            csv_extensions = {".csv", ".csv.gz", ".csv.bz2", ".csv.xz"}
+            all_files = discover_files(
+                input, include_patterns=include, exclude_patterns=exclude
+            )
+            has_csv = any(
+                any(str(f).endswith(ext) for ext in csv_extensions) for f in all_files
+            )
+            if not has_csv:
+                typer.echo(
+                    "Warning: --count-csv-rows has no effect: no CSV files found in dataset",
+                    err=True,
+                )
+
+        generator = MetadataGenerator(
+            dataset_path=input,
+            name=name,
+            description=description,
+            url=url,
+            license=license,
+            citation=citation,
+            version=dataset_version,
+            date_published=date_published,
+            creators=parsed_creators if parsed_creators else None,
+            count_csv_rows=count_csv_rows,
+            includes=include,
+            excludes=exclude,
+            rai_fields=native_rai_fields,
+        )
+
+        # Generate metadata with per-file progress bar
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+            TextColumn("{task.fields[current_file]}"),
+        ) as progress:
+            file_task = progress.add_task(
+                "Processing files...", total=None, current_file=""
+            )
+
+            def _progress_callback(current: int, total: int, file_path: str) -> None:
+                progress.update(
+                    file_task,
+                    total=total,
+                    completed=current,
+                    current_file=file_path,
+                )
+
+            metadata_dict = generator.generate_metadata(
+                progress_callback=_progress_callback
+            )
+            progress.update(
+                file_task,
+                completed=progress.tasks[0].total,
+                current_file="",
+                description="Processing files... done",
+            )
+
+        # Inject RAI attributes when a config file is provided
+        if rai_config:
+            from croissant_baker.rai import inject_rai, load_rai_config
+
+            rai = load_rai_config(rai_config)
+            metadata_dict = inject_rai(metadata_dict, rai)
+
+        _ensure_rai_conforms_to(
+            metadata_dict, force=bool(rai_config or native_rai_fields)
+        )
+
+        # Save and optionally validate
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
         ) as progress:
-            # Initialize generator with metadata overrides
-            metadata_progress = progress.add_task("Analyzing dataset...", total=None)
-
-            # Parse creators following mlcroissant specification
-            # Allows flexible Person/Organization objects with optional properties
-            parsed_creators = []
-            if creator:
-                for creator_info in creator:
-                    creator_info = creator_info.strip()
-
-                    # Preferred: semicolon
-                    if ";" in creator_info:
-                        creator_parts = [p.strip() for p in creator_info.split(";")]
-
-                    else:
-                        # Use CSV parsing for comma cases (handles quotes properly)
-                        creator_parts = next(csv.reader([creator_info]))
-                        creator_parts = [p.strip() for p in creator_parts]
-
-                    if not creator_parts or not creator_parts[0]:
-                        continue
-
-                    creator_obj = {"name": creator_parts[0]}
-
-                    if len(creator_parts) > 1 and creator_parts[1]:
-                        creator_obj["email"] = creator_parts[1]
-
-                    if len(creator_parts) > 2 and creator_parts[2]:
-                        creator_obj["url"] = creator_parts[2]
-
-                    parsed_creators.append(creator_obj)
-
-            # Warn early if --count-csv-rows is set but dataset has no CSV files
-            if count_csv_rows:
-                csv_extensions = {".csv", ".csv.gz", ".csv.bz2", ".csv.xz"}
-                all_files = discover_files(
-                    input, include_patterns=include, exclude_patterns=exclude
-                )
-                has_csv = any(
-                    any(str(f).endswith(ext) for ext in csv_extensions)
-                    for f in all_files
-                )
-                if not has_csv:
-                    typer.echo(
-                        "Warning: --count-csv-rows has no effect: no CSV files found in dataset",
-                        err=True,
-                    )
-
-            generator = MetadataGenerator(
-                dataset_path=input,
-                name=name,
-                description=description,
-                url=url,
-                license=license,
-                citation=citation,
-                version=dataset_version,
-                date_published=date_published,
-                creators=parsed_creators if parsed_creators else None,
-                count_csv_rows=count_csv_rows,
-                includes=include,
-                excludes=exclude,
-                rai_fields=native_rai_fields,
-            )
-
-            # Generate metadata
-            progress.update(metadata_progress, description="Generating metadata...")
-            metadata_dict = generator.generate_metadata()
-
-            # Inject RAI attributes when a config file is provided
-            if rai_config:
-                from croissant_baker.rai import inject_rai, load_rai_config
-
-                rai = load_rai_config(rai_config)
-                metadata_dict = inject_rai(metadata_dict, rai)
-
-            _ensure_rai_conforms_to(
-                metadata_dict, force=bool(rai_config or native_rai_fields)
-            )
-
-            # Save and optionally validate
             if validate:
-                progress.update(
-                    metadata_progress, description="Validating and saving..."
-                )
+                save_task = progress.add_task("Validating and saving...", total=None)
                 _save_dict(metadata_dict, output, validate=True)
-                progress.update(metadata_progress, description="Validation completed!")
+                progress.update(save_task, description="Validation completed!")
             else:
-                progress.update(metadata_progress, description="Saving metadata...")
+                save_task = progress.add_task("Saving metadata...", total=None)
                 _save_dict(metadata_dict, output, validate=False)
-                progress.update(metadata_progress, description="Save completed!")
+                progress.update(save_task, description="Save completed!")
 
         # Show results
         file_count = len(metadata_dict.get("distribution", []))

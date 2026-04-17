@@ -93,8 +93,14 @@ class MetadataGenerator:
             "count_rows": count_csv_rows,
         }
 
-    def generate_metadata(self) -> dict:
-        """Generate complete Croissant metadata for the dataset."""
+    def generate_metadata(self, progress_callback=None) -> dict:
+        """Generate complete Croissant metadata for the dataset.
+
+        Args:
+            progress_callback: Optional callback with signature
+                (current: int, total: int, file_path: str) -> None
+                called before processing each file.
+        """
         files = discover_files(
             str(self.dataset_path),
             include_patterns=self.includes,
@@ -103,8 +109,11 @@ class MetadataGenerator:
 
         # Extract metadata as (handler, meta) pairs so handler identity is
         # stored by reference, not by id() — no fragility if dicts are copied.
+        total_files = len(files)
         file_metadata: list[tuple] = []
-        for file_path in files:
+        for i, file_path in enumerate(files):
+            if progress_callback:
+                progress_callback(i, total_files, str(file_path))
             full_path = self.dataset_path / file_path
             handler = find_handler(full_path)
             if handler:
