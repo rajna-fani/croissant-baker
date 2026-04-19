@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -85,7 +86,7 @@
       "url": "https://lcp.mit.edu/"
     }
   ],
-  "datePublished": "2023-01-06T00:00:00",
+  "datePublished": "2023-01-06",
   "license": "PhysioNet Restricted Health Data License 1.5.0",
   "url": "https://physionet.org/content/mimic-iv-demo/",
   "version": "2.2",

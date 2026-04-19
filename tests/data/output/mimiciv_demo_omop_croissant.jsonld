@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -64,7 +65,7 @@
       "name": "Tom Pollard"
     }
   ],
-  "datePublished": "2021-06-21T00:00:00",
+  "datePublished": "2021-06-21",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://physionet.org/content/mimic-iv-demo-omop/0.9/",
   "version": "0.9",

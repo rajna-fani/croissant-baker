@@ -9,3 +9,5 @@
 | WFDB | `.hea` | Signal names, sampling frequency, duration, number of signals |
 | Parquet | `.parquet` | Arrow schema, column names and types, row count |
 | Images | `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.webp`, `.ico`, `.tiff`, `.tif` | Dimensions, color mode, encoding format |
+| DICOM | `.dcm`, `.dicom` | Image geometry, modality, pixel encoding, acquisition parameters |
+| NIfTI | `.nii`, `.nii.gz` | Spatial dimensions, voxel spacing, data type, TR for fMRI volumes |

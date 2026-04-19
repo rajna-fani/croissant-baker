@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -68,7 +69,7 @@
       "name": "Jesse Raffa"
     }
   ],
-  "datePublished": "2021-05-06T00:00:00",
+  "datePublished": "2021-05-06",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://physionet.org/content/eicu-crd-demo/2.0.1/",
   "version": "2.0.1",
