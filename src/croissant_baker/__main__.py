@@ -598,7 +598,7 @@ def main(
             TextColumn("{task.fields[current_file]}"),
         ) as progress:
             file_task = progress.add_task(
-                "Processing files...", total=None, current_file=""
+                "Scanning files...", total=None, current_file=""
             )
 
             def _progress_callback(current: int, total: int, file_path: str) -> None:
@@ -616,7 +616,7 @@ def main(
                 file_task,
                 completed=progress.tasks[0].total,
                 current_file="",
-                description="Processing files... done",
+                description="Scanning files... done",
             )
 
         # Inject RAI attributes when a config file is provided
