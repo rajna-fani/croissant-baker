@@ -118,6 +118,13 @@ _SPEC_REQUIRED_FLAGS = {
 _RAI_CONFORMS_TO = "http://mlcommons.org/croissant/RAI/1.0"
 
 
+def _echo_file_counts(file_count: int, file_set_count: int) -> None:
+    """Print Files and File sets banner lines (File sets only when present)."""
+    typer.echo(f"Files: {file_count}")
+    if file_set_count:
+        typer.echo(f"File sets: {file_set_count}")
+
+
 def _warn_missing_spec_fields(**provided: object) -> None:
     """Warn about spec-required fields that were not explicitly provided."""
     missing = [
@@ -645,13 +652,15 @@ def main(
                 progress.update(save_task, description="Save completed!")
 
         # Show results
-        file_count = len(metadata_dict.get("distribution", []))
+        distribution = metadata_dict.get("distribution", [])
+        file_count = sum(1 for d in distribution if d.get("@type") == "cr:FileObject")
+        file_set_count = sum(1 for d in distribution if d.get("@type") == "cr:FileSet")
         record_count = len(metadata_dict.get("recordSet", []))
 
         typer.echo(
             f"Success! Generated {'validated ' if validate else ''}Croissant metadata"
         )
-        typer.echo(f"Files: {file_count}")
+        _echo_file_counts(file_count, file_set_count)
         typer.echo(f"Record sets: {record_count}")
         typer.echo(f"Saved to: {output}")
 
@@ -742,12 +751,10 @@ def validate(
         typer.echo(f"Description: {dataset.metadata.description}")
 
         if hasattr(dataset.metadata, "distribution"):
-            file_count = (
-                len(dataset.metadata.distribution)
-                if dataset.metadata.distribution
-                else 0
-            )
-            typer.echo(f"Files: {file_count}")
+            distribution = dataset.metadata.distribution or []
+            file_count = sum(1 for d in distribution if isinstance(d, mlc.FileObject))
+            file_set_count = sum(1 for d in distribution if isinstance(d, mlc.FileSet))
+            _echo_file_counts(file_count, file_set_count)
 
         if hasattr(dataset.metadata, "record_sets"):
             record_count = (

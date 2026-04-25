@@ -362,6 +362,60 @@ def test_dry_run_invalid_input() -> None:
     assert result.exit_code == 1
 
 
+def test_summary_files_count_excludes_filesets(tmp_path: Path) -> None:
+    """Banner Files line counts cr:FileObject entries only."""
+    from PIL import Image
+
+    dataset = tmp_path / "imgs"
+    dataset.mkdir()
+    for i in range(3):
+        Image.new("RGB", (4, 4)).save(dataset / f"img_{i}.png")
+    output = tmp_path / "out.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "-i",
+            str(dataset),
+            "-o",
+            str(output),
+            "--creator",
+            "Tester",
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+
+    assert "Files: 3" in result.stdout
+    assert "Files: 4" not in result.stdout
+    assert "File sets: 1" in result.stdout
+
+    metadata = json.loads(output.read_text())
+    types = [d["@type"] for d in metadata["distribution"]]
+    assert types.count("cr:FileObject") == 3
+    assert types.count("cr:FileSet") == 1
+
+
+def test_validate_command_files_count_excludes_filesets(tmp_path: Path) -> None:
+    """Validate subcommand banner counts FileObject entries only."""
+    from PIL import Image
+
+    dataset = tmp_path / "imgs"
+    dataset.mkdir()
+    for i in range(2):
+        Image.new("RGB", (4, 4)).save(dataset / f"img_{i}.png")
+    jsonld = tmp_path / "out.jsonld"
+
+    gen = runner.invoke(app, ["-i", str(dataset), "-o", str(jsonld), "--creator", "T"])
+    assert gen.exit_code == 0, gen.output
+
+    result = runner.invoke(app, ["validate", str(jsonld)])
+    assert result.exit_code == 0, result.output
+    assert "Files: 2" in result.stdout
+    assert "Files: 3" not in result.stdout
+    assert "File sets: 1" in result.stdout
+
+
 def test_include_filter_limits_generated_files(
     mixed_dataset: Path, tmp_path: Path
 ) -> None:
