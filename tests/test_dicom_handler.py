@@ -96,6 +96,15 @@ def test_cannot_handle_non_dicom_no_extension(
     assert handler.can_handle(f) is False
 
 
+def test_cannot_handle_dcm_extension_without_preamble(
+    handler: DICOMHandler, tmp_path: Path
+) -> None:
+    """A .dcm file that lacks the DICM preamble (e.g. a DICOMDIR fragment) is rejected."""
+    f = tmp_path / "fragment.dcm"
+    f.write_bytes(b"\x00" * 132 + b"NOPE")
+    assert handler.can_handle(f) is False
+
+
 def test_extract_metadata(handler: DICOMHandler, dicom_file: Path) -> None:
     meta = handler.extract_metadata(dicom_file)
 

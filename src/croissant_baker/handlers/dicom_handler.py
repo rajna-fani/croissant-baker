@@ -121,10 +121,14 @@ class DICOMHandler(FileTypeHandler):
 
     def can_handle(self, file_path: Path) -> bool:
         suffix = file_path.suffix.lower()
-        if suffix in SUPPORTED_EXTENSIONS:
-            return True
-        if not suffix and file_path.is_file():
-            return _has_dicom_magic(file_path)
+        # For all candidates (by extension or extensionless), verify the DICM
+        # preamble when the file is present. Files without it are DICOMDIR
+        # fragment references, not standalone DICOM — skip them rather than
+        # letting extract_metadata raise later.
+        if suffix in SUPPORTED_EXTENSIONS or (not suffix and file_path.is_file()):
+            if file_path.is_file():
+                return _has_dicom_magic(file_path)
+            return True  # path-only check (e.g. registry lookup before file exists)
         return False
 
     def extract_metadata(self, file_path: Path, **kwargs) -> dict:
