@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import mlcroissant as mlc
+import pydicom
 
 from croissant_baker.handlers.base_handler import FileTypeHandler
 from croissant_baker.handlers.utils import compute_file_hash
@@ -41,8 +42,6 @@ def _safe_get(ds, keyword: str, default=None):
 
 
 def _read_dicom_properties(file_path: Path) -> Dict:
-    import pydicom
-
     ds = pydicom.dcmread(str(file_path), stop_before_pixels=True)
 
     props: Dict = {}
@@ -99,6 +98,17 @@ def _read_dicom_properties(file_path: Path) -> Dict:
     sop_class = _safe_get(ds, "SOPClassUID")
     if sop_class is not None:
         props["sop_class_uid"] = str(sop_class)
+
+    # Hierarchy UIDs — needed to regroup files into studies/series.
+    # SeriesInstanceUID is the key that groups slices into one scan;
+    # StudyInstanceUID groups series from one patient visit.
+    study_uid = _safe_get(ds, "StudyInstanceUID")
+    if study_uid is not None:
+        props["study_instance_uid"] = str(study_uid)
+
+    series_uid = _safe_get(ds, "SeriesInstanceUID")
+    if series_uid is not None:
+        props["series_instance_uid"] = str(series_uid)
 
     return props
 
@@ -229,6 +239,26 @@ class DICOMHandler(FileTypeHandler):
                 name="bits_allocated",
                 description="Bits allocated per pixel sample",
                 data_types=["sc:Integer"],
+                source=mlc.Source(
+                    file_set=fileset_id,
+                    extract=mlc.Extract(file_property="content"),
+                ),
+            ),
+            mlc.Field(
+                id="dicom/study_instance_uid",
+                name="study_instance_uid",
+                description="UID grouping all series from one patient visit (0020,000D)",
+                data_types=["sc:Text"],
+                source=mlc.Source(
+                    file_set=fileset_id,
+                    extract=mlc.Extract(file_property="content"),
+                ),
+            ),
+            mlc.Field(
+                id="dicom/series_instance_uid",
+                name="series_instance_uid",
+                description="UID grouping slices into one scan/series (0020,000E)",
+                data_types=["sc:Text"],
                 source=mlc.Source(
                     file_set=fileset_id,
                     extract=mlc.Extract(file_property="content"),

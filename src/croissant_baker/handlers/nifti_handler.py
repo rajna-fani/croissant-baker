@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import mlcroissant as mlc
+import nibabel as nib
 
 from croissant_baker.handlers.base_handler import FileTypeHandler
 from croissant_baker.handlers.utils import compute_file_hash
@@ -23,8 +24,6 @@ def _read_nifti_properties(file_path: Path) -> Dict:
     Extracts spatial dimensions, voxel spacing, data type, and TR for 4D volumes.
     Works for both NIfTI-1 (.nii, .nii.gz) and NIfTI-2 formats.
     """
-    import nibabel as nib
-
     img = nib.load(str(file_path))
     hdr = img.header
 
@@ -148,10 +147,7 @@ class NIfTIHandler(FileTypeHandler):
         dtype_counts = summary.get("dtype_counts", {})
         dtypes_str = ", ".join(dtype_counts.keys()) if dtype_counts else "unknown dtype"
 
-        mime_types = set()
-        includes = []
-        for meta in file_metas:
-            mime_types.add(meta["encoding_format"])
+        mime_types = {meta["encoding_format"] for meta in file_metas}
         includes = ["**/*.nii", "**/*.nii.gz"]
 
         fileset_id = "nifti-files"
