@@ -16,7 +16,6 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
-    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -55,7 +54,7 @@
     "@type": "sc:Person",
     "name": "UniProt Consortium"
   },
-  "datePublished": "2025-01-01",
+  "datePublished": "2025-01-01T00:00:00",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://www.uniprot.org/uniprotkb?query=reviewed:true&organism_id=9606",
   "version": "1.0.0",

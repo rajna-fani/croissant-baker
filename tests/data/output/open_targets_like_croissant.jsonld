@@ -16,7 +16,6 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
-    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -57,7 +56,7 @@
     "email": "data@opentargets.org",
     "url": "https://www.opentargets.org"
   },
-  "datePublished": "2025-03-01",
+  "datePublished": "2025-03-01T00:00:00",
   "license": "https://creativecommons.org/publicdomain/zero/1.0/",
   "url": "https://platform.opentargets.org",
   "version": "25.03",

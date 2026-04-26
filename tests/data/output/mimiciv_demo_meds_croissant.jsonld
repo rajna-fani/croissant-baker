@@ -16,7 +16,6 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
-    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -61,7 +60,7 @@
       "name": "Matthew McDermott"
     }
   ],
-  "datePublished": "2025-09-29",
+  "datePublished": "2025-09-29T00:00:00",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://physionet.org/content/mimic-iv-demo-meds/0.0.1/",
   "version": "0.0.1",
