@@ -19,32 +19,135 @@ def handler() -> ImageHandler:
 
 
 # ---------------------------------------------------------------------------
-# can_handle
+# can_handle — extension + magic bytes (issue #93)
+#
+# can_handle enforces the registry contract: True implies extract_metadata
+# can read the file. Tests cover the three failure modes (wrong extension,
+# right extension/wrong content, missing file) plus the happy path per
+# extension. Each accepted-extension case writes a minimal magic-byte stub
+# so we exercise real files, not bare path strings.
 # ---------------------------------------------------------------------------
 
 
+# Minimal magic-byte stubs per supported extension. These are not full
+# images — they only need enough bytes to satisfy can_handle's check.
+_IMAGE_STUBS = {
+    ".png": b"\x89PNG\r\n\x1a\n",
+    ".jpg": b"\xff\xd8\xff\xe0",
+    ".jpeg": b"\xff\xd8\xff\xe0",
+    ".gif": b"GIF89a",
+    ".bmp": b"BM\x00\x00\x00\x00",
+    ".webp": b"RIFF\x00\x00\x00\x00WEBP",
+    ".tiff": b"II*\x00",
+    ".tif": b"MM\x00*",
+    ".ico": b"\x00\x00\x01\x00",
+}
+
+
 @pytest.mark.parametrize(
-    "name,expected",
+    "filename",
     [
-        ("photo.jpg", True),
-        ("photo.jpeg", True),
-        ("photo.JPG", True),
-        ("scan.png", True),
-        ("scan.PNG", True),
-        ("frame.gif", True),
-        ("icon.bmp", True),
-        ("hero.webp", True),
-        ("satellite.tiff", True),
-        ("satellite.tif", True),
-        ("satellite.TIFF", True),
-        ("data.csv", False),
-        ("model.parquet", False),
-        ("readme.txt", False),
-        ("record.hea", False),
+        "photo.jpg",
+        "photo.jpeg",
+        "photo.JPG",  # case-insensitive suffix
+        "scan.png",
+        "scan.PNG",
+        "frame.gif",
+        "icon.bmp",
+        "hero.webp",
+        "satellite.tiff",
+        "satellite.tif",
+        "satellite.TIFF",
+        "image.ico",
     ],
 )
-def test_can_handle(handler: ImageHandler, name: str, expected: bool) -> None:
-    assert handler.can_handle(Path(name)) == expected
+def test_can_handle_accepts_supported_extensions_with_magic(
+    handler: ImageHandler, tmp_path: Path, filename: str
+) -> None:
+    """Files whose extension is supported AND whose content matches the
+    extension's magic bytes are accepted."""
+    p = tmp_path / filename
+    p.write_bytes(_IMAGE_STUBS[p.suffix.lower()])
+    assert handler.can_handle(p) is True
+
+
+@pytest.mark.parametrize(
+    "name", ["data.csv", "model.parquet", "readme.txt", "record.hea"]
+)
+def test_can_handle_rejects_unsupported_extensions(
+    handler: ImageHandler, name: str
+) -> None:
+    """Non-image extensions are rejected before any I/O — bare path is fine."""
+    assert handler.can_handle(Path(name)) is False
+
+
+def test_can_handle_rejects_missing_file(handler: ImageHandler) -> None:
+    """A path with an image extension but no file on disk is rejected.
+
+    Without a file we cannot honor the contract that extract_metadata won't
+    crash, so can_handle must say no.
+    """
+    assert handler.can_handle(Path("/nonexistent/photo.png")) is False
+
+
+def test_can_handle_rejects_wrong_magic(
+    handler: ImageHandler, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """Right extension, wrong content (e.g., HTML renamed to .png) is rejected
+    AND a WARNING is logged naming the file so the user knows what was skipped.
+
+    Regression for #93: prevents the registry from dispatching a renamed
+    file to ImageHandler.extract_metadata and crashing inside Pillow, and
+    surfaces the skip so the user is not blindsided by a missing file count.
+    """
+    impostor = tmp_path / "fake.png"
+    impostor.write_bytes(b"<!DOCTYPE html><html></html>")
+    with caplog.at_level("WARNING", logger="croissant_baker.handlers.image_handler"):
+        assert handler.can_handle(impostor) is False
+    assert any(
+        str(impostor) in r.message and "magic bytes" in r.message
+        for r in caplog.records
+    ), f"expected a WARNING naming {impostor} and 'magic bytes', got {caplog.records}"
+
+
+def test_can_handle_missing_file_does_not_warn(
+    handler: ImageHandler, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A missing file is silently rejected (no spurious warnings) since the
+    caller, not the file, is at fault."""
+    with caplog.at_level("WARNING", logger="croissant_baker.handlers.image_handler"):
+        assert handler.can_handle(Path("/nonexistent/photo.png")) is False
+    assert caplog.records == []
+
+
+def test_can_handle_accepts_real_image(handler: ImageHandler, tmp_path: Path) -> None:
+    """A fully-encoded PNG (not just a magic stub) is accepted."""
+    from PIL import Image
+
+    real_png = tmp_path / "real.png"
+    Image.new("RGB", (4, 4), color="red").save(real_png)
+    assert handler.can_handle(real_png) is True
+
+
+def test_can_handle_accepts_bigtiff(handler: ImageHandler, tmp_path: Path) -> None:
+    """BigTIFF (TIFF variant for files >4GB, version byte 0x2b) is accepted.
+
+    Regression for #93: Pillow and tifffile both read BigTIFF, so the
+    contract requires can_handle to claim it.
+    """
+    bigtiff = tmp_path / "huge.tiff"
+    tifffile.imwrite(
+        str(bigtiff),
+        np.zeros((4, 4, 3), dtype=np.uint8),
+        bigtiff=True,
+    )
+    # Verify we wrote a real BigTIFF (version byte 0x2b, not 0x2a).
+    assert bigtiff.read_bytes()[:4] in (b"II+\x00", b"MM\x00+")
+    assert handler.can_handle(bigtiff) is True
+    # And extract_metadata must succeed — the contract.
+    meta = handler.extract_metadata(bigtiff)
+    assert meta["image_properties"]["width"] == 4
+    assert meta["image_properties"]["height"] == 4
 
 
 # ---------------------------------------------------------------------------
@@ -261,14 +364,20 @@ def test_collect_image_summary_missing_properties() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_image_handler_registered() -> None:
-    """ImageHandler should be discoverable via the global registry."""
+def test_image_handler_registered(tmp_path: Path) -> None:
+    """ImageHandler should be discoverable via the global registry for real
+    image files (i.e. extension AND magic bytes match)."""
     from croissant_baker.handlers.registry import find_handler, register_all_handlers
 
     register_all_handlers()
-    assert find_handler(Path("photo.jpg")) is not None
-    assert find_handler(Path("scan.png")) is not None
-    assert find_handler(Path("satellite.tiff")) is not None
+    for name, magic in [
+        ("photo.jpg", _IMAGE_STUBS[".jpg"]),
+        ("scan.png", _IMAGE_STUBS[".png"]),
+        ("satellite.tiff", _IMAGE_STUBS[".tiff"]),
+    ]:
+        p = tmp_path / name
+        p.write_bytes(magic)
+        assert find_handler(p) is not None, f"no handler dispatched for {name}"
 
 
 # ---------------------------------------------------------------------------
