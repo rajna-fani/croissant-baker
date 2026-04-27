@@ -41,6 +41,68 @@ _MIME_TYPES: Dict[str, str] = {
     ".tif": "image/tiff",
 }
 
+# Magic-byte signatures for every supported image extension. These are
+# stable, format-spec-defined headers — they don't change across versions:
+#
+#   PNG     : ISO/IEC 15948 §5.2 — 8-byte signature
+#   JPEG    : ITU-T T.81 / JFIF  — SOI marker 0xFFD8 followed by another marker (0xFF**)
+#   GIF     : GIF89a spec        — ASCII "GIF87a" or "GIF89a"
+#   TIFF    : TIFF 6.0 §2        — "II\x2a\x00" (LE) or "MM\x00\x2a" (BE);
+#                                  BigTIFF (Adobe ext, 2007) uses version byte
+#                                  0x2b instead of 0x2a — read by Pillow and tifffile
+#   BMP     : BITMAPFILEHEADER   — bfType "BM"
+#   WebP    : RFC 6386           — "RIFF" + 4-byte size + "WEBP"
+#   ICO     : Microsoft ICONDIR  — reserved 0x0000, type 0x0001 (icon) or 0x0002 (cursor)
+#
+# Each entry maps an extension to a predicate over the file's leading bytes.
+# We read just enough bytes to satisfy the longest signature (WebP, 12 bytes).
+_IMAGE_MAGIC_PREFIX_BYTES = 12
+
+# Standard TIFF (version 0x2a) and BigTIFF (version 0x2b), little- and big-endian.
+_TIFF_MAGICS = (b"II*\x00", b"MM\x00*", b"II+\x00", b"MM\x00+")
+
+_IMAGE_MAGIC_CHECKS = {
+    ".png": lambda h: h.startswith(b"\x89PNG\r\n\x1a\n"),
+    ".jpg": lambda h: h.startswith(b"\xff\xd8\xff"),
+    ".jpeg": lambda h: h.startswith(b"\xff\xd8\xff"),
+    ".gif": lambda h: h.startswith((b"GIF87a", b"GIF89a")),
+    ".tiff": lambda h: h.startswith(_TIFF_MAGICS),
+    ".tif": lambda h: h.startswith(_TIFF_MAGICS),
+    ".bmp": lambda h: h.startswith(b"BM"),
+    ".webp": lambda h: h[:4] == b"RIFF" and h[8:12] == b"WEBP",
+    ".ico": lambda h: h[:4] in (b"\x00\x00\x01\x00", b"\x00\x00\x02\x00"),
+}
+
+
+def _has_image_magic(file_path: Path) -> bool:
+    """Return True iff ``file_path``'s leading bytes match the magic for its extension.
+
+    Used by :meth:`ImageHandler.can_handle` to enforce the registry contract:
+    if a handler claims a file, ``extract_metadata`` must be able to read it.
+    A file with an image extension but non-image content (e.g. a renamed HTML
+    page saved as ``.png``) is rejected and a WARNING is logged so the user
+    can see which files were skipped and why. Missing or unreadable files
+    return False without logging (those are caller errors, not impostors).
+    """
+    suffix = file_path.suffix.lower()
+    check = _IMAGE_MAGIC_CHECKS.get(suffix)
+    if check is None:
+        return False
+    try:
+        with open(file_path, "rb") as f:
+            head = f.read(_IMAGE_MAGIC_PREFIX_BYTES)
+    except OSError:
+        return False
+    if check(head):
+        return True
+    logger.warning(
+        "Skipping %s: extension is %s but file content does not match the "
+        "expected image magic bytes",
+        file_path,
+        suffix,
+    )
+    return False
+
 
 def _read_with_pillow(file_path: Path) -> Dict:
     """Read image metadata using Pillow (standard RGB/grayscale images)."""
@@ -145,7 +207,9 @@ class ImageHandler(FileTypeHandler):
     FORMAT_DESCRIPTION = "Dimensions, color mode, encoding format"
 
     def can_handle(self, file_path: Path) -> bool:
-        return file_path.suffix.lower() in SUPPORTED_EXTENSIONS
+        if file_path.suffix.lower() not in SUPPORTED_EXTENSIONS:
+            return False
+        return _has_image_magic(file_path)
 
     def extract_metadata(self, file_path: Path, **kwargs) -> dict:
         if not file_path.exists():
