@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -48,7 +49,7 @@
   "@type": "sc:Dataset",
   "name": "MIMIC-IV Clinical Database Demo on FHIR",
   "description": "100-patient demo of MIMIC-IV represented as FHIR R4 NDJSON resources",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Johnson, A., Bulgarelli, L., et al. (2023). MIMIC-IV Clinical Database Demo on FHIR (version 2.1.0). PhysioNet. https://doi.org/10.13026/t74w-kd56",
   "creator": [
     {
@@ -63,7 +64,7 @@
       "url": "https://mit.edu/"
     }
   ],
-  "datePublished": "2023-10-23T00:00:00",
+  "datePublished": "2023-10-23",
   "license": "https://physionet.org/content/mimic-iv-fhir-demo/2.1.0/LICENSE.txt",
   "url": "https://physionet.org/content/mimic-iv-fhir-demo/2.1.0/",
   "version": "2.1.0",
@@ -412,6 +413,7 @@
           "@id": "MimicEncounterICU/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -459,6 +461,7 @@
           "@id": "MimicEncounterICU/location",
           "name": "location",
           "description": "Column 'location'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -564,6 +567,7 @@
             "@id": "MimicEncounterICU/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -700,6 +704,7 @@
           "@id": "MimicEncounterICU/type",
           "name": "type",
           "description": "Column 'type'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -714,6 +719,7 @@
             "@id": "MimicEncounterICU/type/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -873,6 +879,7 @@
                 "@id": "MimicEncounter/hospitalization/admitSource/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -934,6 +941,7 @@
                 "@id": "MimicEncounter/hospitalization/dischargeDisposition/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -999,6 +1007,7 @@
           "@id": "MimicEncounter/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -1090,6 +1099,7 @@
           "@id": "MimicEncounter/location",
           "name": "location",
           "description": "Column 'location'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -1195,6 +1205,7 @@
             "@id": "MimicEncounter/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -1271,6 +1282,7 @@
             "@id": "MimicEncounter/priority/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -1376,6 +1388,7 @@
             "@id": "MimicEncounter/serviceType/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -1468,6 +1481,7 @@
           "@id": "MimicEncounter/type",
           "name": "type",
           "description": "Column 'type'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -1482,6 +1496,7 @@
             "@id": "MimicEncounter/type/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -1641,6 +1656,7 @@
                 "@id": "MimicEncounterED/hospitalization/admitSource/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -1702,6 +1718,7 @@
                 "@id": "MimicEncounterED/hospitalization/dischargeDisposition/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -1767,6 +1784,7 @@
           "@id": "MimicEncounterED/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -1871,6 +1889,7 @@
             "@id": "MimicEncounterED/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -2036,6 +2055,7 @@
           "@id": "MimicEncounterED/type",
           "name": "type",
           "description": "Column 'type'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -2050,6 +2070,7 @@
             "@id": "MimicEncounterED/type/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -2134,6 +2155,7 @@
             "@id": "MimicMedicationAdministrationICU/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -2314,6 +2336,7 @@
                 "@id": "MimicMedicationAdministrationICU/dosage/method/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -2529,6 +2552,7 @@
             "@id": "MimicMedicationAdministrationICU/medicationCodeableConcept/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -2605,6 +2629,7 @@
             "@id": "MimicMedicationAdministrationICU/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -2806,6 +2831,7 @@
                 "@id": "MimicMedicationAdministration/dosage/method/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -2914,6 +2940,7 @@
             "@id": "MimicMedicationAdministration/medicationCodeableConcept/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -2975,6 +3002,7 @@
             "@id": "MimicMedicationAdministration/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -3148,6 +3176,7 @@
           "@id": "MimicMedicationRequest/dosageInstruction",
           "name": "dosageInstruction",
           "description": "Column 'dosageInstruction'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -3163,6 +3192,7 @@
               "@id": "MimicMedicationRequest/dosageInstruction/doseAndRate",
               "name": "doseAndRate",
               "description": "Field 'doseAndRate'",
+              "cr:arrayShape": "-1",
               "cr:isArray": true,
               "source": {
                 "fileObject": {
@@ -3373,6 +3403,7 @@
                 "@id": "MimicMedicationRequest/dosageInstruction/route/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -3463,6 +3494,7 @@
                     "@id": "MimicMedicationRequest/dosageInstruction/timing/code/coding",
                     "name": "coding",
                     "description": "Field 'coding'",
+                    "cr:arrayShape": "-1",
                     "cr:isArray": true,
                     "source": {
                       "fileObject": {
@@ -3605,6 +3637,7 @@
           "@id": "MimicMedicationRequest/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -3680,6 +3713,7 @@
             "@id": "MimicMedicationRequest/medicationCodeableConcept/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -3770,6 +3804,7 @@
             "@id": "MimicMedicationRequest/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -3869,6 +3904,7 @@
           "@id": "MimicOrganization/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -3929,6 +3965,7 @@
             "@id": "MimicOrganization/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -3961,6 +3998,7 @@
           "@id": "MimicOrganization/type",
           "name": "type",
           "description": "Column 'type'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -3975,6 +4013,7 @@
             "@id": "MimicOrganization/type/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -4090,6 +4129,7 @@
           "@id": "MimicSpecimenLab/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -4150,6 +4190,7 @@
             "@id": "MimicSpecimenLab/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -4209,6 +4250,7 @@
             "@id": "MimicSpecimenLab/type/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -4309,6 +4351,7 @@
           "@id": "MimicSpecimen/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -4369,6 +4412,7 @@
             "@id": "MimicSpecimen/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -4428,6 +4472,7 @@
             "@id": "MimicSpecimen/type/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -4556,6 +4601,7 @@
             "@id": "MimicLocation/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -4601,6 +4647,7 @@
             "@id": "MimicLocation/physicalType/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -4687,6 +4734,7 @@
           "@id": "MimicObservationVitalSignsED/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -4701,6 +4749,7 @@
             "@id": "MimicObservationVitalSignsED/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -4777,6 +4826,7 @@
             "@id": "MimicObservationVitalSignsED/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -4840,6 +4890,7 @@
           "@id": "MimicObservationVitalSignsED/component",
           "name": "component",
           "description": "Column 'component'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -4868,6 +4919,7 @@
                 "@id": "MimicObservationVitalSignsED/component/code/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -4944,6 +4996,7 @@
                 "@id": "MimicObservationVitalSignsED/component/dataAbsentReason/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -5098,6 +5151,7 @@
             "@id": "MimicObservationVitalSignsED/dataAbsentReason/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -5233,6 +5287,7 @@
             "@id": "MimicObservationVitalSignsED/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -5250,6 +5305,7 @@
           "@id": "MimicObservationVitalSignsED/partOf",
           "name": "partOf",
           "description": "Column 'partOf'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -5408,6 +5464,7 @@
           "@id": "MimicObservationMicroTest/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -5422,6 +5479,7 @@
             "@id": "MimicObservationMicroTest/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -5498,6 +5556,7 @@
             "@id": "MimicObservationMicroTest/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -5605,6 +5664,7 @@
           "@id": "MimicObservationMicroTest/hasMember",
           "name": "hasMember",
           "description": "Column 'hasMember'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -5663,6 +5723,7 @@
             "@id": "MimicObservationMicroTest/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -5766,6 +5827,7 @@
             "@id": "MimicObservationMicroTest/valueCodeableConcept/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -5852,6 +5914,7 @@
           "@id": "MimicObservationMicroOrg/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -5866,6 +5929,7 @@
             "@id": "MimicObservationMicroOrg/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -5942,6 +6006,7 @@
             "@id": "MimicObservationMicroOrg/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -6005,6 +6070,7 @@
           "@id": "MimicObservationMicroOrg/derivedFrom",
           "name": "derivedFrom",
           "description": "Column 'derivedFrom'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -6050,6 +6116,7 @@
           "@id": "MimicObservationMicroOrg/hasMember",
           "name": "hasMember",
           "description": "Column 'hasMember'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -6108,6 +6175,7 @@
             "@id": "MimicObservationMicroOrg/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -6192,6 +6260,7 @@
           "@id": "MimicObservationLabevents/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -6206,6 +6275,7 @@
             "@id": "MimicObservationLabevents/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -6282,6 +6352,7 @@
             "@id": "MimicObservationLabevents/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -6389,6 +6460,7 @@
           "@id": "MimicObservationLabevents/extension",
           "name": "extension",
           "description": "Column 'extension'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -6451,6 +6523,7 @@
           "@id": "MimicObservationLabevents/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -6526,6 +6599,7 @@
             "@id": "MimicObservationLabevents/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -6543,6 +6617,7 @@
           "@id": "MimicObservationLabevents/note",
           "name": "note",
           "description": "Column 'note'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -6573,6 +6648,7 @@
           "@id": "MimicObservationLabevents/referenceRange",
           "name": "referenceRange",
           "description": "Column 'referenceRange'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -6914,6 +6990,7 @@
           "@id": "MimicObservationMicroSusc/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -6928,6 +7005,7 @@
             "@id": "MimicObservationMicroSusc/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -7004,6 +7082,7 @@
             "@id": "MimicObservationMicroSusc/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -7067,6 +7146,7 @@
           "@id": "MimicObservationMicroSusc/derivedFrom",
           "name": "derivedFrom",
           "description": "Column 'derivedFrom'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -7112,6 +7192,7 @@
           "@id": "MimicObservationMicroSusc/extension",
           "name": "extension",
           "description": "Column 'extension'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -7205,6 +7286,7 @@
           "@id": "MimicObservationMicroSusc/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -7265,6 +7347,7 @@
             "@id": "MimicObservationMicroSusc/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -7282,6 +7365,7 @@
           "@id": "MimicObservationMicroSusc/note",
           "name": "note",
           "description": "Column 'note'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -7369,6 +7453,7 @@
             "@id": "MimicObservationMicroSusc/valueCodeableConcept/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -7440,6 +7525,7 @@
           "@id": "MimicObservationED/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -7454,6 +7540,7 @@
             "@id": "MimicObservationED/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -7530,6 +7617,7 @@
             "@id": "MimicObservationED/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -7606,6 +7694,7 @@
             "@id": "MimicObservationED/dataAbsentReason/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -7741,6 +7830,7 @@
             "@id": "MimicObservationED/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -7758,6 +7848,7 @@
           "@id": "MimicObservationED/partOf",
           "name": "partOf",
           "description": "Column 'partOf'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -7855,6 +7946,7 @@
           "@id": "MimicObservationOutputevents/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -7869,6 +7961,7 @@
             "@id": "MimicObservationOutputevents/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -7930,6 +8023,7 @@
             "@id": "MimicObservationOutputevents/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -8080,6 +8174,7 @@
             "@id": "MimicObservationOutputevents/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -8225,6 +8320,7 @@
           "@id": "MimicObservationDatetimeevents/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -8239,6 +8335,7 @@
             "@id": "MimicObservationDatetimeevents/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -8300,6 +8397,7 @@
             "@id": "MimicObservationDatetimeevents/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -8450,6 +8548,7 @@
             "@id": "MimicObservationDatetimeevents/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -8534,6 +8633,7 @@
           "@id": "MimicObservationChartevents/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -8548,6 +8648,7 @@
             "@id": "MimicObservationChartevents/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -8609,6 +8710,7 @@
             "@id": "MimicObservationChartevents/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -8759,6 +8861,7 @@
             "@id": "MimicObservationChartevents/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -8776,6 +8879,7 @@
           "@id": "MimicObservationChartevents/referenceRange",
           "name": "referenceRange",
           "description": "Column 'referenceRange'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -9088,6 +9192,7 @@
           "@id": "MimicMedicationDispense/authorizingPrescription",
           "name": "authorizingPrescription",
           "description": "Column 'authorizingPrescription'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -9147,6 +9252,7 @@
           "@id": "MimicMedicationDispense/dosageInstruction",
           "name": "dosageInstruction",
           "description": "Column 'dosageInstruction'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -9281,6 +9387,7 @@
                 "@id": "MimicMedicationDispense/dosageInstruction/route/coding",
                 "name": "coding",
                 "description": "Field 'coding'",
+                "cr:arrayShape": "-1",
                 "cr:isArray": true,
                 "source": {
                   "fileObject": {
@@ -9356,6 +9463,7 @@
                     "@id": "MimicMedicationDispense/dosageInstruction/timing/code/coding",
                     "name": "coding",
                     "description": "Field 'coding'",
+                    "cr:arrayShape": "-1",
                     "cr:isArray": true,
                     "source": {
                       "fileObject": {
@@ -9469,6 +9577,7 @@
           "@id": "MimicMedicationDispense/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -9529,6 +9638,7 @@
             "@id": "MimicMedicationDispense/medicationCodeableConcept/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -9590,6 +9700,7 @@
             "@id": "MimicMedicationDispense/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -9717,6 +9828,7 @@
               "@id": "MimicMedicationDispenseED/medicationCodeableConcept/coding",
               "name": "coding",
               "description": "Field 'coding'",
+              "cr:arrayShape": "-1",
               "cr:isArray": true,
               "source": {
                 "fileObject": {
@@ -9794,6 +9906,7 @@
             "@id": "MimicMedicationDispenseED/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -9878,6 +9991,7 @@
           "@id": "MimicConditionED/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -9892,6 +10006,7 @@
             "@id": "MimicConditionED/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -9968,6 +10083,7 @@
             "@id": "MimicConditionED/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -10088,6 +10204,7 @@
             "@id": "MimicConditionED/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -10142,6 +10259,7 @@
           "@id": "MimicCondition/category",
           "name": "category",
           "description": "Column 'category'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -10156,6 +10274,7 @@
             "@id": "MimicCondition/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -10232,6 +10351,7 @@
             "@id": "MimicCondition/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -10352,6 +10472,7 @@
             "@id": "MimicCondition/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -10419,6 +10540,7 @@
             "@id": "MimicProcedureED/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -10539,6 +10661,7 @@
             "@id": "MimicProcedureED/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -10623,6 +10746,7 @@
           "@id": "MimicProcedureICU/bodySite",
           "name": "bodySite",
           "description": "Column 'bodySite'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -10637,6 +10761,7 @@
             "@id": "MimicProcedureICU/bodySite/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -10698,6 +10823,7 @@
             "@id": "MimicProcedureICU/category/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -10759,6 +10885,7 @@
             "@id": "MimicProcedureICU/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -10879,6 +11006,7 @@
             "@id": "MimicProcedureICU/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -11007,6 +11135,7 @@
             "@id": "MimicProcedure/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -11127,6 +11256,7 @@
             "@id": "MimicProcedure/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -11284,6 +11414,7 @@
               "@id": "MimicMedicationStatementED/medicationCodeableConcept/coding",
               "name": "coding",
               "description": "Field 'coding'",
+              "cr:arrayShape": "-1",
               "cr:isArray": true,
               "source": {
                 "fileObject": {
@@ -11376,6 +11507,7 @@
             "@id": "MimicMedicationStatementED/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -11460,6 +11592,7 @@
           "@id": "MimicPatient/communication",
           "name": "communication",
           "description": "Column 'communication'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -11487,6 +11620,7 @@
               "@id": "MimicPatient/communication/language/coding",
               "name": "coding",
               "description": "Field 'coding'",
+              "cr:arrayShape": "-1",
               "cr:isArray": true,
               "source": {
                 "fileObject": {
@@ -11551,6 +11685,7 @@
           "@id": "MimicPatient/extension",
           "name": "extension",
           "description": "Column 'extension'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -11566,6 +11701,7 @@
               "@id": "MimicPatient/extension/extension",
               "name": "extension",
               "description": "Field 'extension'",
+              "cr:arrayShape": "-1",
               "cr:isArray": true,
               "source": {
                 "fileObject": {
@@ -11736,6 +11872,7 @@
           "@id": "MimicPatient/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -11825,6 +11962,7 @@
             "@id": "MimicPatient/maritalStatus/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -11886,6 +12024,7 @@
             "@id": "MimicPatient/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -11903,6 +12042,7 @@
           "@id": "MimicPatient/name",
           "name": "name",
           "description": "Column 'name'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -11971,6 +12111,7 @@
             "@id": "MimicMedication/code/coding",
             "name": "coding",
             "description": "Field 'coding'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "source": {
               "fileObject": {
@@ -12034,6 +12175,7 @@
           "@id": "MimicMedication/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -12094,6 +12236,7 @@
             "@id": "MimicMedication/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {
@@ -12149,6 +12292,7 @@
           "@id": "MimicMedicationMix/identifier",
           "name": "identifier",
           "description": "Column 'identifier'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -12196,6 +12340,7 @@
           "@id": "MimicMedicationMix/ingredient",
           "name": "ingredient",
           "description": "Column 'ingredient'",
+          "cr:arrayShape": "-1",
           "cr:isArray": true,
           "source": {
             "fileObject": {
@@ -12253,6 +12398,7 @@
             "@id": "MimicMedicationMix/meta/profile",
             "name": "profile",
             "description": "Field 'profile'",
+            "cr:arrayShape": "-1",
             "cr:isArray": true,
             "dataType": "sc:URL",
             "source": {

@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -48,13 +49,13 @@
   "@type": "sc:Dataset",
   "name": "GH Archive (demo slice)",
   "description": "200-event slice of GitHub Archive hourly JSONL export (2023-01-01 00:00 UTC)",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Dataset Creator. (2026). GH Archive (demo slice) Dataset. Generated with automated type inference.",
   "creator": {
     "@type": "sc:Person",
     "name": "GitHub Archive"
   },
-  "datePublished": "2023-01-01T00:00:00",
+  "datePublished": "2023-01-01",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://www.gharchive.org/",
   "version": "2023-01-01",
@@ -970,6 +971,7 @@
               "@id": "2023-01-01-0.jsonl/payload/commits",
               "name": "commits",
               "description": "Field 'commits'",
+              "cr:arrayShape": "-1",
               "cr:isArray": true,
               "source": {
                 "fileObject": {
@@ -2865,6 +2867,7 @@
                   "@id": "2023-01-01-0.jsonl/payload/issue/assignees",
                   "name": "assignees",
                   "description": "Field 'assignees'",
+                  "cr:arrayShape": "-1",
                   "cr:isArray": true,
                   "source": {
                     "fileObject": {
@@ -3302,6 +3305,7 @@
                   "@id": "2023-01-01-0.jsonl/payload/issue/labels",
                   "name": "labels",
                   "description": "Field 'labels'",
+                  "cr:arrayShape": "-1",
                   "cr:isArray": true,
                   "source": {
                     "fileObject": {
@@ -5911,6 +5915,7 @@
                           "@id": "2023-01-01-0.jsonl/payload/pull_request/base/repo/topics",
                           "name": "topics",
                           "description": "Field 'topics'",
+                          "cr:arrayShape": "-1",
                           "cr:isArray": true,
                           "dataType": "sc:Text",
                           "source": {
@@ -7957,6 +7962,7 @@
                           "@id": "2023-01-01-0.jsonl/payload/pull_request/head/repo/topics",
                           "name": "topics",
                           "description": "Field 'topics'",
+                          "cr:arrayShape": "-1",
                           "cr:isArray": true,
                           "dataType": "sc:Text",
                           "source": {
@@ -8428,6 +8434,7 @@
                   "@id": "2023-01-01-0.jsonl/payload/pull_request/labels",
                   "name": "labels",
                   "description": "Field 'labels'",
+                  "cr:arrayShape": "-1",
                   "cr:isArray": true,
                   "source": {
                     "fileObject": {

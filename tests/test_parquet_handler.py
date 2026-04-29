@@ -231,3 +231,31 @@ def test_parquet_build_croissant_partitioned(handler: ParquetHandler) -> None:
     assert len(record_sets) == 1
     assert record_sets[0].name == "events"
     assert "events/*.parquet" in filesets[0].includes
+
+
+def test_parquet_array_shape_fixed_vs_variable(
+    handler: ParquetHandler, tmp_path: Path
+) -> None:
+    """Fixed-size lists report exact dim; variable-length lists report -1."""
+    schema = pa.schema(
+        [
+            ("embedding", pa.list_(pa.float32(), 384)),  # fixed-size: dim 384
+            ("tags", pa.list_(pa.string())),  # variable-length
+        ]
+    )
+    table = pa.table(
+        {"embedding": [[0.0] * 384], "tags": [["a", "b"]]},
+        schema=schema,
+    )
+    path = tmp_path / "vectors.parquet"
+    pq.write_table(table, str(path))
+
+    meta = handler.extract_metadata(path)
+    meta["relative_path"] = "vectors.parquet"
+    _, record_sets = handler.build_croissant([meta], ["file_0"])
+
+    fields = {f.name: f for f in record_sets[0].fields}
+    assert fields["embedding"].is_array is True
+    assert fields["embedding"].array_shape == "384"
+    assert fields["tags"].is_array is True
+    assert fields["tags"].array_shape == "-1"

@@ -15,12 +15,84 @@ from croissant_baker.handlers.registry import find_handler, register_all_handler
 # Register all handlers
 register_all_handlers()
 
+# conformsTo URIs declared on the Dataset. mlcroissant defaults conforms_to to
+# 1.0 even on 1.1.x — passing CROISSANT_CONFORMS_TO explicitly is the single
+# source of truth for our declared spec version. RAI_CONFORMS_TO is appended
+# to the conformsTo array by _ensure_rai_conforms_to() when RAI fields are
+# present (the RAI extension vocab itself did NOT version-bump in Croissant 1.1).
+# https://docs.mlcommons.org/croissant/docs/croissant-spec-1.1.html
+CROISSANT_CONFORMS_TO = "http://mlcommons.org/croissant/1.1"
+RAI_CONFORMS_TO = "http://mlcommons.org/croissant/RAI/1.0"
+
 
 def serialize_datetime(obj):
     """Convert datetime objects to ISO format strings for JSON serialization."""
     if isinstance(obj, datetime):
         return obj.isoformat()
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
+
+def _apply_field_mappings(
+    metadata_dict: dict, mappings: Dict[str, Dict[str, object]]
+) -> None:
+    """Inject equivalentProperty / dataType overrides onto matching Fields.
+
+    Walks the assembled metadata dict and applies user-supplied per-column
+    overrides keyed by field name. Used to link columns to external
+    vocabularies (e.g. Wikidata, SNOMED, LOINC). mlcroissant 1.1.0 exposes
+    no Python parameter for ``equivalent_property``, so we patch the
+    serialised JSON-LD directly.
+
+    Matching is by bare field name across the entire metadata tree. A
+    mapping for ``id`` will apply to every field named ``id`` in every
+    RecordSet. When a name resolves to more than one field, a warning is
+    printed so the user can confirm the override is intended for all of
+    them.
+
+    User-supplied ``data_types`` are APPENDED to the inferred Croissant type
+    rather than replacing it. The mlcroissant validator requires at least
+    one Croissant dataType per field, and the 1.1 spec explicitly supports
+    multiple types coexisting (e.g. ``["sc:URL", "wd:Q515"]``).
+    """
+    match_counts: Dict[str, int] = defaultdict(int)
+
+    def visit(node: object) -> None:
+        if isinstance(node, dict):
+            if node.get("@type") == "cr:Field":
+                name = node.get("name")
+                override = mappings.get(name)
+                if override:
+                    match_counts[name] += 1
+                    if override.get("equivalent_property"):
+                        node["equivalentProperty"] = override["equivalent_property"]
+                    extra_types = override.get("data_types") or []
+                    if extra_types:
+                        existing = node.get("dataType")
+                        if existing is None:
+                            existing_list = []
+                        elif isinstance(existing, list):
+                            existing_list = list(existing)
+                        else:
+                            existing_list = [existing]
+                        for t in extra_types:
+                            if t not in existing_list:
+                                existing_list.append(t)
+                        node["dataType"] = existing_list
+            for value in node.values():
+                visit(value)
+        elif isinstance(node, list):
+            for item in node:
+                visit(item)
+
+    visit(metadata_dict)
+
+    for name, count in match_counts.items():
+        if count > 1:
+            print(
+                f"Warning: field mapping '{name}' applied to {count} fields. "
+                f"If '{name}' means different things in different RecordSets, "
+                "rename the columns or split the bake."
+            )
 
 
 class MetadataGenerator:
@@ -41,7 +113,20 @@ class MetadataGenerator:
         citation: Optional[str] = None,
         version: Optional[str] = None,
         date_published: Optional[str] = None,
+        date_created: Optional[str] = None,
+        date_modified: Optional[str] = None,
         creators: Optional[List[Dict[str, str]]] = None,
+        publisher: Optional[str] = None,
+        keywords: Optional[List[str]] = None,
+        in_language: Optional[List[str]] = None,
+        same_as: Optional[List[str]] = None,
+        sd_license: Optional[str] = None,
+        sd_version: Optional[str] = None,
+        alternate_name: Optional[str] = None,
+        is_live_dataset: Optional[bool] = None,
+        temporal_coverage: Optional[str] = None,
+        usage_info: Optional[str] = None,
+        field_mappings: Optional[Dict[str, Dict[str, object]]] = None,
         count_csv_rows: bool = False,
         includes: Optional[List[str]] = None,
         excludes: Optional[List[str]] = None,
@@ -60,13 +145,34 @@ class MetadataGenerator:
             version: Dataset version string.
             date_published: Publication date in ISO format ("2023-12-15" or
                 "2023-12-15T10:30:00").
+            date_created: Creation date in ISO format.
+            date_modified: Last-modified date in ISO format.
             creators: List of dicts with "name", "email", and/or "url" keys.
+            publisher: Name of the publishing organization (schema.org/Organization).
+            keywords: Topical keywords for dataset discovery (schema.org/keywords).
+            in_language: BCP 47 language code(s) (e.g. "en"). Multiple supported.
+            same_as: URLs of equivalent dataset records (e.g. DOI, mirror landing
+                pages). Multiple values supported per schema.org/sameAs.
+            sd_license: License of the metadata description itself, distinct from
+                the data license (schema.org/sdLicense).
+            sd_version: Version of the metadata description, distinct from
+                ``version``. Defaults to None — only emitted when set.
+            alternate_name: Short alias for the dataset (schema.org/alternateName).
+            is_live_dataset: Mark dataset as a live, evolving stream.
+            temporal_coverage: Time period the data covers — schema.org accepts
+                free text or ISO 8601 (e.g., "2008/2019", "2023-01-15").
+            usage_info: URL of a usage/consent policy (e.g., a DUO term URL,
+                ODRL Offer URL).
+            field_mappings: Per-column overrides keyed by field name. Each value
+                is a dict with optional ``equivalent_property`` (vocab URI) and
+                ``data_types`` (list of vocab URIs). Used to link columns to
+                external vocabularies like Wikidata/SNOMED/LOINC.
             count_csv_rows: If True, scan each CSV fully for exact row counts.
                 Defaults to False for performance.
             includes: Glob patterns to include. Applied before excludes.
             excludes: Glob patterns to exclude. Applied after includes.
-            rai_fields: Native mlcroissant RAI metadata fields to pass through
-                to mlc.Metadata unchanged.
+            rai_fields: Native mlcroissant RAI metadata fields, passed through
+                to ``mlc.Metadata`` unchanged.
 
         Raises:
             ValueError: If dataset_path is not a directory.
@@ -82,7 +188,20 @@ class MetadataGenerator:
         self.citation = citation
         self.version = version
         self.date_published = date_published
+        self.date_created = date_created
+        self.date_modified = date_modified
         self.creators = creators
+        self.publisher = publisher
+        self.keywords = keywords
+        self.in_language = in_language
+        self.same_as = same_as
+        self.sd_license = sd_license
+        self.sd_version = sd_version
+        self.alternate_name = alternate_name
+        self.is_live_dataset = is_live_dataset
+        self.temporal_coverage = temporal_coverage
+        self.usage_info = usage_info
+        self.field_mappings = field_mappings or {}
         self.includes = includes
         self.excludes = excludes
         self.rai_fields = rai_fields or {}
@@ -134,8 +253,16 @@ class MetadataGenerator:
             license=self._resolve_license(),
             creators=self._build_creators(),
             date_published=self._resolve_date(),
+            date_created=self._parse_iso(self.date_created),
+            date_modified=self._parse_iso(self.date_modified),
             version=self.version or "1.0.0",
             cite_as=self._build_citation(),
+            conforms_to=CROISSANT_CONFORMS_TO,
+            keywords=self.keywords,
+            in_language=self.in_language,
+            same_as=self.same_as,
+            publisher=self._build_publisher(),
+            sd_licence=self.sd_license,
             **self.rai_fields,
         )
 
@@ -206,7 +333,27 @@ class MetadataGenerator:
         metadata.distribution = distributions
         metadata.record_sets = record_sets
 
-        return metadata.to_json()
+        result = metadata.to_json()
+        # Spec fields without a native mlcroissant parameter — inject
+        # post-serialisation. Keep keys absent (not null) when the caller
+        # didn't supply a value, so optional fields don't pollute outputs
+        # that don't need them. ``sd_version`` IS a native mlc 1.1.0 param,
+        # but mlc emits it as ``cr:sdVersion`` (no @context alias); the
+        # canonical 1.1 examples use the unprefixed form, so we write the
+        # canonical key directly.
+        if self.sd_version is not None:
+            result["sdVersion"] = self.sd_version
+        if self.alternate_name is not None:
+            result["alternateName"] = self.alternate_name
+        if self.is_live_dataset is not None:
+            result["isLiveDataset"] = self.is_live_dataset
+        if self.temporal_coverage is not None:
+            result["temporalCoverage"] = self.temporal_coverage
+        if self.usage_info is not None:
+            result["usageInfo"] = self.usage_info
+        if self.field_mappings:
+            _apply_field_mappings(result, self.field_mappings)
+        return result
 
     # ------------------------------------------------------------------
     # Private helpers
@@ -246,6 +393,23 @@ class MetadataGenerator:
             mlc.Person(**{k: v for k, v in c.items() if k in ("name", "email", "url")})
             for c in self.creators
         ]
+
+    def _build_publisher(self):
+        if not self.publisher:
+            return None
+        return [mlc.Organization(name=self.publisher)]
+
+    @staticmethod
+    def _parse_iso(value: Optional[str]):
+        if not value:
+            return None
+        try:
+            return datetime.fromisoformat(value)
+        except ValueError as e:
+            raise ValueError(
+                f"Invalid ISO date: '{value}'. "
+                f"Expected '2023-12-15' or '2023-12-15T10:30:00'. Error: {e}"
+            )
 
     def _build_citation(self) -> str:
         if self.citation:

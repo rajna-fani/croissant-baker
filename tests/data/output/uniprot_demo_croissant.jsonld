@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -48,13 +49,13 @@
   "@type": "sc:Dataset",
   "name": "UniProt Human Reviewed (demo)",
   "description": "200 reviewed human proteins from UniProt Swiss-Prot",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Dataset Creator. (2026). UniProt Human Reviewed (demo) Dataset. Generated with automated type inference.",
   "creator": {
     "@type": "sc:Person",
     "name": "UniProt Consortium"
   },
-  "datePublished": "2025-01-01T00:00:00",
+  "datePublished": "2025-01-01",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://www.uniprot.org/uniprotkb?query=reviewed:true&organism_id=9606",
   "version": "1.0.0",

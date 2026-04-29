@@ -3,6 +3,10 @@
 from pathlib import Path
 from croissant_baker.handlers.registry import find_handler, register_all_handlers
 from croissant_baker.handlers.csv_handler import CSVHandler
+from croissant_baker.handlers.utils import (
+    ARRAY_SHAPE_UNKNOWN_1D,
+    normalize_array_shape,
+)
 
 
 def test_find_handler_with_real_handlers() -> None:
@@ -33,3 +37,14 @@ def test_handler_registry_isolation() -> None:
 
     # Should find CSV handler
     assert find_handler(Path("data.csv")) is not None
+
+
+def test_normalize_array_shape_accepts_tuple_and_bare_forms() -> None:
+    """Tuple-style shapes (numpy.shape repr) coerce to mlc-accepted form."""
+    assert normalize_array_shape(ARRAY_SHAPE_UNKNOWN_1D) == "-1"
+    assert normalize_array_shape("-1") == "-1"
+    assert normalize_array_shape("(-1,)") == "-1"
+    assert normalize_array_shape("(-1, -1)") == "-1,-1"
+    assert normalize_array_shape("(28, 28)") == "28,28"
+    assert normalize_array_shape("28,28") == "28,28"
+    assert normalize_array_shape("-1,-1,3") == "-1,-1,3"

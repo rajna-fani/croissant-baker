@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -48,7 +49,7 @@
   "@type": "sc:Dataset",
   "name": "eICU Collaborative Research Database Demo",
   "description": "Demo version of the eICU Collaborative Research Database",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Johnson, A., Pollard, T., Badawi, O., & Raffa, J. (2021). eICU Collaborative Research Database Demo (version 2.0.1). PhysioNet. https://doi.org/10.13026/4mxk-na84",
   "creator": [
     {
@@ -68,7 +69,7 @@
       "name": "Jesse Raffa"
     }
   ],
-  "datePublished": "2021-05-06T00:00:00",
+  "datePublished": "2021-05-06",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://physionet.org/content/eicu-crd-demo/2.0.1/",
   "version": "2.0.1",
