@@ -66,10 +66,9 @@ def _has_ndjson_data() -> bool:
 
 
 def _has_standards_packages() -> bool:
-    return (
-        (STANDARDS_DIR / "us_core" / "package").exists()
-        and (STANDARDS_DIR / "fhir_r4_core" / "package").exists()
-    )
+    return (STANDARDS_DIR / "us_core" / "package").exists() and (
+        STANDARDS_DIR / "fhir_r4_core" / "package"
+    ).exists()
 
 
 @pytest.mark.skipif(
@@ -87,12 +86,18 @@ def test_fhir_smart_bulk_evaluation() -> None:
     result = runner.invoke(
         app,
         [
-            "-i", str(INPUT_DIR),
-            "-o", str(OUTPUT_FILE),
-            "--name", "SMART on FHIR Bulk Sample (10 patients)",
-            "--creator", "SMART Health IT",
-            "--description", "Synthetic FHIR NDJSON bulk export sample data",
-            "--license", "https://creativecommons.org/publicdomain/zero/1.0/",
+            "-i",
+            str(INPUT_DIR),
+            "-o",
+            str(OUTPUT_FILE),
+            "--name",
+            "SMART on FHIR Bulk Sample (10 patients)",
+            "--creator",
+            "SMART Health IT",
+            "--description",
+            "Synthetic FHIR NDJSON bulk export sample data",
+            "--license",
+            "https://creativecommons.org/publicdomain/zero/1.0/",
         ],
     )
     elapsed = time.perf_counter() - start
@@ -118,7 +123,9 @@ def test_fhir_smart_bulk_evaluation() -> None:
     rs_by_name = {rs.get("name", rs.get("@id", "")): rs for rs in record_sets}
     for rtype in ("Patient", "Observation", "Encounter"):
         fields = rs_by_name[rtype].get("field", [])
-        assert len(fields) >= 4, f"{rtype} has only {len(fields)} fields — unexpectedly sparse"
+        assert len(fields) >= 4, (
+            f"{rtype} has only {len(fields)} fields — unexpectedly sparse"
+        )
 
     # Verify NDJSON chunk merging: Observation may have multiple chunk files
     # (Observation.000.ndjson, Observation.001.ndjson) → single RecordSet
@@ -127,13 +134,13 @@ def test_fhir_smart_bulk_evaluation() -> None:
 
     # Summary for paper
     total_fields = sum(len(rs.get("field", [])) for rs in record_sets)
-    print(f"\n=== SMART Bulk NDJSON Evaluation ===")
+    print("\n=== SMART Bulk NDJSON Evaluation ===")
     print(f"  RecordSets: {len(record_sets)} ({', '.join(sorted(generated_names))})")
     print(f"  Total fields: {total_fields}")
     print(f"  Generation time: {elapsed:.2f}s")
     for rs in sorted(record_sets, key=lambda r: r.get("name", "")):
         n = len(rs.get("field", []))
-        print(f"    {rs.get('name','?'):30s} {n:3d} fields")
+        print(f"    {rs.get('name', '?'):30s} {n:3d} fields")
 
     ground_truth, unresolved, profiles_by_type = build_standards_ground_truth(
         INPUT_DIR,

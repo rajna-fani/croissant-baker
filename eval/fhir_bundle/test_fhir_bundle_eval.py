@@ -52,10 +52,7 @@ def _has_bundle_data() -> bool:
 
 @pytest.mark.skipif(
     not _has_bundle_data(),
-    reason=(
-        "FHIR Bundle data not downloaded. "
-        "Run: bash eval/fhir_bundle/download.sh"
-    ),
+    reason=("FHIR Bundle data not downloaded. Run: bash eval/fhir_bundle/download.sh"),
 )
 def test_fhir_bundle_evaluation() -> None:
     """Generate Croissant for FHIR JSON Bundles and validate structural fidelity."""
@@ -65,12 +62,18 @@ def test_fhir_bundle_evaluation() -> None:
     result = runner.invoke(
         app,
         [
-            "-i", str(INPUT_DIR),
-            "-o", str(OUTPUT_FILE),
-            "--name", "SMART FHIR Bundle Sample",
-            "--creator", "SMART Health IT",
-            "--description", "Sample FHIR transaction bundles from SMART Health IT",
-            "--license", "https://creativecommons.org/publicdomain/zero/1.0/",
+            "-i",
+            str(INPUT_DIR),
+            "-o",
+            str(OUTPUT_FILE),
+            "--name",
+            "SMART FHIR Bundle Sample",
+            "--creator",
+            "SMART Health IT",
+            "--description",
+            "Sample FHIR transaction bundles from SMART Health IT",
+            "--license",
+            "https://creativecommons.org/publicdomain/zero/1.0/",
         ],
     )
     elapsed = time.perf_counter() - start
@@ -95,24 +98,28 @@ def test_fhir_bundle_evaluation() -> None:
     )
 
     # 5 FileObjects (one per Bundle file) + 1 FileSet = 6 distribution entries
-    assert len(distribution) == 6, f"Expected 6 distribution items, got {len(distribution)}"
+    assert len(distribution) == 6, (
+        f"Expected 6 distribution items, got {len(distribution)}"
+    )
 
     # Verify key resource types have non-trivial field counts
     rs_by_name = {rs.get("name", rs.get("@id", "")): rs for rs in record_sets}
     for rtype in ("Patient", "Observation", "Condition"):
         fields = rs_by_name[rtype].get("field", [])
-        assert len(fields) >= 4, f"{rtype} has only {len(fields)} fields — unexpectedly sparse"
+        assert len(fields) >= 4, (
+            f"{rtype} has only {len(fields)} fields — unexpectedly sparse"
+        )
 
     # Summary for paper
     total_fields = sum(len(rs.get("field", [])) for rs in record_sets)
-    print(f"\n=== FHIR Bundle Evaluation ===")
-    print(f"  Input files: 5 JSON Bundles")
+    print("\n=== FHIR Bundle Evaluation ===")
+    print("  Input files: 5 JSON Bundles")
     print(f"  RecordSets: {len(record_sets)} ({', '.join(sorted(generated_names))})")
     print(f"  Total fields: {total_fields}")
     print(f"  Generation time: {elapsed:.2f}s")
     for rs in sorted(record_sets, key=lambda r: r.get("name", "")):
         n = len(rs.get("field", []))
-        print(f"    {rs.get('name','?'):30s} {n:3d} fields")
+        print(f"    {rs.get('name', '?'):30s} {n:3d} fields")
 
     # Paper numbers: 11 RecordSets, 94 total fields
     assert len(record_sets) == 11

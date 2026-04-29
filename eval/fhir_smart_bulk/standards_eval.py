@@ -59,7 +59,17 @@ FHIR_TO_CROISSANT = {
 }
 
 SEMANTIC_FLOAT = {"Float", "Float16", "Float32", "Float64"}
-SEMANTIC_INT = {"Integer", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32", "UInt64"}
+SEMANTIC_INT = {
+    "Integer",
+    "Int8",
+    "Int16",
+    "Int32",
+    "Int64",
+    "UInt8",
+    "UInt16",
+    "UInt32",
+    "UInt64",
+}
 SEMANTIC_GROUPS = [SEMANTIC_FLOAT, SEMANTIC_INT]
 
 
@@ -124,7 +134,9 @@ def _iter_resource_leaf_paths(obj, prefix: str = "") -> list[str]:
     return [prefix] if prefix else []
 
 
-def collect_observed_paths(input_dir: Path) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
+def collect_observed_paths(
+    input_dir: Path,
+) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
     """Collect observed leaf paths and declared profiles from NDJSON resources."""
     observed_paths: dict[str, set[str]] = defaultdict(set)
     profiles_by_type: dict[str, set[str]] = defaultdict(set)
@@ -148,7 +160,9 @@ def collect_observed_paths(input_dir: Path) -> tuple[dict[str, set[str]], dict[s
                     continue
                 for profile in resource.get("meta", {}).get("profile", []):
                     profiles_by_type[resource_type].add(profile)
-                observed_paths[resource_type].update(_iter_resource_leaf_paths(resource))
+                observed_paths[resource_type].update(
+                    _iter_resource_leaf_paths(resource)
+                )
 
     return observed_paths, profiles_by_type
 
@@ -248,7 +262,9 @@ class StructureDefinitionResolver:
         if not segments:
             return None
 
-        element, chosen_type = self._find_direct_child(structure, context_path, segments[0])
+        element, chosen_type = self._find_direct_child(
+            structure, context_path, segments[0]
+        )
         if element is None:
             return None
 
@@ -261,10 +277,14 @@ class StructureDefinitionResolver:
             if resolved:
                 return resolved
 
-        candidate_types = [chosen_type] if chosen_type else [
-            _normalize_fhir_type_code(type_info["code"])
-            for type_info in element.get("type", [])
-        ]
+        candidate_types = (
+            [chosen_type]
+            if chosen_type
+            else [
+                _normalize_fhir_type_code(type_info["code"])
+                for type_info in element.get("type", [])
+            ]
+        )
         for type_name in candidate_types:
             child_structure = self.core_by_type.get(type_name)
             if child_structure is None:
@@ -290,24 +310,26 @@ class StructureDefinitionResolver:
             path = element["path"]
             if not path.startswith(prefix):
                 continue
-            suffix = path[len(prefix):]
+            suffix = path[len(prefix) :]
             if "." in suffix:
                 continue
             direct_children.append(element)
 
         exact_path = f"{context_path}.{segment}"
-        exact_matches = [element for element in direct_children if element["path"] == exact_path]
+        exact_matches = [
+            element for element in direct_children if element["path"] == exact_path
+        ]
         if exact_matches:
             return exact_matches[0], None
 
         for element in direct_children:
-            suffix = element["path"][len(prefix):]
+            suffix = element["path"][len(prefix) :]
             if not suffix.endswith("[x]"):
                 continue
             base_name = suffix[:-3]
             if not segment.startswith(base_name):
                 continue
-            choice_suffix = segment[len(base_name):]
+            choice_suffix = segment[len(base_name) :]
             for type_info in element.get("type", []):
                 type_name = _normalize_fhir_type_code(type_info["code"])
                 if _choice_suffix(type_name) == choice_suffix:
@@ -322,11 +344,17 @@ class StructureDefinitionResolver:
             for element in structure["snapshot"]["element"]
         )
 
-    def _leaf_croissant_type(self, element: dict, chosen_type: str | None) -> str | None:
-        candidate_types = [chosen_type] if chosen_type else [
-            _normalize_fhir_type_code(type_info["code"])
-            for type_info in element.get("type", [])
-        ]
+    def _leaf_croissant_type(
+        self, element: dict, chosen_type: str | None
+    ) -> str | None:
+        candidate_types = (
+            [chosen_type]
+            if chosen_type
+            else [
+                _normalize_fhir_type_code(type_info["code"])
+                for type_info in element.get("type", [])
+            ]
+        )
         for type_name in candidate_types:
             mapped = FHIR_TO_CROISSANT.get(type_name)
             if mapped:
@@ -403,7 +431,9 @@ def compare_against_generated(
         for field_name in sorted(common):
             gt_type = gt_fields[field_name]
             gen_type = gen_fields[field_name]
-            if _normalize_croissant_type(gt_type) == _normalize_croissant_type(gen_type):
+            if _normalize_croissant_type(gt_type) == _normalize_croissant_type(
+                gen_type
+            ):
                 strict_type_agree += 1
                 semantic_type_agree += 1
             elif types_semantically_equal(gt_type, gen_type):
@@ -428,11 +458,15 @@ def compare_against_generated(
         "fields_gen": total_gen_fields,
         "fields_matched": total_matched_fields,
         "strict_type_agree": strict_type_agree,
-        "strict_type_agree_pct": round(100 * strict_type_agree / total_matched_fields, 1)
+        "strict_type_agree_pct": round(
+            100 * strict_type_agree / total_matched_fields, 1
+        )
         if total_matched_fields
         else 0.0,
         "semantic_type_agree": semantic_type_agree,
-        "semantic_type_agree_pct": round(100 * semantic_type_agree / total_matched_fields, 1)
+        "semantic_type_agree_pct": round(
+            100 * semantic_type_agree / total_matched_fields, 1
+        )
         if total_matched_fields
         else 0.0,
         "missing_fields": missing_fields,
