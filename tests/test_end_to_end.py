@@ -1205,3 +1205,99 @@ def test_uniprot_tsv_generation(uniprot_demo_path: Path, output_dir: Path) -> No
     # Length and Mass are integers in UniProt — must not fall back to sc:Text
     assert any("Int" in t for t in fields.get("Length", [])), fields.get("Length")
     assert any("Int" in t for t in fields.get("Mass", [])), fields.get("Mass")
+
+
+@pytest.fixture
+def spect_demo_path() -> Path:
+    p = Path(__file__).parent / "data" / "input" / "spect_demo"
+    if not p.exists():
+        pytest.skip("SPECT demo dataset not found")
+    return p
+
+
+def test_spect_demo_generation(spect_demo_path: Path, output_dir: Path) -> None:
+    """End-to-end bake on a mixed-format real-world dataset (DICOM + NIfTI).
+
+    The fixture mirrors the source dataset's own DICOM/ and NIfTI/
+    subdirectories. One bake exercises both handlers concurrently and
+    must produce two FileSets and two RecordSets with the correct
+    per-format fields and encoding formats.
+    """
+    output_file = output_dir / "spect_demo_croissant.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "-i",
+            str(spect_demo_path),
+            "-o",
+            str(output_file),
+            "--name",
+            "Myocardial Perfusion SPECT (demo subset)",
+            "--description",
+            "Mixed DICOM + NIfTI subset of the PhysioNet open-access SPECT database",
+            "--url",
+            "https://physionet.org/content/myocardial-perfusion-spect/1.0.0/",
+            "--license",
+            "https://creativecommons.org/licenses/by/4.0/",
+            "--date-published",
+            "2025-04-26",
+            "--creator",
+            "Calixto et al.",
+            "--publisher",
+            "PhysioNet",
+            "--keywords",
+            "spect,cardiac,nuclear-medicine,segmentation-mask",
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 0, f"CLI failed:\n{result.output}"
+    assert output_file.exists()
+
+    with open(output_file) as f:
+        metadata = json.load(f)
+
+    distribution = metadata.get("distribution", [])
+    if not isinstance(distribution, list):
+        distribution = [distribution]
+    file_objects = [d for d in distribution if d.get("@type") == "cr:FileObject"]
+    file_sets_by_format = {
+        d["encodingFormat"]: d for d in distribution if d.get("@type") == "cr:FileSet"
+    }
+
+    # 3 DICOM + 3 NIfTI = 6 FileObjects, 2 FileSets keyed by encoding format.
+    assert len(file_objects) == 6
+    assert set(file_sets_by_format) == {
+        "application/dicom",
+        "application/x-nifti+gzip",
+    }
+    assert "NM (3)" in file_sets_by_format["application/dicom"]["description"]
+    assert "70x70x50" in file_sets_by_format["application/x-nifti+gzip"]["description"]
+
+    record_sets = metadata.get("recordSet", [])
+    if not isinstance(record_sets, list):
+        record_sets = [record_sets]
+    rs_by_name = {r["name"]: r for r in record_sets}
+    assert set(rs_by_name) == {"dicom", "nifti"}
+
+    dicom_fields = {f["name"] for f in rs_by_name["dicom"]["field"]}
+    assert {
+        "modality",
+        "rows",
+        "columns",
+        "patient_id",
+        "study_instance_uid",
+        "series_instance_uid",
+    } <= dicom_fields
+
+    nifti_fields = {f["name"] for f in rs_by_name["nifti"]["field"]}
+    assert {
+        "dim_x",
+        "dim_y",
+        "dim_z",
+        "voxel_spacing",
+        "data_dtype",
+        "nifti_version",
+    } <= nifti_fields
+    assert "tr_seconds" not in nifti_fields  # no 4D file in this fixture

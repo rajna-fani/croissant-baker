@@ -64,6 +64,8 @@ def register_all_handlers() -> None:
     from croissant_baker.handlers.wfdb_handler import WFDBHandler
     from croissant_baker.handlers.parquet_handler import ParquetHandler
     from croissant_baker.handlers.image_handler import ImageHandler
+    from croissant_baker.handlers.dicom_handler import DICOMHandler
+    from croissant_baker.handlers.nifti_handler import NIfTIHandler
 
     register_handler(CSVHandler())
     register_handler(TSVHandler())
@@ -76,3 +78,5 @@ def register_all_handlers() -> None:
     register_handler(WFDBHandler())
     register_handler(ParquetHandler())
     register_handler(ImageHandler())
+    register_handler(DICOMHandler())
+    register_handler(NIfTIHandler())
