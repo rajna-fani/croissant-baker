@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.2.0](https://github.com/MIT-LCP/croissant-baker/compare/croissant-baker-v0.1.2...croissant-baker-v0.2.0) (2026-04-29)
+
+
+### Features
+
+* add DICOM and NIfTI handlers ([a74ab41](https://github.com/MIT-LCP/croissant-baker/commit/a74ab41ddaed4f47340a5a6fc1c776f8df905fff))
+* add DICOM and NIfTI handlers for medical imaging datasets ([9fdb034](https://github.com/MIT-LCP/croissant-baker/commit/9fdb034ba83fcc89a089ce031b8ba18249929af9))
+* add progress bar. ref [#44](https://github.com/MIT-LCP/croissant-baker/issues/44). ([8c77c11](https://github.com/MIT-LCP/croissant-baker/commit/8c77c11a285a5f6e8f9d2c8ac04ac0fda188245e))
+* add progress bar. ref [#44](https://github.com/MIT-LCP/croissant-baker/issues/44). ([6025575](https://github.com/MIT-LCP/croissant-baker/commit/60255755c98c62038b531ac3c5cab517f992b281))
+* declare Croissant 1.1 conformance and expose optional spec flags ([5d0eb7e](https://github.com/MIT-LCP/croissant-baker/commit/5d0eb7e639fecc65875ce486bd36c4f807f5e003))
+* declare Croissant 1.1 conformance and expose optional spec flags ([890af17](https://github.com/MIT-LCP/croissant-baker/commit/890af17bc8a213ef6215e070f1791e489894216c))
+* **field-mapping, usage-info:** warn on multi-match, accept any URI scheme ([66d813e](https://github.com/MIT-LCP/croissant-baker/commit/66d813e9430a631be3f17bccc26d7863f2eefaec))
+
+
+### Bug Fixes
+
+* apply DICM preamble check uniformly in DICOMHandler.can_handle ([50e79d7](https://github.com/MIT-LCP/croissant-baker/commit/50e79d78cfb2e82f3eaf1b883c58586567d09299))
+* count only cr:FileObject entries in CLI summary ([3571858](https://github.com/MIT-LCP/croissant-baker/commit/3571858b1ddded7f528c2c099ce3178021caec20))
+* count only cr:FileObject entries in CLI summary ([c324d7f](https://github.com/MIT-LCP/croissant-baker/commit/c324d7fd70d8d7bfdf1d0dedb07ae981588a3806)), closes [#92](https://github.com/MIT-LCP/croissant-baker/issues/92)
+* move pydicom and nibabel imports to module level ([15c9d2e](https://github.com/MIT-LCP/croissant-baker/commit/15c9d2e70f4054ff0073c7c1a6b6b790c058805b))
+* surface DICOM skip count, capture PatientID, cite NIfTI header sources ([8834241](https://github.com/MIT-LCP/croissant-baker/commit/88342410dfcabeb2bd795afadd2464c97698707c))
+* validate magic bytes in image and parquet can_handle ([#93](https://github.com/MIT-LCP/croissant-baker/issues/93)) ([03a332e](https://github.com/MIT-LCP/croissant-baker/commit/03a332e71676ffa07081a477952de5565aa12d3e))
+* validate magic bytes in image and parquet can_handle ([#93](https://github.com/MIT-LCP/croissant-baker/issues/93)) ([4d4ee79](https://github.com/MIT-LCP/croissant-baker/commit/4d4ee796e8cae9461827be641271e6eff6e4d43b))
+
+
+### Reverts
+
+* restore E2E snapshot outputs to pre-PR state ([d98ade8](https://github.com/MIT-LCP/croissant-baker/commit/d98ade8d639e41c8fd9ba6e86a9ba28d1abad5a6))
+
+
+### Build System
+
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([775e43f](https://github.com/MIT-LCP/croissant-baker/commit/775e43f6a9bf61e95e4bf75cad7be5b125ca1dbc))
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([1f47dd3](https://github.com/MIT-LCP/croissant-baker/commit/1f47dd30503d12a933719e570900c8f136cb9879))
+
 ## [0.1.2](https://github.com/MIT-LCP/croissant-baker/compare/croissant-baker-v0.1.1...croissant-baker-v0.1.2) (2026-04-16)
 
 
