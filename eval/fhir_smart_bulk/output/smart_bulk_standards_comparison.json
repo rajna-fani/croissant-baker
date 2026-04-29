@@ -1,0 +1,155 @@
+{
+  "extra_fields": [],
+  "fields_gen": 406,
+  "fields_gt": 406,
+  "fields_matched": 406,
+  "mismatches": [
+    {
+      "field": "content.format.code",
+      "generated": "sc:URL",
+      "ground_truth": "sc:Text",
+      "recordset": "DocumentReference"
+    },
+    {
+      "field": "identifier.value",
+      "generated": "sc:URL",
+      "ground_truth": "sc:Text",
+      "recordset": "DocumentReference"
+    },
+    {
+      "field": "component.valueQuantity.value",
+      "generated": "cr:Int64",
+      "ground_truth": "cr:Float64",
+      "recordset": "Observation"
+    },
+    {
+      "field": "extension.url",
+      "generated": "sc:URL",
+      "ground_truth": "sc:Text",
+      "recordset": "Organization"
+    },
+    {
+      "field": "address.extension.url",
+      "generated": "sc:URL",
+      "ground_truth": "sc:Text",
+      "recordset": "Patient"
+    },
+    {
+      "field": "extension.url",
+      "generated": "sc:URL",
+      "ground_truth": "sc:Text",
+      "recordset": "Patient"
+    },
+    {
+      "field": "extension.url",
+      "generated": "sc:URL",
+      "ground_truth": "sc:Text",
+      "recordset": "Practitioner"
+    },
+    {
+      "field": "telecom.extension.url",
+      "generated": "sc:URL",
+      "ground_truth": "sc:Text",
+      "recordset": "Practitioner"
+    },
+    {
+      "field": "telecom.extension.url",
+      "generated": "sc:URL",
+      "ground_truth": "sc:Text",
+      "recordset": "PractitionerRole"
+    }
+  ],
+  "missing_fields": [],
+  "profiles_by_type": {
+    "AllergyIntolerance": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-allergyintolerance"
+    ],
+    "Condition": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ],
+    "Device": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device"
+    ],
+    "DiagnosticReport": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note"
+    ],
+    "DocumentReference": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference"
+    ],
+    "Encounter": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter"
+    ],
+    "Immunization": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization"
+    ],
+    "Location": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-location"
+    ],
+    "MedicationRequest": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest"
+    ],
+    "Observation": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/head-occipital-frontal-circumference-percentile",
+      "http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age",
+      "http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-blood-pressure",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-bmi",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-height",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-weight",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-head-circumference",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-heart-rate",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-clinical-result",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-pregnancystatus",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-respiratory-rate",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-simple-observation",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus"
+    ],
+    "Organization": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization"
+    ],
+    "Patient": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"
+    ],
+    "Practitioner": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner"
+    ],
+    "PractitionerRole": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole"
+    ],
+    "Procedure": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure"
+    ]
+  },
+  "recordsets_gen": 18,
+  "recordsets_gt": 18,
+  "recordsets_matched": 18,
+  "semantic_type_agree": 397,
+  "semantic_type_agree_pct": 97.8,
+  "strict_type_agree": 397,
+  "strict_type_agree_pct": 97.8,
+  "unresolved_path_count": 0,
+  "unresolved_paths": {
+    "AllergyIntolerance": [],
+    "Condition": [],
+    "Device": [],
+    "DiagnosticReport": [],
+    "DocumentReference": [],
+    "Encounter": [],
+    "EpisodeOfCare": [],
+    "Immunization": [],
+    "Location": [],
+    "MedicationRequest": [],
+    "Observation": [],
+    "Organization": [],
+    "Patient": [],
+    "Practitioner": [],
+    "PractitionerRole": [],
+    "Procedure": [],
+    "ServiceRequest": [],
+    "Specimen": []
+  }
+}
