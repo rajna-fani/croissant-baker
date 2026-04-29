@@ -31,16 +31,97 @@ def sample_parquet(tmp_path: Path) -> Path:
 
 
 # ---------------------------------------------------------------------------
-# can_handle
+# can_handle — extension + magic bytes (issue #93)
+#
+# can_handle enforces the registry contract: True implies extract_metadata
+# can read the file. Tests cover the failure modes (wrong extension, right
+# extension/wrong content, truncated, missing) plus the happy path.
 # ---------------------------------------------------------------------------
 
 
-def test_can_handle_parquet(handler: ParquetHandler) -> None:
-    """Test Parquet handler file type detection."""
-    assert handler.can_handle(Path("data.parquet"))
-    assert handler.can_handle(Path("data.PARQUET"))
-    assert not handler.can_handle(Path("data.csv"))
-    assert not handler.can_handle(Path("data.txt"))
+@pytest.mark.parametrize("name", ["data.csv", "data.txt", "data"])
+def test_can_handle_rejects_unsupported_extensions(
+    handler: ParquetHandler, name: str
+) -> None:
+    """Non-.parquet extensions are rejected before any I/O."""
+    assert handler.can_handle(Path(name)) is False
+
+
+_PARQUET_LOGGER = "croissant_baker.handlers.parquet_handler"
+
+
+def test_can_handle_missing_file_does_not_warn(
+    handler: ParquetHandler, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A missing .parquet path is silently rejected (no spurious warning)
+    since the caller, not the file, is at fault."""
+    with caplog.at_level("WARNING", logger=_PARQUET_LOGGER):
+        assert handler.can_handle(Path("/nonexistent/data.parquet")) is False
+    assert caplog.records == []
+
+
+def test_can_handle_rejects_wrong_magic(
+    handler: ParquetHandler, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A .parquet file without PAR1 magic is rejected AND a WARNING is
+    logged identifying the file and the missing PAR1 header.
+
+    Regression for #93: prevents the registry from dispatching a renamed
+    file to ParquetHandler.extract_metadata and crashing inside pyarrow,
+    while still surfacing the skip so the user knows what was dropped.
+    """
+    impostor = tmp_path / "fake.parquet"
+    impostor.write_bytes(b"not a parquet file at all")
+    with caplog.at_level("WARNING", logger=_PARQUET_LOGGER):
+        assert handler.can_handle(impostor) is False
+    assert any(
+        str(impostor) in r.message and "PAR1 header" in r.message
+        for r in caplog.records
+    ), f"expected a WARNING naming {impostor} and 'PAR1 header', got {caplog.records}"
+
+
+def test_can_handle_rejects_truncated_parquet(
+    handler: ParquetHandler, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A truncated Parquet (start magic only, no footer magic) is rejected
+    AND a WARNING explicitly mentions the missing footer / possible truncation."""
+    truncated = tmp_path / "truncated.parquet"
+    truncated.write_bytes(b"PAR1" + b"\x00" * 32)
+    with caplog.at_level("WARNING", logger=_PARQUET_LOGGER):
+        assert handler.can_handle(truncated) is False
+    assert any(
+        str(truncated) in r.message
+        and ("footer" in r.message or "truncated" in r.message)
+        for r in caplog.records
+    ), (
+        f"expected a WARNING naming {truncated} and footer/truncated, got {caplog.records}"
+    )
+
+
+def test_can_handle_rejects_too_small_parquet(
+    handler: ParquetHandler, tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A .parquet file under 8 bytes (cannot fit two PAR1 magics) is rejected
+    with a WARNING that names the file and its size."""
+    tiny = tmp_path / "tiny.parquet"
+    tiny.write_bytes(b"PAR")  # 3 bytes, well under the 8-byte minimum
+    with caplog.at_level("WARNING", logger=_PARQUET_LOGGER):
+        assert handler.can_handle(tiny) is False
+    assert any(
+        str(tiny) in r.message and "too small" in r.message for r in caplog.records
+    ), f"expected a WARNING naming {tiny} and 'too small', got {caplog.records}"
+
+
+def test_can_handle_accepts_real_parquet(
+    handler: ParquetHandler, sample_parquet: Path
+) -> None:
+    """A real Parquet file (PAR1 at start AND end) is accepted, including
+    when the extension is uppercased."""
+    assert handler.can_handle(sample_parquet) is True
+
+    upper = sample_parquet.with_name("test.PARQUET")
+    upper.write_bytes(sample_parquet.read_bytes())
+    assert handler.can_handle(upper) is True
 
 
 # ---------------------------------------------------------------------------
@@ -150,3 +231,31 @@ def test_parquet_build_croissant_partitioned(handler: ParquetHandler) -> None:
     assert len(record_sets) == 1
     assert record_sets[0].name == "events"
     assert "events/*.parquet" in filesets[0].includes
+
+
+def test_parquet_array_shape_fixed_vs_variable(
+    handler: ParquetHandler, tmp_path: Path
+) -> None:
+    """Fixed-size lists report exact dim; variable-length lists report -1."""
+    schema = pa.schema(
+        [
+            ("embedding", pa.list_(pa.float32(), 384)),  # fixed-size: dim 384
+            ("tags", pa.list_(pa.string())),  # variable-length
+        ]
+    )
+    table = pa.table(
+        {"embedding": [[0.0] * 384], "tags": [["a", "b"]]},
+        schema=schema,
+    )
+    path = tmp_path / "vectors.parquet"
+    pq.write_table(table, str(path))
+
+    meta = handler.extract_metadata(path)
+    meta["relative_path"] = "vectors.parquet"
+    _, record_sets = handler.build_croissant([meta], ["file_0"])
+
+    fields = {f.name: f for f in record_sets[0].fields}
+    assert fields["embedding"].is_array is True
+    assert fields["embedding"].array_shape == "384"
+    assert fields["tags"].is_array is True
+    assert fields["tags"].array_shape == "-1"

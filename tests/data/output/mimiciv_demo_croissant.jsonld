@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -48,7 +49,7 @@
   "@type": "sc:Dataset",
   "name": "MIMIC-IV Demo Dataset",
   "description": "Demo subset of MIMIC-IV, a freely accessible electronic health record dataset from Beth Israel Deaconess Medical Center (2008-2019)",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Johnson, A., Bulgarelli, L., Pollard, T., Horng, S., Celi, L. A., & Mark, R. (2023). MIMIC-IV (version 2.2). PhysioNet. https://doi.org/10.13026/6mm1-ek67",
   "creator": [
     {
@@ -85,7 +86,7 @@
       "url": "https://lcp.mit.edu/"
     }
   ],
-  "datePublished": "2023-01-06T00:00:00",
+  "datePublished": "2023-01-06",
   "license": "PhysioNet Restricted Health Data License 1.5.0",
   "url": "https://physionet.org/content/mimic-iv-demo/",
   "version": "2.2",

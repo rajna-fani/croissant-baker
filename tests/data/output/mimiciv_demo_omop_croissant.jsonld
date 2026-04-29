@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -48,7 +49,7 @@
   "@type": "sc:Dataset",
   "name": "MIMIC-IV demo data in the OMOP Common Data Model",
   "description": "A 100-patient demo of MIMIC-IV in the OMOP Common Data Model",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Kallfelz, M., et al. (2021). MIMIC-IV demo data in the OMOP Common Data Model (version 0.9). PhysioNet. https://doi.org/10.13026/p1f5-7x35",
   "creator": [
     {
@@ -64,7 +65,7 @@
       "name": "Tom Pollard"
     }
   ],
-  "datePublished": "2021-06-21T00:00:00",
+  "datePublished": "2021-06-21",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "url": "https://physionet.org/content/mimic-iv-demo-omop/0.9/",
   "version": "0.9",

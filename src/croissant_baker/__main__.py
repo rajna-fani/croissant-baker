@@ -3,6 +3,7 @@
 import csv
 from datetime import datetime
 import json
+import re
 import tempfile
 import importlib.metadata
 from pathlib import Path
@@ -17,7 +18,11 @@ from rich.progress import (
     TextColumn,
 )
 
-from croissant_baker.metadata_generator import MetadataGenerator, serialize_datetime
+from croissant_baker.metadata_generator import (
+    MetadataGenerator,
+    RAI_CONFORMS_TO,
+    serialize_datetime,
+)
 from croissant_baker.files import discover_files
 from croissant_baker.handlers.registry import find_handler
 import mlcroissant as mlc
@@ -115,7 +120,12 @@ _SPEC_REQUIRED_FLAGS = {
     "date_published": "--date-published",
 }
 
-_RAI_CONFORMS_TO = "http://mlcommons.org/croissant/RAI/1.0"
+
+def _echo_file_counts(file_count: int, file_set_count: int) -> None:
+    """Print Files and File sets banner lines (File sets only when present)."""
+    typer.echo(f"Files: {file_count}")
+    if file_set_count:
+        typer.echo(f"File sets: {file_set_count}")
 
 
 def _warn_missing_spec_fields(**provided: object) -> None:
@@ -140,12 +150,115 @@ def _normalize_optional_text(value: Optional[str]) -> Optional[str]:
     return value or None
 
 
+def _split_csv_list(values: Optional[List[str]]) -> Optional[List[str]]:
+    """Accept both `--flag a --flag b` and `--flag "a,b"` (and mixed).
+
+    Returns None when the user provided nothing, so optional fields stay
+    absent in the output rather than emitting an empty list. Per
+    schema.org, list properties may be repeated or comma-delimited.
+    """
+    if not values:
+        return None
+    out = [item.strip() for v in values for item in v.split(",")]
+    out = [item for item in out if item]
+    return out or None
+
+
 def _normalize_optional_text_list(values: Optional[List[str]]) -> Optional[List[str]]:
     """Strip repeated text options and drop empty items."""
     if not values:
         return None
     normalized = [value.strip() for value in values if value and value.strip()]
     return normalized or None
+
+
+_FIELD_MAPPING_KEYS = {"equivalent_property", "data_types"}
+
+
+def _load_field_mappings(path: Optional[Path]) -> Optional[dict]:
+    """Load a YAML sidecar mapping column names to vocab URI overrides.
+
+    YAML keys are snake_case (the dominant convention in Python YAML configs).
+    The snake → camel translation to JSON-LD output keys
+    (``equivalentProperty``, ``dataType``) happens at emit time in
+    ``_apply_field_mappings``.
+
+    Expected shape:
+        fields:
+          age:
+            equivalent_property: "wdt:P3629"   # Wikidata: age in years
+            data_types: ["wd:Q11464"]
+          patient_id:
+            equivalent_property: "snomed:399097000"
+    """
+    if path is None:
+        return None
+    import yaml
+
+    raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(raw, dict):
+        raise typer.BadParameter(f"{path} must contain a YAML mapping at the top level")
+    fields = raw.get("fields")
+    if fields is None:
+        raise typer.BadParameter(f"{path}: missing top-level 'fields:' key")
+    if not isinstance(fields, dict):
+        raise typer.BadParameter(f"{path}: 'fields' must be a mapping of column names")
+    allowed = sorted(_FIELD_MAPPING_KEYS)
+    for col, override in fields.items():
+        if not isinstance(override, dict):
+            raise typer.BadParameter(
+                f"{path}: column '{col}' must map to an object, got {type(override).__name__}"
+            )
+        unknown = set(override) - _FIELD_MAPPING_KEYS
+        if unknown:
+            raise typer.BadParameter(
+                f"{path}: column '{col}' has unknown keys {sorted(unknown)}. Allowed: {allowed}"
+            )
+    return fields
+
+
+def _merge_field_mapping_flags(
+    yaml_mappings: Optional[dict], cli_mappings: Optional[List[str]]
+) -> Optional[dict]:
+    """Merge YAML field mappings with repeatable ``--field-mapping COL=URI`` flags.
+
+    CLI flags carry the simple ``equivalent_property`` case; users wanting
+    multiple keys (``data_types`` lists) reach for the YAML form. Flags win
+    on conflict — last specified beats earlier specified, and CLI beats YAML.
+    """
+    merged = dict(yaml_mappings or {})
+    for raw in cli_mappings or []:
+        if "=" not in raw:
+            raise typer.BadParameter(
+                f"--field-mapping must be 'COLUMN=URI', got {raw!r}"
+            )
+        col, uri = raw.split("=", 1)
+        col, uri = col.strip(), uri.strip()
+        if not col or not uri:
+            raise typer.BadParameter(
+                f"--field-mapping must be 'COLUMN=URI', got {raw!r}"
+            )
+        merged.setdefault(col, {})["equivalent_property"] = uri
+    return merged or None
+
+
+_URI_SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+\-.]*:")
+
+
+def _validate_uri(option_name: str, value: Optional[str]) -> None:
+    """Reject strings that don't start with an RFC 3986 URI scheme.
+
+    Catches free text like 'see license file' but accepts http(s)://, urn:,
+    did:, mailto:, and any other valid scheme. schema.org/usageInfo accepts
+    URLs broadly, not just web URLs.
+    """
+    if value is None:
+        return
+    if not _URI_SCHEME.match(value):
+        raise typer.BadParameter(
+            f"{option_name} must be a URI starting with a scheme "
+            f"(e.g. https://, urn:, did:, mailto:), got {value!r}"
+        )
 
 
 def _validate_iso_datetimes(option_name: str, values: Optional[List[str]]) -> None:
@@ -248,17 +361,17 @@ def _ensure_rai_conforms_to(metadata_dict: dict, force: bool = False) -> None:
 
     conforms_to = metadata_dict.get("conformsTo")
     if conforms_to is None:
-        metadata_dict["conformsTo"] = [_RAI_CONFORMS_TO]
+        metadata_dict["conformsTo"] = [RAI_CONFORMS_TO]
         return
     if isinstance(conforms_to, str):
         metadata_dict["conformsTo"] = (
             [conforms_to]
-            if conforms_to == _RAI_CONFORMS_TO
-            else [conforms_to, _RAI_CONFORMS_TO]
+            if conforms_to == RAI_CONFORMS_TO
+            else [conforms_to, RAI_CONFORMS_TO]
         )
         return
-    if isinstance(conforms_to, list) and _RAI_CONFORMS_TO not in conforms_to:
-        conforms_to.append(_RAI_CONFORMS_TO)
+    if isinstance(conforms_to, list) and RAI_CONFORMS_TO not in conforms_to:
+        conforms_to.append(RAI_CONFORMS_TO)
 
 
 @app.callback(invoke_without_command=True)
@@ -296,6 +409,16 @@ def main(
         "--date-published",
         help="Publication date (e.g., 2023-12-15 or 2023-12-15T10:30:00)",
     ),
+    date_created: Optional[str] = typer.Option(
+        None,
+        "--date-created",
+        help="Creation date (e.g., 2023-12-15 or 2023-12-15T10:30:00).",
+    ),
+    date_modified: Optional[str] = typer.Option(
+        None,
+        "--date-modified",
+        help="Last-modified date (e.g., 2023-12-15 or 2023-12-15T10:30:00).",
+    ),
     # Creator information following mlcroissant specification
     # Spec: creator is REQUIRED with cardinality MANY (supports multiple creators)
     # ExpectedType: Organization OR Person with flexible properties (name, email, url)
@@ -304,6 +427,68 @@ def main(
         None,
         "--creator",
         help="Creator information. Format: 'Name[,Email[,URL]]'. Use multiple times for multiple creators. Examples: --creator 'John Doe' --creator 'Jane Smith,jane@example.com,https://jane.com'",
+    ),
+    publisher: Optional[str] = typer.Option(
+        None,
+        "--publisher",
+        help="Publishing organization name (e.g., 'PhysioNet').",
+    ),
+    keywords: Optional[List[str]] = typer.Option(
+        None,
+        "--keywords",
+        help="Topical keywords for dataset discovery. Repeat (--keywords a --keywords b) or comma-delimit (--keywords 'a,b').",
+    ),
+    in_language: Optional[List[str]] = typer.Option(
+        None,
+        "--in-language",
+        help="BCP 47 language code (e.g., 'en'). Repeat or comma-delimit for multilingual datasets.",
+    ),
+    same_as: Optional[List[str]] = typer.Option(
+        None,
+        "--same-as",
+        help="URL of an equivalent record (e.g. DOI, mirror landing page). Repeat or comma-delimit.",
+    ),
+    sd_license: Optional[str] = typer.Option(
+        None,
+        "--sd-license",
+        help="License of the metadata description itself (e.g., 'CC0-1.0'), distinct from the data license.",
+    ),
+    sd_version: Optional[str] = typer.Option(
+        None,
+        "--sd-version",
+        help="Version of the metadata description (e.g., '1.0.0'), distinct from --dataset-version.",
+    ),
+    alternate_name: Optional[str] = typer.Option(
+        None,
+        "--alternate-name",
+        help="Short alias for the dataset (e.g., 'MIMIC-IV').",
+    ),
+    is_live_dataset: bool = typer.Option(
+        False,
+        "--is-live-dataset",
+        help="Mark the dataset as a live, evolving stream (e.g., a continuously-appended log).",
+    ),
+    temporal_coverage: Optional[str] = typer.Option(
+        None,
+        "--temporal-coverage",
+        help="Time period the data covers. ISO 8601 recommended: '2008/2019' (interval) or '2023-01-15' (point).",
+    ),
+    usage_info: Optional[str] = typer.Option(
+        None,
+        "--usage-info",
+        help="URI pointing to a usage or consent policy. Any RFC 3986 scheme (http(s), urn, did, mailto). Example: 'http://purl.obolibrary.org/obo/DUO_0000042' (DUO term).",
+    ),
+    field_mappings: Optional[Path] = typer.Option(
+        None,
+        "--field-mappings",
+        help="YAML file mapping columns to external vocabularies (Wikidata, SNOMED, LOINC). Schema: 'fields:\\n  <col>:\\n    equivalent_property: <URI>\\n    data_types: [<URI>, ...]'. Note: column names match across ALL RecordSets, so 'id' applies to every 'id' column in the dataset.",
+        exists=True,
+        dir_okay=False,
+    ),
+    field_mapping: Optional[List[str]] = typer.Option(
+        None,
+        "--field-mapping",
+        help="Link one column to an external vocabulary URI. Format: 'COLUMN=URI'. Example: --field-mapping 'age=http://www.wikidata.org/entity/Q11464'. Matches by bare column name across all RecordSets; a warning prints if a name resolves to multiple fields. Repeatable; combine with --field-mappings (flags override YAML).",
     ),
     count_csv_rows: bool = typer.Option(
         False,
@@ -573,6 +758,11 @@ def main(
                     err=True,
                 )
 
+        _validate_uri("--usage-info", usage_info)
+        merged_field_mappings = _merge_field_mapping_flags(
+            _load_field_mappings(field_mappings), field_mapping
+        )
+
         generator = MetadataGenerator(
             dataset_path=input,
             name=name,
@@ -582,7 +772,20 @@ def main(
             citation=citation,
             version=dataset_version,
             date_published=date_published,
+            date_created=date_created,
+            date_modified=date_modified,
             creators=parsed_creators if parsed_creators else None,
+            publisher=publisher,
+            keywords=_split_csv_list(keywords),
+            in_language=_split_csv_list(in_language),
+            same_as=_split_csv_list(same_as),
+            sd_license=sd_license,
+            sd_version=sd_version,
+            alternate_name=alternate_name,
+            is_live_dataset=is_live_dataset or None,
+            temporal_coverage=temporal_coverage,
+            usage_info=usage_info,
+            field_mappings=merged_field_mappings,
             count_csv_rows=count_csv_rows,
             includes=include,
             excludes=exclude,
@@ -645,13 +848,15 @@ def main(
                 progress.update(save_task, description="Save completed!")
 
         # Show results
-        file_count = len(metadata_dict.get("distribution", []))
+        distribution = metadata_dict.get("distribution", [])
+        file_count = sum(1 for d in distribution if d.get("@type") == "cr:FileObject")
+        file_set_count = sum(1 for d in distribution if d.get("@type") == "cr:FileSet")
         record_count = len(metadata_dict.get("recordSet", []))
 
         typer.echo(
             f"Success! Generated {'validated ' if validate else ''}Croissant metadata"
         )
-        typer.echo(f"Files: {file_count}")
+        _echo_file_counts(file_count, file_set_count)
         typer.echo(f"Record sets: {record_count}")
         typer.echo(f"Saved to: {output}")
 
@@ -742,12 +947,10 @@ def validate(
         typer.echo(f"Description: {dataset.metadata.description}")
 
         if hasattr(dataset.metadata, "distribution"):
-            file_count = (
-                len(dataset.metadata.distribution)
-                if dataset.metadata.distribution
-                else 0
-            )
-            typer.echo(f"Files: {file_count}")
+            distribution = dataset.metadata.distribution or []
+            file_count = sum(1 for d in distribution if isinstance(d, mlc.FileObject))
+            file_set_count = sum(1 for d in distribution if isinstance(d, mlc.FileSet))
+            _echo_file_counts(file_count, file_set_count)
 
         if hasattr(dataset.metadata, "record_sets"):
             record_count = (

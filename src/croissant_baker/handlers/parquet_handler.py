@@ -1,5 +1,6 @@
 """Parquet file handler for tabular event streams (e.g., MEDS)."""
 
+import logging
 from collections import defaultdict
 from pathlib import Path
 
@@ -14,6 +15,55 @@ from croissant_baker.handlers.utils import (
     infer_column_types_from_arrow_schema,
     sanitize_id,
 )
+
+logger = logging.getLogger(__name__)
+
+# Apache Parquet file format spec: every Parquet file begins AND ends with
+# the 4-byte ASCII magic "PAR1" — the trailing copy is the footer marker.
+# A valid file is therefore at least 8 bytes long.
+# Reference: https://parquet.apache.org/docs/file-format/
+_PARQUET_MAGIC = b"PAR1"
+_PARQUET_MAGIC_LEN = len(_PARQUET_MAGIC)
+
+
+def _has_parquet_magic(file_path: Path) -> bool:
+    """Return True iff ``file_path`` has the Parquet magic at start and end.
+
+    Files that fail any check (too small, missing PAR1 header, missing PAR1
+    footer) are rejected and a WARNING is logged with the specific reason so
+    the user can see which files were skipped and why. Missing or unreadable
+    files return False without logging (caller errors, not impostors).
+    """
+    try:
+        size = file_path.stat().st_size
+    except OSError:
+        return False
+    if size < _PARQUET_MAGIC_LEN * 2:
+        logger.warning(
+            "Skipping %s: file is too small (%d bytes) to be a valid Parquet file",
+            file_path,
+            size,
+        )
+        return False
+    try:
+        with open(file_path, "rb") as f:
+            if f.read(_PARQUET_MAGIC_LEN) != _PARQUET_MAGIC:
+                logger.warning(
+                    "Skipping %s: missing Parquet PAR1 header magic",
+                    file_path,
+                )
+                return False
+            f.seek(-_PARQUET_MAGIC_LEN, 2)
+            if f.read(_PARQUET_MAGIC_LEN) != _PARQUET_MAGIC:
+                logger.warning(
+                    "Skipping %s: missing Parquet PAR1 footer magic "
+                    "(file may be truncated)",
+                    file_path,
+                )
+                return False
+            return True
+    except OSError:
+        return False
 
 
 class ParquetHandler(FileTypeHandler):
@@ -31,7 +81,9 @@ class ParquetHandler(FileTypeHandler):
     FORMAT_DESCRIPTION = "Arrow schema, column names and types, row count"
 
     def can_handle(self, file_path: Path) -> bool:
-        return file_path.suffix.lower() == ".parquet"
+        if file_path.suffix.lower() != ".parquet":
+            return False
+        return _has_parquet_magic(file_path)
 
     def extract_metadata(self, file_path: Path, **kwargs) -> dict:
         """Extract metadata from a Parquet file via pyarrow schema inspection."""

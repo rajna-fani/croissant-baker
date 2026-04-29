@@ -362,6 +362,60 @@ def test_dry_run_invalid_input() -> None:
     assert result.exit_code == 1
 
 
+def test_summary_files_count_excludes_filesets(tmp_path: Path) -> None:
+    """Banner Files line counts cr:FileObject entries only."""
+    from PIL import Image
+
+    dataset = tmp_path / "imgs"
+    dataset.mkdir()
+    for i in range(3):
+        Image.new("RGB", (4, 4)).save(dataset / f"img_{i}.png")
+    output = tmp_path / "out.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "-i",
+            str(dataset),
+            "-o",
+            str(output),
+            "--creator",
+            "Tester",
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+
+    assert "Files: 3" in result.stdout
+    assert "Files: 4" not in result.stdout
+    assert "File sets: 1" in result.stdout
+
+    metadata = json.loads(output.read_text())
+    types = [d["@type"] for d in metadata["distribution"]]
+    assert types.count("cr:FileObject") == 3
+    assert types.count("cr:FileSet") == 1
+
+
+def test_validate_command_files_count_excludes_filesets(tmp_path: Path) -> None:
+    """Validate subcommand banner counts FileObject entries only."""
+    from PIL import Image
+
+    dataset = tmp_path / "imgs"
+    dataset.mkdir()
+    for i in range(2):
+        Image.new("RGB", (4, 4)).save(dataset / f"img_{i}.png")
+    jsonld = tmp_path / "out.jsonld"
+
+    gen = runner.invoke(app, ["-i", str(dataset), "-o", str(jsonld), "--creator", "T"])
+    assert gen.exit_code == 0, gen.output
+
+    result = runner.invoke(app, ["validate", str(jsonld)])
+    assert result.exit_code == 0, result.output
+    assert "Files: 2" in result.stdout
+    assert "Files: 3" not in result.stdout
+    assert "File sets: 1" in result.stdout
+
+
 def test_include_filter_limits_generated_files(
     mixed_dataset: Path, tmp_path: Path
 ) -> None:
@@ -460,11 +514,11 @@ def test_native_rai_flags_generate_metadata(csv_dataset: Path, tmp_path: Path) -
     )
     assert metadata["rai:dataUseCases"] == "Benchmarking"
     assert metadata["conformsTo"] == [
-        "http://mlcommons.org/croissant/1.0",
+        "http://mlcommons.org/croissant/1.1",
         "http://mlcommons.org/croissant/RAI/1.0",
     ]
     assert metadata["rai:dataCollectionTimeFrame"] == [
-        "2023-01-01T00:00:00",
+        "2023-01-01",
         "2023-06-01T12:30:00",
     ]
 
@@ -554,6 +608,327 @@ lineage:
 
     metadata = json.loads(output.read_text())
     assert metadata["conformsTo"] == [
-        "http://mlcommons.org/croissant/1.0",
+        "http://mlcommons.org/croissant/1.1",
         "http://mlcommons.org/croissant/RAI/1.0",
     ]
+
+
+def test_optional_1_1_flags_round_trip(csv_dataset: Path, tmp_path: Path) -> None:
+    """Optional 1.1 flags emit their schema.org fields unchanged.
+
+    Exercises both repeat-flag and comma-delimited input shapes for the
+    list-valued flags, plus single-value plumbing for the rest. Locks in
+    the JSON-LD field names mlcroissant emits for each input.
+    """
+    output = tmp_path / "output.jsonld"
+
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--publisher",
+            "PhysioNet",
+            "--keywords",
+            "ehr,icu",
+            "--keywords",
+            "demo",
+            "--in-language",
+            "en",
+            "--same-as",
+            "https://doi.org/10.1234/example,https://example.org/mirror",
+            "--sd-license",
+            "https://creativecommons.org/publicdomain/zero/1.0/",
+            "--sd-version",
+            "1.0.0",
+            "--alternate-name",
+            "test-ds",
+            "--is-live-dataset",
+            "--date-created",
+            "2023-01-01",
+            "--date-modified",
+            "2023-06-01T12:00:00",
+            "--no-validate",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    metadata = json.loads(output.read_text())
+
+    assert metadata["publisher"] == {
+        "@type": "sc:Organization",
+        "name": "PhysioNet",
+    }
+    assert metadata["keywords"] == ["ehr", "icu", "demo"]
+    assert metadata["sameAs"] == [
+        "https://doi.org/10.1234/example",
+        "https://example.org/mirror",
+    ]
+    # mlcroissant flattens single-item lists for these properties (spec-valid):
+    assert metadata["inLanguage"] == "en"
+    assert metadata["sdLicense"] == (
+        "https://creativecommons.org/publicdomain/zero/1.0/"
+    )
+    assert metadata["sdVersion"] == "1.0.0"
+    assert metadata["alternateName"] == "test-ds"
+    assert metadata["isLiveDataset"] is True
+    assert metadata["dateCreated"] == "2023-01-01"
+    assert metadata["dateModified"] == "2023-06-01T12:00:00"
+
+
+def test_temporal_coverage_and_usage_info(csv_dataset: Path, tmp_path: Path) -> None:
+    """--temporal-coverage and --usage-info flow through as schema.org fields."""
+    output = tmp_path / "output.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--temporal-coverage",
+            "2008/2019",
+            "--usage-info",
+            "http://purl.obolibrary.org/obo/DUO_0000042",
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    metadata = json.loads(output.read_text())
+    assert metadata["temporalCoverage"] == "2008/2019"
+    assert metadata["usageInfo"] == "http://purl.obolibrary.org/obo/DUO_0000042"
+
+
+def test_field_mappings_yaml_appends_to_dataType(
+    csv_dataset: Path, tmp_path: Path
+) -> None:
+    """--field-mappings adds equivalentProperty + appends external dataType."""
+    mappings = tmp_path / "mappings.yaml"
+    mappings.write_text(
+        "fields:\n"
+        "  age:\n"
+        "    equivalent_property: 'wdt:P3629'\n"
+        "    data_types: ['wd:Q11464']\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "output.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--field-mappings",
+            str(mappings),
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    metadata = json.loads(output.read_text())
+    age_field = next(
+        f
+        for rs in metadata["recordSet"]
+        for f in (rs["field"] if isinstance(rs["field"], list) else [rs["field"]])
+        if f["name"] == "age"
+    )
+    # Inferred Croissant type preserved, external vocab appended.
+    assert age_field["equivalentProperty"] == "wdt:P3629"
+    assert "wd:Q11464" in age_field["dataType"]
+    assert any(t.startswith(("cr:", "sc:")) for t in age_field["dataType"])
+
+
+def test_field_mapping_flag_overrides_yaml(csv_dataset: Path, tmp_path: Path) -> None:
+    """The repeatable --field-mapping flag merges with --field-mappings YAML and wins."""
+    mappings = tmp_path / "mappings.yaml"
+    mappings.write_text(
+        "fields:\n  age:\n    equivalent_property: 'wdt:OLD'\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "output.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--field-mappings",
+            str(mappings),
+            "--field-mapping",
+            "age=wdt:NEW",
+            "--field-mapping",
+            "id=wdt:P527",
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    metadata = json.loads(output.read_text())
+    fields = {
+        f["name"]: f
+        for rs in metadata["recordSet"]
+        for f in (rs["field"] if isinstance(rs["field"], list) else [rs["field"]])
+    }
+    assert fields["age"]["equivalentProperty"] == "wdt:NEW"  # flag won
+    assert fields["id"]["equivalentProperty"] == "wdt:P527"  # flag-only column
+
+
+def test_usage_info_rejects_free_text(csv_dataset: Path, tmp_path: Path) -> None:
+    """Reject strings without a URI scheme; accept any RFC 3986 scheme."""
+    output = tmp_path / "output.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--usage-info",
+            "see license file",
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code != 0
+    assert "URI" in result.output or "scheme" in result.output.lower()
+
+
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "https://example.org/policy",
+        "http://purl.obolibrary.org/obo/DUO_0000042",
+        "urn:lex:eu:council:directive:2022-09-14;2022-2065",
+        "did:web:example.org:dataset",
+        "mailto:dac@example.org",
+    ],
+)
+def test_usage_info_accepts_any_uri_scheme(
+    csv_dataset: Path, tmp_path: Path, uri: str
+) -> None:
+    output = tmp_path / "output.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--usage-info",
+            uri,
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert json.loads(output.read_text())["usageInfo"] == uri
+
+
+def test_field_mapping_warns_on_multiple_matches(tmp_path: Path) -> None:
+    """A mapping that hits more than one field warns the user."""
+    dataset_dir = tmp_path / "ds"
+    dataset_dir.mkdir()
+    # Two CSVs both with an 'id' column — same name, different semantics.
+    (dataset_dir / "patients.csv").write_text("id,age\n1,40\n2,50\n")
+    (dataset_dir / "diagnoses.csv").write_text("id,code\n1,X\n2,Y\n")
+
+    output = tmp_path / "out.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(dataset_dir),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--field-mapping",
+            "id=http://www.wikidata.org/entity/Q577",
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    combined = (result.output or "") + (result.stderr or "")
+    assert "field mapping 'id' applied to 2 fields" in combined
+
+
+def test_field_mappings_yaml_rejects_unknown_keys(
+    csv_dataset: Path, tmp_path: Path
+) -> None:
+    mappings = tmp_path / "mappings.yaml"
+    mappings.write_text(
+        "fields:\n  age:\n    equivalentProperty: 'wdt:P3629'\n",  # camelCase typo
+        encoding="utf-8",
+    )
+    output = tmp_path / "output.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--field-mappings",
+            str(mappings),
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code != 0
+    assert "unknown" in result.output.lower()
+
+
+def test_baked_output_round_trips_through_mlcroissant(
+    csv_dataset: Path, tmp_path: Path
+) -> None:
+    """mlc.Dataset() can load our output and the values read back match the inputs.
+
+    Validator-pass alone proves shape; this proves consumers can iterate values.
+    """
+    import mlcroissant as mlc
+
+    output = tmp_path / "output.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--name",
+            "Round-trip dataset",
+            "--description",
+            "Reads back through mlc.Dataset().",
+            "--url",
+            "https://example.com/rt",
+            "--license",
+            "CC-BY-4.0",
+            "--creator",
+            "Test",
+            "--keywords",
+            "rt,demo",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+
+    ds = mlc.Dataset(str(output))
+    assert ds.metadata.name == "Round-trip dataset"
+    assert ds.metadata.description == "Reads back through mlc.Dataset()."
+    assert ds.metadata.url == "https://example.com/rt"
+    # Field-level access works too.
+    record_sets = list(ds.metadata.record_sets)
+    fields = list(record_sets[0].fields)
+    assert {f.name for f in fields} == {"id", "name", "age"}

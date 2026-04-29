@@ -18,6 +18,31 @@ logger = logging.getLogger(__name__)
 # 500 covers typical field diversity while keeping memory bounded.
 SCHEMA_SAMPLE = 500
 
+# Croissant 1.1 array_shape: comma-separated dim sizes; -1 means "unknown".
+# Examples: "-1" (1D unknown), "28,28" (fixed 2D), "-1,-1,3" (variable HxW, 3 channels).
+# The mlcroissant 1.1.0 validator only accepts the bare comma-separated form
+# (no parens, no trailing comma) — see normalize_array_shape() for the full
+# rationale.
+ARRAY_SHAPE_UNKNOWN_1D = "-1"
+
+
+def normalize_array_shape(shape: str) -> str:
+    """Coerce common shape spellings to the mlcroissant-accepted form.
+
+    The validator parses array_shape by splitting on commas and casting each
+    piece to int. So "(-1, -1)" or "(-1,)" — natural forms when stringifying
+    a numpy.shape tuple — are rejected. This helper accepts both, returning
+    a string the validator will accept.
+
+    Examples:
+        normalize_array_shape("-1")          -> "-1"
+        normalize_array_shape("(-1,)")       -> "-1"
+        normalize_array_shape("(-1, -1)")    -> "-1,-1"
+        normalize_array_shape("28, 28")      -> "28,28"
+    """
+    inner = shape.strip().strip("()").rstrip(",").strip()
+    return ",".join(part.strip() for part in inner.split(",") if part.strip())
+
 
 def open_text_file(file_path: Path):
     """Return a text file handle, transparently decompressing gzip files."""
@@ -108,8 +133,8 @@ def map_arrow_type(arrow_type: pa.DataType) -> str:
         if patypes.is_null(arrow_type):
             return "sc:Text"
 
-        # List/large-list: caller sets is_array=True; return the inner element type.
-        if patypes.is_list(arrow_type) or patypes.is_large_list(arrow_type):
+        # List / large-list / fixed-size-list: caller sets is_array=True; return the inner element type.
+        if is_arrow_list(arrow_type):
             return map_arrow_type(arrow_type.value_type)
 
     except Exception:
@@ -121,8 +146,24 @@ def map_arrow_type(arrow_type: pa.DataType) -> str:
 
 
 def is_arrow_list(arrow_type: pa.DataType) -> bool:
-    """Return True if the Arrow type is a list or large-list."""
-    return patypes.is_list(arrow_type) or patypes.is_large_list(arrow_type)
+    """Return True if the Arrow type is any list (variable, large, or fixed-size)."""
+    return (
+        patypes.is_list(arrow_type)
+        or patypes.is_large_list(arrow_type)
+        or patypes.is_fixed_size_list(arrow_type)
+    )
+
+
+def arrow_array_shape(arrow_type: pa.DataType) -> str:
+    """Return the Croissant array_shape string for an Arrow list-like type.
+
+    Fixed-size lists report their exact size (e.g. embedding columns of
+    dimension 768). Variable-length lists fall back to the unknown-length
+    sentinel since list lengths can differ row-to-row.
+    """
+    if patypes.is_fixed_size_list(arrow_type):
+        return str(arrow_type.list_size)
+    return ARRAY_SHAPE_UNKNOWN_1D
 
 
 def infer_column_types_from_arrow_schema(schema: pa.Schema) -> Dict[str, str]:
@@ -210,6 +251,7 @@ def _build_fields(
             **source_ref,
         )
 
+        shape = arrow_array_shape(arrow_type) if is_array else None
         if patypes.is_struct(inner_type):
             sub_fields = _build_fields(inner_type, field_id, source_ref, col_path)
             field = mlc.Field(
@@ -217,6 +259,7 @@ def _build_fields(
                 name=col_name,
                 description=f"Column '{col_name}'",
                 is_array=True if is_array else None,
+                array_shape=shape,
                 source=source,
                 sub_fields=sub_fields,
             )
@@ -228,6 +271,7 @@ def _build_fields(
                 description=f"Column '{col_name}'",
                 data_types=[col_type],
                 is_array=True if is_array else None,
+                array_shape=shape,
                 source=source,
             )
         fields.append(field)
@@ -397,6 +441,7 @@ def build_fields_from_json_schema(
                     name=col_name,
                     description=f"{description_prefix} '{col_name}'",
                     is_array=True if is_array else None,
+                    array_shape=ARRAY_SHAPE_UNKNOWN_1D if is_array else None,
                     source=source,
                     sub_fields=sub_fields or None,
                 )
@@ -409,6 +454,7 @@ def build_fields_from_json_schema(
                     description=f"{description_prefix} '{col_name}'",
                     data_types=[type_info["type"]],
                     is_array=True,
+                    array_shape=ARRAY_SHAPE_UNKNOWN_1D,
                     source=source,
                 )
             )

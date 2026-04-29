@@ -23,7 +23,21 @@ $ croissant-baker [OPTIONS] COMMAND [ARGS]...
 * `--citation TEXT`: Citation text (preferably BibTeX format)
 * `--dataset-version TEXT`: Dataset version (e.g., 1.0.0)
 * `--date-published TEXT`: Publication date (e.g., 2023-12-15 or 2023-12-15T10:30:00)
+* `--date-created TEXT`: Creation date (e.g., 2023-12-15 or 2023-12-15T10:30:00).
+* `--date-modified TEXT`: Last-modified date (e.g., 2023-12-15 or 2023-12-15T10:30:00).
 * `--creator TEXT`: Creator information. Format: 'Name[,Email[,URL]]'. Use multiple times for multiple creators. Examples: --creator 'John Doe' --creator 'Jane Smith,jane@example.com,https://jane.com'
+* `--publisher TEXT`: Publishing organization name (e.g., 'PhysioNet').
+* `--keywords TEXT`: Topical keywords for dataset discovery. Repeat (--keywords a --keywords b) or comma-delimit (--keywords 'a,b').
+* `--in-language TEXT`: BCP 47 language code (e.g., 'en'). Repeat or comma-delimit for multilingual datasets.
+* `--same-as TEXT`: URL of an equivalent record (e.g. DOI, mirror landing page). Repeat or comma-delimit.
+* `--sd-license TEXT`: License of the metadata description itself (e.g., 'CC0-1.0'), distinct from the data license.
+* `--sd-version TEXT`: Version of the metadata description (e.g., '1.0.0'), distinct from --dataset-version.
+* `--alternate-name TEXT`: Short alias for the dataset (e.g., 'MIMIC-IV').
+* `--is-live-dataset`: Mark the dataset as a live, evolving stream (e.g., a continuously-appended log).
+* `--temporal-coverage TEXT`: Time period the data covers. ISO 8601 recommended: '2008/2019' (interval) or '2023-01-15' (point).
+* `--usage-info TEXT`: URI pointing to a usage or consent policy. Any RFC 3986 scheme (http(s), urn, did, mailto). Example: 'http://purl.obolibrary.org/obo/DUO_0000042' (DUO term).
+* `--field-mappings FILE`: YAML file mapping columns to external vocabularies (Wikidata, SNOMED, LOINC). Schema: 'fields:\n  <col>:\n    equivalent_property: <URI>\n    data_types: [<URI>, ...]'. Note: column names match across ALL RecordSets, so 'id' applies to every 'id' column in the dataset.
+* `--field-mapping TEXT`: Link one column to an external vocabulary URI. Format: 'COLUMN=URI'. Example: --field-mapping 'age=http://www.wikidata.org/entity/Q11464'. Matches by bare column name across all RecordSets; a warning prints if a name resolves to multiple fields. Repeatable; combine with --field-mappings (flags override YAML).
 * `--count-csv-rows`: Count exact row numbers for CSV files (slow for large datasets)
 * `--rai-data-collection TEXT`: How and where the data was gathered.
 * `--rai-data-collection-type TEXT`: Collection type, e.g. 'observational'. Can be used multiple times.

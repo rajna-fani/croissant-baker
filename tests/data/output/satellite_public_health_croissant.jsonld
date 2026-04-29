@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -48,13 +49,13 @@
   "@type": "sc:Dataset",
   "name": "Multi-Modal Satellite Imagery for Public Health (subset)",
   "description": "Subset of Sentinel-2 satellite imagery linked to public health indicators in Colombia",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Dataset Creator. (2026). Multi-Modal Satellite Imagery for Public Health (subset) Dataset. Generated with automated type inference.",
   "creator": {
     "@type": "sc:Person",
     "name": "Suri Allison Garzón Mora"
   },
-  "datePublished": "2024-01-01T00:00:00",
+  "datePublished": "2024-01-01",
   "license": "https://physionet.org/content/multimodal-satellite-data/1.0.0/LICENSE.txt",
   "url": "https://physionet.org/content/multimodal-satellite-data/1.0.0/",
   "version": "1.0.0",

@@ -48,7 +48,7 @@
   "@type": "sc:Dataset",
   "name": "MIMIC-IV in MEDS format (full)",
   "description": "MIMIC-IV converted to Medical Event Data Standard (MEDS) format",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Dataset Creator. (2026). MIMIC-IV in MEDS format (full) Dataset. Generated with automated type inference.",
   "creator": {
     "@type": "sc:Person",
