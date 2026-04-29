@@ -11,6 +11,7 @@ from croissant_baker.handlers.dicom_handler import (
     DICOMHandler,
     collect_dicom_summary,
 )
+from croissant_baker.handlers.registry import find_handler, register_all_handlers
 
 
 # ---------------------------------------------------------------------------
@@ -277,8 +278,50 @@ def test_build_croissant_description_contains_modality(handler: DICOMHandler) ->
 
 
 def test_dicom_handler_registered() -> None:
-    from croissant_baker.handlers.registry import find_handler, register_all_handlers
-
     register_all_handlers()
     assert find_handler(Path("scan.dcm")) is not None
     assert find_handler(Path("scan.dicom")) is not None
+
+
+def test_dicom_skip_summary_printed_when_files_lack_dicm_preamble(
+    tmp_path: Path, capsys
+) -> None:
+    """When a directory mixes valid DICOMs with .dcm-named files that lack
+    the DICM preamble (DICOMDIR fragments, broken exports), MetadataGenerator
+    should bake the valid ones and print a single summary line for the rest.
+    """
+    register_all_handlers()
+
+    # One valid DICOM
+    fm = Dataset()
+    fm.MediaStorageSOPClassUID = "1.2.840.10008.5.1.4.1.1.2"
+    fm.MediaStorageSOPInstanceUID = generate_uid()
+    fm.TransferSyntaxUID = ExplicitVRLittleEndian
+    ds = FileDataset("good", {}, file_meta=fm, preamble=b"\x00" * 128)
+    ds.Rows = 10
+    ds.Columns = 10
+    ds.BitsAllocated = 16
+    ds.SamplesPerPixel = 1
+    ds.PhotometricInterpretation = "MONOCHROME2"
+    ds.PatientID = "p1"
+    ds.StudyInstanceUID = generate_uid()
+    ds.SeriesInstanceUID = generate_uid()
+    ds.Modality = "CT"
+    ds.save_as(str(tmp_path / "good.dcm"), enforce_file_format=False)
+
+    # Two .dcm-named files lacking the DICM preamble at offset 128
+    (tmp_path / "fragment_a.dcm").write_bytes(b"\x00" * 256)
+    (tmp_path / "fragment_b.dcm").write_bytes(b"random bytes that are not dicom")
+
+    from croissant_baker.metadata_generator import MetadataGenerator
+
+    gen = MetadataGenerator(
+        dataset_path=str(tmp_path),
+        name="t",
+        url="https://example.com",
+        license="MIT",
+        creators=[{"name": "x"}],
+    )
+    gen.generate_metadata()
+    out = capsys.readouterr().out
+    assert "skipped 2 DICOM file(s) without the DICM preamble" in out

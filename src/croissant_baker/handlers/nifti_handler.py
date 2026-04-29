@@ -138,11 +138,16 @@ class NIfTIHandler(FileTypeHandler):
                 dims_parts.append(f"{r[0]}" if r[0] == r[1] else f"{r[0]}-{r[1]}")
         dims_note = "x".join(dims_parts) if dims_parts else "unknown dims"
 
-        # 4D note.
+        # 4D note. Collapse to a single number when min == max so a
+        # homogeneous 4D set reads "100 volumes" rather than "100-100 volumes",
+        # matching the spatial-dim formatter above.
         t_range = summary.get("dim_t_range")
         ndim_max = summary.get("ndim_max", 3)
         if ndim_max >= 4 and t_range:
-            dims_note += f", {t_range[0]}-{t_range[1]} volumes"
+            if t_range[0] == t_range[1]:
+                dims_note += f", {t_range[0]} volumes"
+            else:
+                dims_note += f", {t_range[0]}-{t_range[1]} volumes"
 
         dtype_counts = summary.get("dtype_counts", {})
         dtypes_str = ", ".join(dtype_counts.keys()) if dtype_counts else "unknown dtype"
@@ -163,7 +168,7 @@ class NIfTIHandler(FileTypeHandler):
             mlc.Field(
                 id="nifti/dim_x",
                 name="dim_x",
-                description="Voxel grid size along x axis",
+                description="NIfTI dim[1]; voxel grid size along x axis",
                 data_types=["sc:Integer"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -173,7 +178,7 @@ class NIfTIHandler(FileTypeHandler):
             mlc.Field(
                 id="nifti/dim_y",
                 name="dim_y",
-                description="Voxel grid size along y axis",
+                description="NIfTI dim[2]; voxel grid size along y axis",
                 data_types=["sc:Integer"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -183,7 +188,7 @@ class NIfTIHandler(FileTypeHandler):
             mlc.Field(
                 id="nifti/dim_z",
                 name="dim_z",
-                description="Voxel grid size along z axis",
+                description="NIfTI dim[3]; voxel grid size along z axis",
                 data_types=["sc:Integer"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -193,7 +198,7 @@ class NIfTIHandler(FileTypeHandler):
             mlc.Field(
                 id="nifti/voxel_spacing",
                 name="voxel_spacing",
-                description="Voxel size in mm (x, y, z)",
+                description="NIfTI pixdim[1:4]; voxel size in mm along x, y, z",
                 data_types=["sc:Text"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -203,7 +208,7 @@ class NIfTIHandler(FileTypeHandler):
             mlc.Field(
                 id="nifti/data_dtype",
                 name="data_dtype",
-                description=f"Stored data type ({dtypes_str})",
+                description=f"NIfTI datatype; stored data type ({dtypes_str})",
                 data_types=["sc:Text"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -213,7 +218,7 @@ class NIfTIHandler(FileTypeHandler):
             mlc.Field(
                 id="nifti/nifti_version",
                 name="nifti_version",
-                description="NIfTI format version (1 or 2)",
+                description="Inferred from sizeof_hdr (348=NIfTI-1, 540=NIfTI-2)",
                 data_types=["sc:Integer"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -228,7 +233,7 @@ class NIfTIHandler(FileTypeHandler):
                 mlc.Field(
                     id="nifti/tr_seconds",
                     name="tr_seconds",
-                    description="Repetition time in seconds (fMRI)",
+                    description="NIfTI pixdim[4]; repetition time in seconds for fMRI volumes",
                     data_types=["sc:Float"],
                     source=mlc.Source(
                         file_set=fileset_id,

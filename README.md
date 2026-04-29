@@ -75,6 +75,8 @@ croissant-baker validate mimic-iv-demo-croissant.jsonld
 | JSON / JSONL | `.json`, `.jsonl` + `.gz` | Arrays, single objects, and JSON Lines |
 | WFDB | `.hea` + `.dat` / `.atr` | PhysioNet waveform data |
 | Images | `.png`, `.jpg`, `.tiff`, `.bmp`, `.gif`, `.webp` | Dimensions and format via Pillow |
+| DICOM | `.dcm`, `.dicom` | Modality, geometry, study/series UIDs via pydicom (header only) |
+| NIfTI | `.nii`, `.nii.gz` | Spatial dims, voxel spacing, TR for fMRI via nibabel (header only) |
 
 ## Key features
 

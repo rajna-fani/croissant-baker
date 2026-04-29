@@ -99,9 +99,13 @@ def _read_dicom_properties(file_path: Path) -> Dict:
     if sop_class is not None:
         props["sop_class_uid"] = str(sop_class)
 
-    # Hierarchy UIDs — needed to regroup files into studies/series.
-    # SeriesInstanceUID is the key that groups slices into one scan;
-    # StudyInstanceUID groups series from one patient visit.
+    # Hierarchy IDs — needed to regroup files into the
+    # patient/study/series tree. PatientID is the root, then StudyInstanceUID
+    # for one clinical visit, then SeriesInstanceUID for one acquisition.
+    patient_id = _safe_get(ds, "PatientID")
+    if patient_id is not None:
+        props["patient_id"] = str(patient_id)
+
     study_uid = _safe_get(ds, "StudyInstanceUID")
     if study_uid is not None:
         props["study_instance_uid"] = str(study_uid)
@@ -197,7 +201,7 @@ class DICOMHandler(FileTypeHandler):
             mlc.Field(
                 id="dicom/modality",
                 name="modality",
-                description="DICOM modality (e.g. CT, MR, PT)",
+                description="DICOM Modality (0008,0060)",
                 data_types=["sc:Text"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -207,7 +211,7 @@ class DICOMHandler(FileTypeHandler):
             mlc.Field(
                 id="dicom/rows",
                 name="rows",
-                description="Number of pixel rows (image height)",
+                description="DICOM Rows (0028,0010)",
                 data_types=["sc:Integer"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -217,7 +221,7 @@ class DICOMHandler(FileTypeHandler):
             mlc.Field(
                 id="dicom/columns",
                 name="columns",
-                description="Number of pixel columns (image width)",
+                description="DICOM Columns (0028,0011)",
                 data_types=["sc:Integer"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -227,7 +231,7 @@ class DICOMHandler(FileTypeHandler):
             mlc.Field(
                 id="dicom/num_frames",
                 name="num_frames",
-                description="Number of frames (>1 for multi-frame / cine DICOM)",
+                description="DICOM NumberOfFrames (0028,0008); >1 for multi-frame / cine DICOM",
                 data_types=["sc:Integer"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -237,8 +241,18 @@ class DICOMHandler(FileTypeHandler):
             mlc.Field(
                 id="dicom/bits_allocated",
                 name="bits_allocated",
-                description="Bits allocated per pixel sample",
+                description="DICOM BitsAllocated (0028,0100); bits per pixel sample",
                 data_types=["sc:Integer"],
+                source=mlc.Source(
+                    file_set=fileset_id,
+                    extract=mlc.Extract(file_property="content"),
+                ),
+            ),
+            mlc.Field(
+                id="dicom/patient_id",
+                name="patient_id",
+                description="DICOM PatientID (0010,0020); root of the patient/study/series/instance hierarchy",
+                data_types=["sc:Text"],
                 source=mlc.Source(
                     file_set=fileset_id,
                     extract=mlc.Extract(file_property="content"),
@@ -247,7 +261,7 @@ class DICOMHandler(FileTypeHandler):
             mlc.Field(
                 id="dicom/study_instance_uid",
                 name="study_instance_uid",
-                description="UID grouping all series from one patient visit (0020,000D)",
+                description="DICOM StudyInstanceUID (0020,000D); UID grouping all series from one patient visit",
                 data_types=["sc:Text"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -257,7 +271,7 @@ class DICOMHandler(FileTypeHandler):
             mlc.Field(
                 id="dicom/series_instance_uid",
                 name="series_instance_uid",
-                description="UID grouping slices into one scan/series (0020,000E)",
+                description="DICOM SeriesInstanceUID (0020,000E); UID grouping slices from one acquisition",
                 data_types=["sc:Text"],
                 source=mlc.Source(
                     file_set=fileset_id,
@@ -285,6 +299,7 @@ def collect_dicom_summary(dicom_metadata_list: List[Dict]) -> Dict:
     frames_list: List[int] = []
     modalities: Dict[str, int] = {}
     bits_set: set = set()
+    unknown_modality = 0
 
     for meta in dicom_metadata_list:
         props = meta.get("dicom_properties", {})
@@ -301,6 +316,14 @@ def collect_dicom_summary(dicom_metadata_list: List[Dict]) -> Dict:
         modality: Optional[str] = props.get("modality")
         if modality:
             modalities[modality] = modalities.get(modality, 0) + 1
+        else:
+            # Tag (0008,0060) is type 1 in many SOP classes but optional in
+            # others; PhysioNet test files include real DICOMs with no
+            # modality. Surface them as "unknown" so the per-modality counts
+            # add up to num_files.
+            unknown_modality += 1
+    if unknown_modality:
+        modalities["unknown"] = unknown_modality
 
     summary: Dict = {"num_files": len(dicom_metadata_list)}
 

@@ -230,6 +230,12 @@ class MetadataGenerator:
         # stored by reference, not by id() — no fragility if dicts are copied.
         total_files = len(files)
         file_metadata: list[tuple] = []
+        # Track files that look like a recognised binary format by extension
+        # but were rejected at handler-selection time (e.g. .dcm files
+        # without the DICM preamble at offset 128). These are valid skips,
+        # not errors, but worth surfacing so the user knows not all .dcm
+        # files made it into the output.
+        unmatched_by_ext: dict[str, int] = {}
         for i, file_path in enumerate(files):
             if progress_callback:
                 progress_callback(i, total_files, str(file_path))
@@ -242,6 +248,18 @@ class MetadataGenerator:
                     file_metadata.append((handler, meta))
                 except Exception as e:
                     print(f"Warning: Failed to process {file_path}: {e}")
+            else:
+                ext = full_path.suffix.lower()
+                if ext in {".dcm", ".dicom"}:
+                    unmatched_by_ext[ext] = unmatched_by_ext.get(ext, 0) + 1
+
+        if unmatched_by_ext:
+            total = sum(unmatched_by_ext.values())
+            print(
+                f"Note: skipped {total} DICOM file(s) without the DICM preamble "
+                "(offset 128). These are typically DICOMDIR fragments or non-"
+                "standalone DICOM exports."
+            )
 
         if not file_metadata:
             raise ValueError("No supported files found in the dataset")

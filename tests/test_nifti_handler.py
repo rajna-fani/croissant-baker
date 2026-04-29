@@ -10,6 +10,7 @@ from croissant_baker.handlers.nifti_handler import (
     NIfTIHandler,
     collect_nifti_summary,
 )
+from croissant_baker.handlers.registry import find_handler, register_all_handlers
 
 
 # ---------------------------------------------------------------------------
@@ -319,8 +320,6 @@ def test_build_croissant_4d_includes_tr(handler: NIfTIHandler) -> None:
 
 
 def test_nifti_handler_registered() -> None:
-    from croissant_baker.handlers.registry import find_handler, register_all_handlers
-
     register_all_handlers()
     assert find_handler(Path("brain.nii")) is not None
     assert find_handler(Path("brain.nii.gz")) is not None
