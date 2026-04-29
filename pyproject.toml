@@ -17,7 +17,13 @@ authors = [
 # Note: pandas is not a direct dependency — available transitively via wfdb.
 dependencies = [
     "typer>=0.9.0",
-    "mlcroissant>=1.0.20",
+    # Upper-bound mlcroissant: croissant-baker emits Croissant 1.1 JSON-LD and
+    # is coupled to mlcroissant's 1.1.x behaviour (validator rules, @context
+    # generation, post-hoc field mappings). A 1.2.x release likely tracks a new
+    # spec and warrants a deliberate review of our outputs and conformance
+    # claim. Patches and minors flow automatically.
+    # Latest 1.1.x at pin time: 1.1.0 (released 2026-04-16).
+    "mlcroissant>=1.1.0,<1.2.0",
     "rich>=15.0.0",
     "wfdb>=4.3.1",
     "pyarrow>=23.0.1",

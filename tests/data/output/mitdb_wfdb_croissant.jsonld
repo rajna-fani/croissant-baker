@@ -16,6 +16,7 @@
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -48,13 +49,13 @@
   "@type": "sc:Dataset",
   "name": "MIT-BIH Arrhythmia Database",
   "description": "MIT-BIH Arrhythmia Database containing 48 ECG recordings with annotations",
-  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
   "citeAs": "Moody GB, Mark RG. The impact of the MIT-BIH Arrhythmia Database. IEEE Eng in Med and Biol 20(3):45-50 (May-June 2001).",
   "creator": {
     "@type": "sc:Person",
     "name": "MIT-BIH"
   },
-  "datePublished": "1992-07-30T00:00:00",
+  "datePublished": "1992-07-30",
   "license": "https://physionet.org/content/mitdb/1.0.0/LICENSE.txt",
   "url": "https://physionet.org/content/mitdb/1.0.0/",
   "version": "1.0.0",
