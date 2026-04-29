@@ -35,9 +35,9 @@ $ croissant-baker [OPTIONS] COMMAND [ARGS]...
 * `--alternate-name TEXT`: Short alias for the dataset (e.g., 'MIMIC-IV').
 * `--is-live-dataset`: Mark the dataset as a live, evolving stream (e.g., a continuously-appended log).
 * `--temporal-coverage TEXT`: Time period the data covers. ISO 8601 recommended: '2008/2019' (interval) or '2023-01-15' (point).
-* `--usage-info TEXT`: URL of a usage / consent policy. Examples: 'http://purl.obolibrary.org/obo/DUO_0000042' (DUO term), or any ODRL Offer URL.
-* `--field-mappings FILE`: YAML file mapping columns to external vocabularies (Wikidata, SNOMED, LOINC). Schema: 'fields:\n  <col>:\n    equivalent_property: <URI>\n    data_types: [<URI>, ...]'. Use for multi-property overrides; for one URI per column see --field-mapping.
-* `--field-mapping TEXT`: Link one column to an external vocabulary URI. Format: 'COLUMN=URI'. Example: --field-mapping 'age=http://www.wikidata.org/entity/Q11464'. Repeatable; combine with --field-mappings (flags override YAML).
+* `--usage-info TEXT`: URI pointing to a usage or consent policy. Any RFC 3986 scheme (http(s), urn, did, mailto). Example: 'http://purl.obolibrary.org/obo/DUO_0000042' (DUO term).
+* `--field-mappings FILE`: YAML file mapping columns to external vocabularies (Wikidata, SNOMED, LOINC). Schema: 'fields:\n  <col>:\n    equivalent_property: <URI>\n    data_types: [<URI>, ...]'. Note: column names match across ALL RecordSets, so 'id' applies to every 'id' column in the dataset.
+* `--field-mapping TEXT`: Link one column to an external vocabulary URI. Format: 'COLUMN=URI'. Example: --field-mapping 'age=http://www.wikidata.org/entity/Q11464'. Matches by bare column name across all RecordSets; a warning prints if a name resolves to multiple fields. Repeatable; combine with --field-mappings (flags override YAML).
 * `--count-csv-rows`: Count exact row numbers for CSV files (slow for large datasets)
 * `--rai-data-collection TEXT`: How and where the data was gathered.
 * `--rai-data-collection-type TEXT`: Collection type, e.g. 'observational'. Can be used multiple times.

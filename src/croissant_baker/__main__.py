@@ -3,6 +3,7 @@
 import csv
 from datetime import datetime
 import json
+import re
 import tempfile
 import importlib.metadata
 from pathlib import Path
@@ -241,13 +242,22 @@ def _merge_field_mapping_flags(
     return merged or None
 
 
-def _validate_url(option_name: str, value: Optional[str]) -> None:
-    """Reject obviously non-URL strings on a flag advertised as taking a URL."""
+_URI_SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+\-.]*:")
+
+
+def _validate_uri(option_name: str, value: Optional[str]) -> None:
+    """Reject strings that don't start with an RFC 3986 URI scheme.
+
+    Catches free text like 'see license file' but accepts http(s)://, urn:,
+    did:, mailto:, and any other valid scheme. schema.org/usageInfo accepts
+    URLs broadly, not just web URLs.
+    """
     if value is None:
         return
-    if not value.startswith(("http://", "https://")):
+    if not _URI_SCHEME.match(value):
         raise typer.BadParameter(
-            f"{option_name} must be an http(s):// URL, got {value!r}"
+            f"{option_name} must be a URI starting with a scheme "
+            f"(e.g. https://, urn:, did:, mailto:), got {value!r}"
         )
 
 
@@ -466,19 +476,19 @@ def main(
     usage_info: Optional[str] = typer.Option(
         None,
         "--usage-info",
-        help="URL of a usage / consent policy. Examples: 'http://purl.obolibrary.org/obo/DUO_0000042' (DUO term), or any ODRL Offer URL.",
+        help="URI pointing to a usage or consent policy. Any RFC 3986 scheme (http(s), urn, did, mailto). Example: 'http://purl.obolibrary.org/obo/DUO_0000042' (DUO term).",
     ),
     field_mappings: Optional[Path] = typer.Option(
         None,
         "--field-mappings",
-        help="YAML file mapping columns to external vocabularies (Wikidata, SNOMED, LOINC). Schema: 'fields:\\n  <col>:\\n    equivalent_property: <URI>\\n    data_types: [<URI>, ...]'. Use for multi-property overrides; for one URI per column see --field-mapping.",
+        help="YAML file mapping columns to external vocabularies (Wikidata, SNOMED, LOINC). Schema: 'fields:\\n  <col>:\\n    equivalent_property: <URI>\\n    data_types: [<URI>, ...]'. Note: column names match across ALL RecordSets, so 'id' applies to every 'id' column in the dataset.",
         exists=True,
         dir_okay=False,
     ),
     field_mapping: Optional[List[str]] = typer.Option(
         None,
         "--field-mapping",
-        help="Link one column to an external vocabulary URI. Format: 'COLUMN=URI'. Example: --field-mapping 'age=http://www.wikidata.org/entity/Q11464'. Repeatable; combine with --field-mappings (flags override YAML).",
+        help="Link one column to an external vocabulary URI. Format: 'COLUMN=URI'. Example: --field-mapping 'age=http://www.wikidata.org/entity/Q11464'. Matches by bare column name across all RecordSets; a warning prints if a name resolves to multiple fields. Repeatable; combine with --field-mappings (flags override YAML).",
     ),
     count_csv_rows: bool = typer.Option(
         False,
@@ -748,7 +758,7 @@ def main(
                     err=True,
                 )
 
-        _validate_url("--usage-info", usage_info)
+        _validate_uri("--usage-info", usage_info)
         merged_field_mappings = _merge_field_mapping_flags(
             _load_field_mappings(field_mappings), field_mapping
         )

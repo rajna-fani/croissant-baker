@@ -43,17 +43,26 @@ def _apply_field_mappings(
     no Python parameter for ``equivalent_property``, so we patch the
     serialised JSON-LD directly.
 
+    Matching is by bare field name across the entire metadata tree. A
+    mapping for ``id`` will apply to every field named ``id`` in every
+    RecordSet. When a name resolves to more than one field, a warning is
+    printed so the user can confirm the override is intended for all of
+    them.
+
     User-supplied ``data_types`` are APPENDED to the inferred Croissant type
-    rather than replacing it — the mlcroissant validator requires at least
+    rather than replacing it. The mlcroissant validator requires at least
     one Croissant dataType per field, and the 1.1 spec explicitly supports
     multiple types coexisting (e.g. ``["sc:URL", "wd:Q515"]``).
     """
+    match_counts: Dict[str, int] = defaultdict(int)
 
     def visit(node: object) -> None:
         if isinstance(node, dict):
             if node.get("@type") == "cr:Field":
-                override = mappings.get(node.get("name"))
+                name = node.get("name")
+                override = mappings.get(name)
                 if override:
+                    match_counts[name] += 1
                     if override.get("equivalent_property"):
                         node["equivalentProperty"] = override["equivalent_property"]
                     extra_types = override.get("data_types") or []
@@ -76,6 +85,14 @@ def _apply_field_mappings(
                 visit(item)
 
     visit(metadata_dict)
+
+    for name, count in match_counts.items():
+        if count > 1:
+            print(
+                f"Warning: field mapping '{name}' applied to {count} fields. "
+                f"If '{name}' means different things in different RecordSets, "
+                "rename the columns or split the bake."
+            )
 
 
 class MetadataGenerator:

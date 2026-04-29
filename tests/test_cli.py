@@ -783,7 +783,8 @@ def test_field_mapping_flag_overrides_yaml(csv_dataset: Path, tmp_path: Path) ->
     assert fields["id"]["equivalentProperty"] == "wdt:P527"  # flag-only column
 
 
-def test_usage_info_rejects_non_url(csv_dataset: Path, tmp_path: Path) -> None:
+def test_usage_info_rejects_free_text(csv_dataset: Path, tmp_path: Path) -> None:
+    """Reject strings without a URI scheme; accept any RFC 3986 scheme."""
     output = tmp_path / "output.jsonld"
     result = runner.invoke(
         app,
@@ -800,7 +801,67 @@ def test_usage_info_rejects_non_url(csv_dataset: Path, tmp_path: Path) -> None:
         ],
     )
     assert result.exit_code != 0
-    assert "URL" in result.output or "http" in result.output.lower()
+    assert "URI" in result.output or "scheme" in result.output.lower()
+
+
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "https://example.org/policy",
+        "http://purl.obolibrary.org/obo/DUO_0000042",
+        "urn:lex:eu:council:directive:2022-09-14;2022-2065",
+        "did:web:example.org:dataset",
+        "mailto:dac@example.org",
+    ],
+)
+def test_usage_info_accepts_any_uri_scheme(
+    csv_dataset: Path, tmp_path: Path, uri: str
+) -> None:
+    output = tmp_path / "output.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(csv_dataset),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--usage-info",
+            uri,
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert json.loads(output.read_text())["usageInfo"] == uri
+
+
+def test_field_mapping_warns_on_multiple_matches(tmp_path: Path) -> None:
+    """A mapping that hits more than one field warns the user."""
+    dataset_dir = tmp_path / "ds"
+    dataset_dir.mkdir()
+    # Two CSVs both with an 'id' column — same name, different semantics.
+    (dataset_dir / "patients.csv").write_text("id,age\n1,40\n2,50\n")
+    (dataset_dir / "diagnoses.csv").write_text("id,code\n1,X\n2,Y\n")
+
+    output = tmp_path / "out.jsonld"
+    result = runner.invoke(
+        app,
+        [
+            "--input",
+            str(dataset_dir),
+            "--output",
+            str(output),
+            "--creator",
+            "Test",
+            "--field-mapping",
+            "id=http://www.wikidata.org/entity/Q577",
+            "--no-validate",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    combined = (result.output or "") + (result.stderr or "")
+    assert "field mapping 'id' applied to 2 fields" in combined
 
 
 def test_field_mappings_yaml_rejects_unknown_keys(
