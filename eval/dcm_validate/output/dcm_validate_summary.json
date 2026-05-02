@@ -1,0 +1,78 @@
+{
+  "aggregate": {
+    "modules_evaluated": 6,
+    "total_dicom_files": 6678,
+    "total_nifti_volumes": 75,
+    "total_per_volume_record_sets": 75,
+    "total_bids_fields_lifted": 3932,
+    "dicom_tag_validity_pct": 100.0
+  },
+  "per_module": {
+    "dcm_qa_ge": {
+      "dicom_files": 4125,
+      "dicom_record_sets": 1,
+      "dicom_fields": 8,
+      "tag_ids_seen": 8,
+      "tag_ids_valid": 8,
+      "nifti_files": 29,
+      "nifti_core_fields": 7,
+      "nifti_per_volume_record_sets": 29,
+      "bids_sidecar_fields_lifted": 1454
+    },
+    "dcm_qa_nih": {
+      "dicom_files": 608,
+      "dicom_record_sets": 1,
+      "dicom_fields": 8,
+      "tag_ids_seen": 8,
+      "tag_ids_valid": 8,
+      "nifti_files": 8,
+      "nifti_core_fields": 7,
+      "nifti_per_volume_record_sets": 8,
+      "bids_sidecar_fields_lifted": 460
+    },
+    "dcm_qa_polar": {
+      "dicom_files": 960,
+      "dicom_record_sets": 1,
+      "dicom_fields": 8,
+      "tag_ids_seen": 8,
+      "tag_ids_valid": 8,
+      "nifti_files": 6,
+      "nifti_core_fields": 7,
+      "nifti_per_volume_record_sets": 6,
+      "bids_sidecar_fields_lifted": 294
+    },
+    "dcm_qa_stc": {
+      "dicom_files": 589,
+      "dicom_record_sets": 1,
+      "dicom_fields": 8,
+      "tag_ids_seen": 8,
+      "tag_ids_valid": 8,
+      "nifti_files": 18,
+      "nifti_core_fields": 7,
+      "nifti_per_volume_record_sets": 18,
+      "bids_sidecar_fields_lifted": 1040
+    },
+    "dcm_qa_uih": {
+      "dicom_files": 388,
+      "dicom_record_sets": 1,
+      "dicom_fields": 8,
+      "tag_ids_seen": 8,
+      "tag_ids_valid": 8,
+      "nifti_files": 6,
+      "nifti_core_fields": 7,
+      "nifti_per_volume_record_sets": 6,
+      "bids_sidecar_fields_lifted": 236
+    },
+    "dcm_qa_enh": {
+      "dicom_files": 8,
+      "dicom_record_sets": 1,
+      "dicom_fields": 8,
+      "tag_ids_seen": 8,
+      "tag_ids_valid": 8,
+      "nifti_files": 8,
+      "nifti_core_fields": 7,
+      "nifti_per_volume_record_sets": 8,
+      "bids_sidecar_fields_lifted": 448
+    }
+  }
+}
