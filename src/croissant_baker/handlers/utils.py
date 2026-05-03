@@ -47,8 +47,8 @@ def normalize_array_shape(shape: str) -> str:
 def open_text_file(file_path: Path):
     """Return a text file handle, transparently decompressing gzip files."""
     if file_path.name.lower().endswith(".gz"):
-        return gzip.open(file_path, "rt", encoding="utf-8")
-    return open(file_path, "r", encoding="utf-8")
+        return gzip.open(file_path, "rt", encoding="utf-8-sig")
+    return open(file_path, "r", encoding="utf-8-sig")
 
 
 # Characters that are invalid in Croissant @id values.
