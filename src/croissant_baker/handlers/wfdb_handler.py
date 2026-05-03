@@ -9,6 +9,7 @@ from croissant_baker.handlers.base_handler import FileTypeHandler
 from croissant_baker.handlers.utils import (
     _disambiguate_ids,
     compute_file_hash,
+    make_field_id,
     sanitize_id,
 )
 
@@ -137,12 +138,13 @@ class WFDBHandler(FileTypeHandler):
         ]
         rs_ids = _disambiguate_ids(rs_id_items)
         for file_id, file_meta, rs_id in zip(file_ids, file_metas, rs_ids):
+            used_field_ids: set = set()
             fields = []
             for signal_name, signal_type in file_meta["signal_types"].items():
-                safe_name = sanitize_id(signal_name)
+                field_id = make_field_id(rs_id, signal_name, used_field_ids)
                 fields.append(
                     mlc.Field(
-                        id=f"{file_id}_{safe_name}",
+                        id=field_id,
                         name=signal_name,
                         description=f"Signal '{signal_name}' from {file_meta['record_name']}",
                         data_types=[signal_type],

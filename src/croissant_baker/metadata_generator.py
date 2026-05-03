@@ -56,12 +56,16 @@ def _assert_unique_node_ids(distributions: list, record_sets: list) -> None:
             )
         seen[node_id] = kind
 
+    def _walk_fields(fields) -> None:
+        for f in fields or []:
+            _claim(getattr(f, "id", None), "Field")
+            _walk_fields(getattr(f, "sub_fields", None))
+
     for d in distributions:
         _claim(getattr(d, "id", None), type(d).__name__)
     for r in record_sets:
         _claim(getattr(r, "id", None), "RecordSet")
-        for f in getattr(r, "fields", None) or []:
-            _claim(getattr(f, "id", None), "Field")
+        _walk_fields(getattr(r, "fields", None))
 
 
 def _apply_field_mappings(
