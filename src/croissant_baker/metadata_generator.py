@@ -32,6 +32,42 @@ def serialize_datetime(obj):
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
 
+def _assert_unique_node_ids(distributions: list, record_sets: list) -> None:
+    """Verify every emitted @id is unique across the document.
+
+    JSON-LD merges nodes that share an @id (`json-ld11/#node-identifiers`
+    spec section: nodes with the same identifier represent the same node).
+    A collision therefore silently merges nodes, producing incorrect
+    Croissant output. Surfacing the conflict here keeps the failure
+    local to the generator with the offending @id and node types
+    attached, instead of leaking out as an opaque downstream validation
+    error or, worse, passing validation while silently dropping data.
+    """
+    seen: dict = {}
+
+    def _claim(node_id, kind: str) -> None:
+        if node_id is None:
+            return
+        if node_id in seen:
+            raise ValueError(
+                f"Croissant @id collision: '{node_id}' is used by both "
+                f"{seen[node_id]} and {kind}. Every FileObject, FileSet, "
+                f"RecordSet, and Field must carry a unique @id."
+            )
+        seen[node_id] = kind
+
+    def _walk_fields(fields) -> None:
+        for f in fields or []:
+            _claim(getattr(f, "id", None), "Field")
+            _walk_fields(getattr(f, "sub_fields", None))
+
+    for d in distributions:
+        _claim(getattr(d, "id", None), type(d).__name__)
+    for r in record_sets:
+        _claim(getattr(r, "id", None), "RecordSet")
+        _walk_fields(getattr(r, "fields", None))
+
+
 def _apply_field_mappings(
     metadata_dict: dict, mappings: Dict[str, Dict[str, object]]
 ) -> None:
@@ -347,6 +383,8 @@ class MetadataGenerator:
                 record_sets.extend(rs)
             except Exception as e:
                 print(f"Warning: {type(_h).__name__}.build_croissant failed: {e}")
+
+        _assert_unique_node_ids(distributions, record_sets)
 
         metadata.distribution = distributions
         metadata.record_sets = record_sets

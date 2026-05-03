@@ -10,9 +10,12 @@ from pyarrow.parquet import ParquetFile
 from croissant_baker.handlers.base_handler import FileTypeHandler
 from croissant_baker.handlers.utils import (
     _build_fields,
+    _disambiguate_ids,
     compute_file_hash,
     get_clean_record_name,
     infer_column_types_from_arrow_schema,
+    make_field_id,
+    make_partition_record_set_ids,
     sanitize_id,
 )
 
@@ -137,6 +140,44 @@ class ParquetHandler(FileTypeHandler):
             parent = str(Path(file_meta["relative_path"]).parent)
             dir_groups[parent].append((file_id, file_meta))
 
+        # Split into partitioned-table directories and standalone files so
+        # each set can be disambiguated independently.
+        partitioned_dirs = [
+            d for d, pairs in dir_groups.items() if len(pairs) >= 2 and d != "."
+        ]
+        standalone_pairs = [
+            (file_id, meta)
+            for d, pairs in dir_groups.items()
+            if not (len(pairs) >= 2 and d != ".")
+            for file_id, meta in pairs
+        ]
+        partitioned_rs_ids = dict(
+            zip(partitioned_dirs, make_partition_record_set_ids(partitioned_dirs))
+        )
+        # Standalone Parquet files take their @id stem from the parent
+        # directory name when one exists, falling back to the cleaned
+        # file basename for files at the dataset root. Parquet basenames
+        # in real datasets are typically partition labels (`part-00000`,
+        # `0`, UUIDs) that make poor identifiers, so the parent dir is
+        # the more meaningful stem. Disambiguation walks up the
+        # grandparent path on collision.
+        standalone_id_items = []
+        for _, meta in standalone_pairs:
+            rel = Path(meta["relative_path"])
+            parents = list(rel.parts[:-1])
+            if parents:
+                stem = sanitize_id(parents[-1])
+                disambig_parents = parents[:-1]
+            else:
+                stem = sanitize_id(get_clean_record_name(meta["file_name"]))
+                disambig_parents = []
+            standalone_id_items.append((stem, disambig_parents))
+        standalone_rs_ids = _disambiguate_ids(standalone_id_items)
+        standalone_rs_id_by_index = {
+            id(meta): rs_id
+            for (_, meta), rs_id in zip(standalone_pairs, standalone_rs_ids)
+        }
+
         for dir_path, pairs in dir_groups.items():
             is_partitioned = len(pairs) >= 2 and dir_path != "."
 
@@ -145,6 +186,7 @@ class ParquetHandler(FileTypeHandler):
                 table_name = Path(dir_path).name
                 dir_id = sanitize_id(dir_path)
                 fileset_id = f"{dir_id}-fileset"
+                rs_id = partitioned_rs_ids[dir_path]
 
                 _suffix = "".join(Path(pairs[0][1]["file_name"]).suffixes)
                 additional_distributions.append(
@@ -160,16 +202,17 @@ class ParquetHandler(FileTypeHandler):
                 if "arrow_schema" in first_meta:
                     fields = _build_fields(
                         first_meta["arrow_schema"],
-                        sanitize_id(table_name),
+                        rs_id,
                         {"file_set": fileset_id},
                     )
                 else:
+                    used_field_ids: set = set()
                     fields = []
                     for col_name, col_type in first_meta["column_types"].items():
-                        safe_name = sanitize_id(col_name)
+                        field_id = make_field_id(rs_id, col_name, used_field_ids)
                         fields.append(
                             mlc.Field(
-                                id=f"{dir_id}/{safe_name}",
+                                id=field_id,
                                 name=col_name,
                                 description=f"Column '{col_name}' from table '{table_name}'",
                                 data_types=[col_type],
@@ -183,7 +226,7 @@ class ParquetHandler(FileTypeHandler):
                 num_rows = sum(m.get("num_rows", 0) for _, m in pairs)
                 record_sets.append(
                     mlc.RecordSet(
-                        id=sanitize_id(table_name),
+                        id=rs_id,
                         name=table_name,
                         description=f"Partitioned table '{table_name}' ({len(pairs)} Parquet files, {num_rows} total rows)",
                         fields=fields,
@@ -197,7 +240,7 @@ class ParquetHandler(FileTypeHandler):
                         rs_name = Path(rel_dir).name
                     else:
                         rs_name = get_clean_record_name(file_meta["file_name"])
-                    rs_id = sanitize_id(rs_name)
+                    rs_id = standalone_rs_id_by_index[id(file_meta)]
 
                     if "arrow_schema" in file_meta:
                         fields = _build_fields(
@@ -206,12 +249,13 @@ class ParquetHandler(FileTypeHandler):
                             {"file_object": file_id},
                         )
                     else:
+                        used_field_ids = set()
                         fields = []
                         for col_name, col_type in file_meta["column_types"].items():
-                            safe_name = sanitize_id(col_name)
+                            field_id = make_field_id(rs_id, col_name, used_field_ids)
                             fields.append(
                                 mlc.Field(
-                                    id=f"{rs_id}/{safe_name}",
+                                    id=field_id,
                                     name=col_name,
                                     description=f"Column '{col_name}' from {file_meta['file_name']}",
                                     data_types=[col_type],
