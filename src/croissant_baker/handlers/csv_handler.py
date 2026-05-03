@@ -13,6 +13,8 @@ from croissant_baker.handlers.utils import (
     compute_file_hash,
     get_clean_record_name,
     infer_column_types_from_arrow_schema,
+    make_field_id,
+    make_record_set_ids,
     sanitize_id,
 )
 
@@ -303,14 +305,14 @@ class CSVHandler(FileTypeHandler):
 
     def build_croissant(self, file_metas: list, file_ids: list) -> tuple:
         record_sets = []
-        for file_id, file_meta in zip(file_ids, file_metas):
+        rs_ids = make_record_set_ids(file_metas)
+        for file_id, file_meta, rs_id in zip(file_ids, file_metas, rs_ids):
             rs_name = get_clean_record_name(file_meta["file_name"])
-            rs_id = sanitize_id(rs_name)
 
+            used_field_ids: set = set()
             fields = []
             for col_name, col_type in file_meta["column_types"].items():
-                safe_name = sanitize_id(col_name)
-                field_id = f"{rs_id}/{safe_name}"
+                field_id = make_field_id(rs_id, col_name, used_field_ids)
                 field = mlc.Field(
                     id=field_id,
                     name=col_name,

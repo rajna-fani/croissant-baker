@@ -6,7 +6,11 @@ import wfdb
 import mlcroissant as mlc
 
 from croissant_baker.handlers.base_handler import FileTypeHandler
-from croissant_baker.handlers.utils import compute_file_hash, sanitize_id
+from croissant_baker.handlers.utils import (
+    _disambiguate_ids,
+    compute_file_hash,
+    sanitize_id,
+)
 
 
 class WFDBHandler(FileTypeHandler):
@@ -114,7 +118,25 @@ class WFDBHandler(FileTypeHandler):
 
     def build_croissant(self, file_metas: list, file_ids: list) -> tuple:
         record_sets = []
-        for file_id, file_meta in zip(file_ids, file_metas):
+        # Record names can repeat across subdirectories; disambiguate via the
+        # parent path components of each record's relative location when
+        # available. Tests may pass minimal metas without path info, in
+        # which case the bare record name is sufficient.
+        rs_id_items = [
+            (
+                sanitize_id(meta["record_name"]),
+                list(
+                    Path(
+                        meta.get("relative_path")
+                        or meta.get("file_name")
+                        or meta["record_name"]
+                    ).parts[:-1]
+                ),
+            )
+            for meta in file_metas
+        ]
+        rs_ids = _disambiguate_ids(rs_id_items)
+        for file_id, file_meta, rs_id in zip(file_ids, file_metas, rs_ids):
             fields = []
             for signal_name, signal_type in file_meta["signal_types"].items():
                 safe_name = sanitize_id(signal_name)
@@ -136,7 +158,7 @@ class WFDBHandler(FileTypeHandler):
 
             record_sets.append(
                 mlc.RecordSet(
-                    id=sanitize_id(file_meta["record_name"]),
+                    id=rs_id,
                     name=file_meta["record_name"],
                     description=(
                         f"WFDB record {file_meta['record_name']}: "

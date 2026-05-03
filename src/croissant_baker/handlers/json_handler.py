@@ -23,6 +23,7 @@ from croissant_baker.handlers.utils import (
     compute_file_hash,
     get_clean_record_name,
     infer_json_schema,
+    make_record_set_ids,
     open_text_file,
     sanitize_id,
 )
@@ -219,10 +220,10 @@ class JSONHandler(FileTypeHandler):
             ([], record_sets) — no additional distributions.
         """
         record_sets: list = []
+        rs_ids = make_record_set_ids(file_metas)
 
-        for file_id, meta in zip(file_ids, file_metas):
+        for file_id, meta, rs_id in zip(file_ids, file_metas, rs_ids):
             file_name = meta.get("file_name", "unknown")
-            rs_id = sanitize_id(get_clean_record_name(file_name))
             num_rows = meta.get("num_rows")
             row_desc = f" ({num_rows} rows)" if num_rows is not None else ""
             record_sets.append(
@@ -234,6 +235,7 @@ class JSONHandler(FileTypeHandler):
                         meta["column_types"],
                         rs_id,
                         source_ref={"file_object": file_id},
+                        used_field_ids=set(),
                     ),
                 )
             )

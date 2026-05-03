@@ -69,6 +69,125 @@ def sanitize_id(raw: str) -> str:
     return _INVALID_ID_CHARS.sub("_", raw)
 
 
+def _disambiguate_ids(items: list) -> list:
+    """Return a list of unique @id strings parallel to ``items``.
+
+    Each item is a ``(stem, parent_components)`` tuple, where ``stem`` is
+    the desired sanitized identifier and ``parent_components`` is the
+    list of parent path components (closest parent last) available for
+    disambiguation. When two or more items share the same stem, the
+    minimum number of trailing parent components is prepended (joined
+    with ``__``) until every member of the colliding group is unique.
+
+    Filesystem paths are unique by construction, so the loop is
+    guaranteed to converge for items derived from real file metadata.
+    """
+    from collections import defaultdict
+
+    stems = [it[0] for it in items]
+    parents_per = [it[1] for it in items]
+
+    # Bucket items by their proposed stem; only buckets of size >1 need work.
+    groups: dict = defaultdict(list)
+    for i, stem in enumerate(stems):
+        groups[stem].append(i)
+
+    out = list(stems)
+    for stem, indices in groups.items():
+        if len(indices) == 1:
+            continue  # no collision in this bucket; keep bare stem
+        # Try increasing parent-prefix depths in lock-step across the colliding
+        # bucket. The smallest depth at which every candidate is distinct wins.
+        max_depth = max((len(parents_per[i]) for i in indices), default=0)
+        chosen: dict = {}
+        for depth in range(1, max_depth + 1):
+            candidates: dict = {}
+            for i in indices:
+                parents = parents_per[i]
+                prefix_parts = parents[-depth:] if depth <= len(parents) else parents
+                prefix = "__".join(prefix_parts)
+                candidates[i] = sanitize_id(f"{prefix}__{stem}") if prefix else stem
+            if len(set(candidates.values())) == len(indices):
+                chosen = candidates
+                break
+        if not chosen:
+            # Fallback: every available parent component included. Filesystem
+            # paths are unique, so this branch should not fire on real inputs;
+            # kept as a safety net for synthetic / pathological cases.
+            chosen = {
+                i: sanitize_id("__".join([*parents_per[i], stem]))
+                for i in indices
+            }
+        for i, value in chosen.items():
+            out[i] = value
+    return out
+
+
+def make_record_set_ids(file_metas: list) -> list:
+    """Return a unique RecordSet @id for each file in a handler's batch.
+
+    The bare cleaned, sanitized basename is returned when no other file
+    in the batch produces the same basename. When two or more files
+    collide, parent-directory components from ``relative_path`` are
+    prepended (joined with ``__``) up to the minimum depth that
+    disambiguates the collision.
+
+    The pattern follows the namespacing convention used by other
+    Croissant generators (for example, the Hugging Face auto-generator
+    prefixes config-level identifiers into split @id values), so
+    consumers familiar with that style do not encounter a new shape.
+    """
+    items = [
+        (
+            sanitize_id(get_clean_record_name(meta["file_name"])),
+            list(Path(meta.get("relative_path", meta["file_name"])).parts[:-1]),
+        )
+        for meta in file_metas
+    ]
+    return _disambiguate_ids(items)
+
+
+def make_partition_record_set_ids(dir_paths: list) -> list:
+    """Return a unique RecordSet @id for each partitioned-table directory.
+
+    Same algorithm as ``make_record_set_ids``, but the source of the
+    identifier is the trailing directory name rather than a file
+    basename. Used by the Parquet handler when grouping shards into a
+    single logical table.
+    """
+    items = [
+        (sanitize_id(Path(dir_path).name), list(Path(dir_path).parts[:-1]))
+        for dir_path in dir_paths
+    ]
+    return _disambiguate_ids(items)
+
+
+def make_field_id(record_set_id: str, column_name: str, used_field_ids: set) -> str:
+    """Return a unique field @id within a single RecordSet.
+
+    The candidate @id is ``{record_set_id}/{sanitize_id(column_name)}``.
+    On collision (which happens when two distinct column names sanitize
+    to the same string, for example ``Age>30`` and ``Age 30`` both
+    becoming ``Age_30``), a numeric suffix ``__N`` is appended starting
+    at 1. This mirrors the disambiguation that ``pandas.read_csv``
+    applies to duplicate column headers by default.
+
+    ``used_field_ids`` is mutated to record the chosen identifier so
+    subsequent calls within the same RecordSet can detect further
+    collisions.
+    """
+    base = f"{record_set_id}/{sanitize_id(column_name)}"
+    if base not in used_field_ids:
+        used_field_ids.add(base)
+        return base
+    n = 1
+    while f"{base}__{n}" in used_field_ids:
+        n += 1
+    chosen = f"{base}__{n}"
+    used_field_ids.add(chosen)
+    return chosen
+
+
 def map_arrow_type(arrow_type: pa.DataType) -> str:
     """
     Map a PyArrow data type to the corresponding Croissant type string.
@@ -227,6 +346,7 @@ def _build_fields(
     parent_id: str,
     source_ref: dict,
     col_path_prefix: str = "",
+    used_field_ids: set = None,
 ) -> list:
     """Recursively build mlc.Field objects from a PyArrow schema or struct type.
 
@@ -234,13 +354,19 @@ def _build_fields(
     - Scalar column: maps to a Croissant type via map_arrow_type().
     - List column: sets is_array=True; recurses on the element type.
     - Struct column: recurses to produce sub_fields.
+
+    ``used_field_ids`` is an optional set of field @id values already
+    emitted within the parent RecordSet; the function adds chosen ids
+    to it so that columns whose names sanitize to the same string get a
+    deterministic numeric suffix instead of silently colliding.
     """
+    if used_field_ids is None:
+        used_field_ids = set()
     fields = []
     for arrow_field in arrow_schema:
         col_name = arrow_field.name
         arrow_type = arrow_field.type
-        safe_name = sanitize_id(col_name)
-        field_id = f"{parent_id}/{safe_name}"
+        field_id = make_field_id(parent_id, col_name, used_field_ids)
         col_path = f"{col_path_prefix}/{col_name}" if col_path_prefix else col_name
 
         is_array = is_arrow_list(arrow_type)
@@ -401,6 +527,7 @@ def build_fields_from_json_schema(
     source_ref: dict,
     description_prefix: str = "Column",
     _col_path_prefix: str = "",
+    used_field_ids: set = None,
 ) -> list:
     """Recursively build mlc.Field objects from a JSON column schema dict.
 
@@ -415,14 +542,19 @@ def build_fields_from_json_schema(
         source_ref: Dict with either ``file_object=`` or ``file_set=`` key.
         description_prefix: Label prefix for field descriptions (default "Column").
         _col_path_prefix: Internal prefix for nested column paths; callers omit.
+        used_field_ids: Optional set of already-emitted field @id values
+            within the parent RecordSet. The function adds chosen ids to
+            it so callers can detect collisions across multiple invocations
+            against the same RecordSet. Defaults to a fresh per-call set.
 
     Returns:
         List of ``mlc.Field`` objects.
     """
+    if used_field_ids is None:
+        used_field_ids = set()
     fields = []
     for col_name, type_info in col_schema.items():
-        safe_name = sanitize_id(col_name)
-        field_id = f"{parent_id}/{safe_name}"
+        field_id = make_field_id(parent_id, col_name, used_field_ids)
         col_path = f"{_col_path_prefix}/{col_name}" if _col_path_prefix else col_name
         source = mlc.Source(extract=mlc.Extract(column=col_path), **source_ref)
 
