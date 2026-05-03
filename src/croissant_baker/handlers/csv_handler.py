@@ -15,7 +15,6 @@ from croissant_baker.handlers.utils import (
     infer_column_types_from_arrow_schema,
     make_field_id,
     make_record_set_ids,
-    sanitize_id,
 )
 
 logger = logging.getLogger(__name__)

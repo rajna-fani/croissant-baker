@@ -115,8 +115,7 @@ def _disambiguate_ids(items: list) -> list:
             # paths are unique, so this branch should not fire on real inputs;
             # kept as a safety net for synthetic / pathological cases.
             chosen = {
-                i: sanitize_id("__".join([*parents_per[i], stem]))
-                for i in indices
+                i: sanitize_id("__".join([*parents_per[i], stem])) for i in indices
             }
         for i, value in chosen.items():
             out[i] = value

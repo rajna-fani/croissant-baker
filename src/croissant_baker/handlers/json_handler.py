@@ -21,11 +21,9 @@ from croissant_baker.handlers.utils import (
     SCHEMA_SAMPLE,
     build_fields_from_json_schema,
     compute_file_hash,
-    get_clean_record_name,
     infer_json_schema,
     make_record_set_ids,
     open_text_file,
-    sanitize_id,
 )
 
 logger = logging.getLogger(__name__)
