@@ -1,0 +1,199 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "Nathan Gavenski. Labyrinth-v0 4x4 size. https://huggingface.co/datasets/NathanGavenski/Labyrinth-v0_4x4",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataBiases": "cr:dataBiases",
+    "dataCollection": "cr:dataCollection",
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "personalSensitiveInformation": "cr:personalSensitiveInformation",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "name": "Labyrinth-v0 4x4 size",
+  "description": "This dataset is for the Gymnasium-based environment Labyrinth-v0. It contains observations, actions, rewards, episode_starts and info across multiple structural splits (train, test, eval, random).",
+  "alternateName": ["NathanGavenski/Labyrinth-v0_4x4", "Labyrinth-v0"],
+  "url": "https://huggingface.co/datasets/NathanGavenski/Labyrinth-v0_4x4",
+  "license": "https://choosealicense.com/licenses/mit/",
+  "creator": {
+    "@type": "Person",
+    "name": "Nathan Gavenski",
+    "url": "https://huggingface.co/NathanGavenski"
+  },
+  "keywords": ["Gymnasium", "Imitation Learning", "Expert Trajectory", "JSONL", "Image-based Agent", "4x4 Labyrinth"],
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "repo",
+      "name": "repo",
+      "description": "The Hugging Face git repository for Labyrinth-v0_4x4.",
+      "contentUrl": "https://huggingface.co/datasets/NathanGavenski/Labyrinth-v0_4x4/tree/main",
+      "encodingFormat": "git+https",
+      "sha256": "main"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "dataset-files",
+      "name": "dataset-files",
+      "description": "The JSONL split files for Labyrinth-v0 4x4 dataset.",
+      "containedIn": { "@id": "repo" },
+      "encodingFormat": "application/jsonl",
+      "includes": "dataset/*_shortest_route.jsonl",
+      "sha256": "04dd930713199dd3e2e2239e981de3e15b2ea8ac715bb5349e9058991f3a9bca"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "images-folder",
+      "name": "images-folder",
+      "description": "Image files grouped by split.",
+      "containedIn": { "@id": "repo" },
+      "encodingFormat": "image/jpeg",
+      "includes": "images/*/*.jpg",
+      "sha256": "1de30325f521bcdaa19254a5b2339eaba472d444cb47d49426051fc78aa39e9f"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "default_splits",
+      "name": "Split list",
+      "description": "Split definitions for Labyrinth dataset.",
+      "dataType": "cr:Split",
+      "key": { "@id": "default_splits/split_name" },
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "default_splits/split_name",
+          "name": "split_name",
+          "description": "Split identifier.",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        { "default_splits/split_name": "train" },
+        { "default_splits/split_name": "eval" },
+        { "default_splits/split_name": "test" },
+        { "default_splits/split_name": "random" }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "default",
+      "name": "Labyrinth-v0 4x4 Interaction Data",
+      "description": "Main dataset fields for each step in the environment.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "default/split",
+          "name": "default/split",
+          "description": "Split to which the entry belongs.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": { "@id": "dataset-files" },
+            "extract": { "fileProperty": "fullpath" },
+            "transform": {
+              "regex": "dataset/(train|test|eval|random)_shortest_route.jsonl"
+            }
+          },
+          "references": {
+            "field": { "@id": "default_splits/split_name" }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/obs",
+          "name": "default/obs",
+          "description": "Path to the image representing the observation.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": { "@id": "dataset-files" },
+            "extract": { "column": "obs" }
+          },
+          "repeated": true
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/actions",
+          "name": "default/actions",
+          "description": "Action taken at this step.",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileSet": { "@id": "dataset-files" },
+            "extract": { "column": "actions" }
+          },
+          "repeated": true
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/rewards",
+          "name": "default/rewards",
+          "description": "Reward received.",
+          "dataType": "sc:Float",
+          "source": {
+            "fileSet": { "@id": "dataset-files" },
+            "extract": { "column": "rewards" }
+          },
+          "repeated": true
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/episode_starts",
+          "name": "default/episode_starts",
+          "description": "Whether this is the first step of the episode.",
+          "dataType": "sc:Boolean",
+          "source": {
+            "fileSet": { "@id": "dataset-files" },
+            "extract": { "column": "episode_starts" }
+          },
+          "repeated": true
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/info",
+          "name": "default/info",
+          "description": "Information needed to reconstruct the labyrinth state.",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": { "@id": "dataset-files" },
+            "extract": { "column": "info" }
+          },
+          "repeated": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,392 @@
+{
+    "@context": {
+      "@language": "en",
+      "@vocab": "https://schema.org/",
+      "arrayShape": "cr:arrayShape",
+      "citeAs": "cr:citeAs",
+      "column": "cr:column",
+      "conformsTo": "dct:conformsTo",
+      "cr": "http://mlcommons.org/croissant/",
+      "data": {
+        "@id": "cr:data",
+        "@type": "@json"
+      },
+      "dataBiases": "cr:dataBiases",
+      "dataCollection": "cr:dataCollection",
+      "dataType": {
+        "@id": "cr:dataType",
+        "@type": "@vocab"
+      },
+      "dct": "http://purl.org/dc/terms/",
+      "extract": "cr:extract",
+      "field": "cr:field",
+      "fileProperty": "cr:fileProperty",
+      "fileObject": "cr:fileObject",
+      "fileSet": "cr:fileSet",
+      "format": "cr:format",
+      "includes": "cr:includes",
+      "isArray": "cr:isArray",
+      "isLiveDataset": "cr:isLiveDataset",
+      "jsonPath": "cr:jsonPath",
+      "key": "cr:key",
+      "md5": "cr:md5",
+      "parentField": "cr:parentField",
+      "path": "cr:path",
+      "personalSensitiveInformation": "cr:personalSensitiveInformation",
+      "recordSet": "cr:recordSet",
+      "references": "cr:references",
+      "regex": "cr:regex",
+      "repeated": "cr:repeated",
+      "replace": "cr:replace",
+      "sc": "https://schema.org/",
+      "separator": "cr:separator",
+      "source": "cr:source",
+      "subField": "cr:subField",
+      "transform": "cr:transform"
+    },
+    "@type": "sc:Dataset",
+    "distribution": [
+      {
+        "@type": "cr:FileObject",
+        "@id": "repo",
+        "name": "repo",
+        "description": "The Hugging Face git repository.",
+        "contentUrl": "https://huggingface.co/datasets/THU-KEG/AgentIF/tree/refs%2Fconvert%2Fparquet",
+        "encodingFormat": "git+https",
+        "sha256": "https://github.com/mlcommons/croissant/issues/80"
+      },
+      {
+        "@type": "cr:FileSet",
+        "@id": "parquet-files-for-config-default",
+        "containedIn": {
+          "@id": "repo"
+        },
+        "encodingFormat": "application/x-parquet",
+        "includes": "default/*/*.parquet"
+      }
+    ],
+    "recordSet": [
+      {
+        "@type": "cr:RecordSet",
+        "dataType": "cr:Split",
+        "key": {
+          "@id": "default_splits/split_name"
+        },
+        "@id": "default_splits",
+        "name": "default_splits",
+        "description": "Splits for the default config.",
+        "field": [
+          {
+            "@type": "cr:Field",
+            "@id": "default_splits/split_name",
+            "dataType": "sc:Text"
+          }
+        ],
+        "data": [
+          {
+            "default_splits/split_name": "test"
+          }
+        ]
+      },
+      {
+        "@type": "cr:RecordSet",
+        "@id": "default",
+        "description": "THU-KEG/AgentIF - 'default' subset",
+        "field": [
+          {
+            "@type": "cr:Field",
+            "@id": "default/split",
+            "dataType": "sc:Text",
+            "source": {
+              "fileSet": {
+                "@id": "parquet-files-for-config-default"
+              },
+              "extract": {
+                "fileProperty": "fullpath"
+              },
+              "transform": {
+                "regex": "default/(?:partial-)?(test)/.+parquet$"
+              }
+            },
+            "references": {
+              "field": {
+                "@id": "default_splits/split_name"
+              }
+            }
+          },
+          {
+            "@type": "cr:Field",
+            "@id": "default/id",
+            "dataType": "sc:Text",
+            "source": {
+              "fileSet": {
+                "@id": "parquet-files-for-config-default"
+              },
+              "extract": {
+                "column": "id"
+              }
+            }
+          },
+          {
+            "@type": "cr:Field",
+            "@id": "default/input",
+            "subField": [
+              {
+                "@type": "cr:Field",
+                "@id": "default/input/content",
+                "dataType": "sc:Text",
+                "source": {
+                  "fileSet": {
+                    "@id": "parquet-files-for-config-default"
+                  },
+                  "extract": {
+                    "column": "input"
+                  },
+                  "transform": {
+                    "jsonPath": "content"
+                  }
+                }
+              },
+              {
+                "@type": "cr:Field",
+                "@id": "default/input/role",
+                "dataType": "sc:Text",
+                "source": {
+                  "fileSet": {
+                    "@id": "parquet-files-for-config-default"
+                  },
+                  "extract": {
+                    "column": "input"
+                  },
+                  "transform": {
+                    "jsonPath": "role"
+                  }
+                }
+              }
+            ],
+            "isArray": true,
+            "arrayShape": "-1"
+          },
+          {
+            "@type": "cr:Field",
+            "@id": "default/constraints",
+            "subField": [
+              {
+                "@type": "cr:Field",
+                "@id": "default/constraints/desc",
+                "dataType": "sc:Text",
+                "source": {
+                  "fileSet": {
+                    "@id": "parquet-files-for-config-default"
+                  },
+                  "extract": {
+                    "column": "constraints"
+                  },
+                  "transform": {
+                    "jsonPath": "desc"
+                  }
+                }
+              },
+              {
+                "@type": "cr:Field",
+                "@id": "default/constraints/dimension",
+                "dataType": "sc:Text",
+                "source": {
+                  "fileSet": {
+                    "@id": "parquet-files-for-config-default"
+                  },
+                  "extract": {
+                    "column": "constraints"
+                  },
+                  "transform": {
+                    "jsonPath": "dimension"
+                  }
+                }
+              },
+              {
+                "@type": "cr:Field",
+                "@id": "default/constraints/evaluation",
+                "subField": [
+                  {
+                    "@type": "cr:Field",
+                    "@id": "default/constraints/evaluation/exec",
+                    "dataType": "sc:Text",
+                    "source": {
+                      "fileSet": {
+                        "@id": "parquet-files-for-config-default"
+                      },
+                      "extract": {
+                        "column": "constraints"
+                      },
+                      "transform": [
+                        {
+                          "jsonPath": "evaluation"
+                        },
+                        {
+                          "jsonPath": "exec"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "@type": "cr:Field",
+                    "@id": "default/constraints/evaluation/required_keys",
+                    "dataType": "sc:Text",
+                    "source": {
+                      "fileSet": {
+                        "@id": "parquet-files-for-config-default"
+                      },
+                      "extract": {
+                        "column": "constraints"
+                      },
+                      "transform": [
+                        {
+                          "jsonPath": "evaluation"
+                        },
+                        {
+                          "jsonPath": "required_keys"
+                        }
+                      ]
+                    },
+                    "isArray": true,
+                    "arrayShape": "-1"
+                  },
+                  {
+                    "@type": "cr:Field",
+                    "@id": "default/constraints/evaluation/type",
+                    "dataType": "sc:Text",
+                    "source": {
+                      "fileSet": {
+                        "@id": "parquet-files-for-config-default"
+                      },
+                      "extract": {
+                        "column": "constraints"
+                      },
+                      "transform": [
+                        {
+                          "jsonPath": "evaluation"
+                        },
+                        {
+                          "jsonPath": "type"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "isArray": true,
+                "arrayShape": "-1"
+              },
+              {
+                "@type": "cr:Field",
+                "@id": "default/constraints/id",
+                "dataType": "cr:Int64",
+                "source": {
+                  "fileSet": {
+                    "@id": "parquet-files-for-config-default"
+                  },
+                  "extract": {
+                    "column": "constraints"
+                  },
+                  "transform": {
+                    "jsonPath": "id"
+                  }
+                }
+              },
+              {
+                "@type": "cr:Field",
+                "@id": "default/constraints/is_meta",
+                "dataType": "sc:Boolean",
+                "source": {
+                  "fileSet": {
+                    "@id": "parquet-files-for-config-default"
+                  },
+                  "extract": {
+                    "column": "constraints"
+                  },
+                  "transform": {
+                    "jsonPath": "is_meta"
+                  }
+                }
+              },
+              {
+                "@type": "cr:Field",
+                "@id": "default/constraints/other_info",
+                "dataType": "sc:Text",
+                "source": {
+                  "fileSet": {
+                    "@id": "parquet-files-for-config-default"
+                  },
+                  "extract": {
+                    "column": "constraints"
+                  },
+                  "transform": {
+                    "jsonPath": "other_info"
+                  }
+                }
+              },
+              {
+                "@type": "cr:Field",
+                "@id": "default/constraints/type_0",
+                "dataType": "sc:Text",
+                "source": {
+                  "fileSet": {
+                    "@id": "parquet-files-for-config-default"
+                  },
+                  "extract": {
+                    "column": "constraints"
+                  },
+                  "transform": {
+                    "jsonPath": "type"
+                  }
+                }
+              }
+            ],
+            "isArray": true,
+            "arrayShape": "-1"
+          },
+          {
+            "@type": "cr:Field",
+            "@id": "default/output",
+            "dataType": "sc:Text",
+            "source": {
+              "fileSet": {
+                "@id": "parquet-files-for-config-default"
+              },
+              "extract": {
+                "column": "output"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "conformsTo": "http://mlcommons.org/croissant/1.1",
+    "name": "AgentIF",
+    "description": "\n\t\n\t\t\n\t\t[NeurlPS 2025] AgentIF: Benchmarking Instruction Following of Large Language Models in Agentic Scenarios\n\t\n\n\n\t\n\t\t\n\t\tOverview\n\t\n\nAgentIF is the first benchmark designed to systematically evaluate the instruction-following capabilities of large language models (LLMs) in agentic scenarios. It consists of instructions and constraints derived from real-world agent-based applications, enabling fine-grained, executable evaluation.\n\n\t\n\t\t\n\t\tKey Features\n\t\n\n\nRealistic\nBuilt from 50 real-world… See the full description on the dataset page: https://huggingface.co/datasets/THU-KEG/AgentIF.",
+    "alternateName": [
+      "THU-KEG/AgentIF"
+    ],
+    "creator": {
+      "@type": "Organization",
+      "name": "Knowledge Engineer Group @ Tsinghua University",
+      "url": "https://huggingface.co/THU-KEG"
+    },
+    "keywords": [
+      "text-generation",
+      "English",
+      "Chinese",
+      "cc-by-nc-4.0",
+      "\u003C 1K",
+      "json",
+      "Text",
+      "Datasets",
+      "pandas",
+      "Croissant",
+      "Polars",
+      "arxiv:2505.16944",
+      "🇺🇸 Region: US",
+      "agent"
+    ],
+    "license": "https://choosealicense.com/licenses/cc-by-nc-4.0/",
+    "url": "https://huggingface.co/datasets/THU-KEG/AgentIF"
+}
