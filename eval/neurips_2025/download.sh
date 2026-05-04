@@ -52,10 +52,10 @@ for repo in $REPOS; do
   fi
   echo "[$(date '+%H:%M:%S')] $repo"
   if huggingface-cli download "$repo" --repo-type dataset \
-       --local-dir "$target" --max-workers 4 >/dev/null 2>&1; then
+       --local-dir "$target" --max-workers 4; then
     ok=$((ok + 1))
   else
-    echo "  FAIL $repo (see huggingface-cli output above)"
+    echo "  FAIL $repo"
     fail=$((fail + 1))
   fi
 done
