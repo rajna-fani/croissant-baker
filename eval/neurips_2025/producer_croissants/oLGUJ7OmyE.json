@@ -1,0 +1,244 @@
+{
+    "@context": {
+        "@language": "en",
+        "@vocab": "https://schema.org/",
+        "arrayShape": "cr:arrayShape",
+        "citeAs": "cr:citeAs",
+        "column": "cr:column",
+        "conformsTo": "dct:conformsTo",
+        "cr": "http://mlcommons.org/croissant/",
+        "data": {
+            "@id": "cr:data",
+            "@type": "@json"
+        },
+        "dataBiases": "cr:dataBiases",
+        "dataCollection": "cr:dataCollection",
+        "dataType": {
+            "@id": "cr:dataType",
+            "@type": "@vocab"
+        },
+        "dct": "http://purl.org/dc/terms/",
+        "extract": "cr:extract",
+        "field": "cr:field",
+        "fileProperty": "cr:fileProperty",
+        "fileObject": "cr:fileObject",
+        "fileSet": "cr:fileSet",
+        "format": "cr:format",
+        "includes": "cr:includes",
+        "isArray": "cr:isArray",
+        "isLiveDataset": "cr:isLiveDataset",
+        "jsonPath": "cr:jsonPath",
+        "key": "cr:key",
+        "md5": "cr:md5",
+        "parentField": "cr:parentField",
+        "path": "cr:path",
+        "personalSensitiveInformation": "cr:personalSensitiveInformation",
+        "recordSet": "cr:recordSet",
+        "references": "cr:references",
+        "regex": "cr:regex",
+        "repeated": "cr:repeated",
+        "replace": "cr:replace",
+        "sc": "https://schema.org/",
+        "separator": "cr:separator",
+        "source": "cr:source",
+        "subField": "cr:subField",
+        "transform": "cr:transform"
+    },
+    "@type": "sc:Dataset",
+    "distribution": [
+        {
+            "@type": "cr:FileObject",
+            "@id": "repo",
+            "name": "repo",
+            "description": "The Hugging Face git repository.",
+            "contentUrl": "https://huggingface.co/datasets/yzf1102/KnowMol-100K/tree/refs%2Fconvert%2Fparquet",
+            "encodingFormat": "git+https",
+            "sha256": "https://github.com/mlcommons/croissant/issues/80"
+        },
+        {
+            "@type": "cr:FileSet",
+            "@id": "parquet-files-for-config-default",
+            "containedIn": {
+                "@id": "repo"
+            },
+            "encodingFormat": "application/x-parquet",
+            "includes": "default/*/*.parquet"
+        }
+    ],
+    "recordSet": [
+        {
+            "@type": "cr:RecordSet",
+            "dataType": "cr:Split",
+            "key": {
+                "@id": "default_splits/split_name"
+            },
+            "@id": "default_splits",
+            "name": "default_splits",
+            "description": "Splits for the default config.",
+            "field": [
+                {
+                    "@type": "cr:Field",
+                    "@id": "default_splits/split_name",
+                    "dataType": "sc:Text"
+                }
+            ],
+            "data": [
+                {
+                    "default_splits/split_name": "train"
+                }
+            ]
+        },
+        {
+            "@type": "cr:RecordSet",
+            "@id": "default",
+            "description": "yzf1102/KnowMol-100K - 'default' subset",
+            "field": [
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/split",
+                    "dataType": "sc:Text",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "fileProperty": "fullpath"
+                        },
+                        "transform": {
+                            "regex": "default/(?:partial-)?(train)/.+parquet$"
+                        }
+                    },
+                    "references": {
+                        "field": {
+                            "@id": "default_splits/split_name"
+                        }
+                    }
+                },
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/cid",
+                    "dataType": "cr:Int64",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "column": "cid"
+                        }
+                    }
+                },
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/IUPACName",
+                    "dataType": "sc:Text",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "column": "IUPACName"
+                        }
+                    }
+                },
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/smiles",
+                    "dataType": "sc:Text",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "column": "smiles"
+                        }
+                    }
+                },
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/SELFIES",
+                    "dataType": "sc:Text",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "column": "SELFIES"
+                        }
+                    }
+                },
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/MolecularFormula",
+                    "dataType": "sc:Text",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "column": "MolecularFormula"
+                        }
+                    }
+                },
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/functional_group",
+                    "dataType": "sc:Text",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "column": "functional_group"
+                        }
+                    }
+                },
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/structure",
+                    "dataType": "sc:Text",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "column": "structure"
+                        }
+                    }
+                },
+                {
+                    "@type": "cr:Field",
+                    "@id": "default/property",
+                    "dataType": "sc:Text",
+                    "source": {
+                        "fileSet": {
+                            "@id": "parquet-files-for-config-default"
+                        },
+                        "extract": {
+                            "column": "property"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "conformsTo": "http://mlcommons.org/croissant/1.1",
+    "name": "KnowMol-100K",
+    "description": "\n\t\n\t\t\n\t\tDataset Card for Dataset Name\n\t\n\n\nKnowMol-100K is the first comprehensive dataset with 100K multi-level molecule descriptions. \nWe design an elaborate pipeline with high-quality databases and tools, including\nPubChem databases, an open-source toolkit for cheminformatics, RDKit, and the powerful multi-modal large language model GPT-4o, to construct multi-level annotations from four fundamental factors: atoms, functional groups, molecular structures, and molecular properties.\u2026 See the full description on the dataset page: https://huggingface.co/datasets/yzf1102/KnowMol-100K.",
+    "alternateName": [
+        "yzf1102/KnowMol-100K"
+    ],
+    "creator": {
+        "@type": "Person",
+        "name": "yangzaifei",
+        "url": "https://huggingface.co/yzf1102"
+    },
+    "keywords": [
+        "English",
+        "mit",
+        "100K<n<1M",
+        "\ud83c\uddfa\ud83c\uddf8 Region: US",
+        "chemistry"
+    ],
+    "license": "https://choosealicense.com/licenses/mit/",
+    "url": "https://huggingface.co/datasets/yzf1102/KnowMol-100K"
+}

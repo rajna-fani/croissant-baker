@@ -1,0 +1,1388 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "arrayShape": "cr:arrayShape",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataBiases": "cr:dataBiases",
+    "dataCollection": "cr:dataCollection",
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isArray": "cr:isArray",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "personalSensitiveInformation": "cr:personalSensitiveInformation",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "repo",
+      "name": "repo",
+      "description": "The Hugging Face git repository.",
+      "contentUrl": "https://huggingface.co/datasets/chengyewang/UMU-bench/tree/refs%2Fconvert%2Fparquet",
+      "encodingFormat": "git+https",
+      "sha256": "https://github.com/mlcommons/croissant/issues/80"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-Full_Set",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "Full_Set/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-Real_Person_Set",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "Real_Person_Set/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-forget_10",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "forget_10/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-forget_15",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "forget_15/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-forget_5",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "forget_5/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-retain_85",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "retain_85/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-retain_90",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "retain_90/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-retain_95",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "retain_95/*/*.parquet"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "Full_Set_splits/split_name"
+      },
+      "@id": "Full_Set_splits",
+      "name": "Full_Set_splits",
+      "description": "Splits for the Full_Set config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "Full_Set_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "Full_Set",
+      "description": "chengyewang/UMU-bench - 'Full_Set' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "Full_Set/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "Full_Set_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/ID",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "column": "ID"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/image",
+          "dataType": "sc:ImageObject",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "column": "image"
+            },
+            "transform": {
+              "jsonPath": "bytes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/Biography",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "column": "Biography"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/MM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "column": "MM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/UM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "column": "UM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/Classify",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "column": "Classify"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/Cloze",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "column": "Cloze"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Full_Set/Generation",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Full_Set"
+            },
+            "extract": {
+              "column": "Generation"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "Real_Person_Set_splits/split_name"
+      },
+      "@id": "Real_Person_Set_splits",
+      "name": "Real_Person_Set_splits",
+      "description": "Splits for the Real_Person_Set config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "Real_Person_Set_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "Real_Person_Set_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "Real_Person_Set",
+      "description": "chengyewang/UMU-bench - 'Real_Person_Set' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "Real_Person_Set/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Real_Person_Set"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "Real_Person_Set/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "Real_Person_Set_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Real_Person_Set/ID",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Real_Person_Set"
+            },
+            "extract": {
+              "column": "ID"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Real_Person_Set/image",
+          "dataType": "sc:ImageObject",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Real_Person_Set"
+            },
+            "extract": {
+              "column": "image"
+            },
+            "transform": {
+              "jsonPath": "bytes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Real_Person_Set/Biography",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Real_Person_Set"
+            },
+            "extract": {
+              "column": "Biography"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Real_Person_Set/Classify",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Real_Person_Set"
+            },
+            "extract": {
+              "column": "Classify"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Real_Person_Set/Cloze",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Real_Person_Set"
+            },
+            "extract": {
+              "column": "Cloze"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "Real_Person_Set/Generation",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-Real_Person_Set"
+            },
+            "extract": {
+              "column": "Generation"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "forget_10_splits/split_name"
+      },
+      "@id": "forget_10_splits",
+      "name": "forget_10_splits",
+      "description": "Splits for the forget_10 config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "forget_10_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "forget_10",
+      "description": "chengyewang/UMU-bench - 'forget_10' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "forget_10/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "forget_10_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/ID",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "column": "ID"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/image",
+          "dataType": "sc:ImageObject",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "column": "image"
+            },
+            "transform": {
+              "jsonPath": "bytes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/Biography",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "column": "Biography"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/MM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "column": "MM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/UM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "column": "UM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/Classify",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "column": "Classify"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/Cloze",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "column": "Cloze"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_10/Generation",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_10"
+            },
+            "extract": {
+              "column": "Generation"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "forget_15_splits/split_name"
+      },
+      "@id": "forget_15_splits",
+      "name": "forget_15_splits",
+      "description": "Splits for the forget_15 config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "forget_15_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "forget_15",
+      "description": "chengyewang/UMU-bench - 'forget_15' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "forget_15/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "forget_15_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/ID",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "column": "ID"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/image",
+          "dataType": "sc:ImageObject",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "column": "image"
+            },
+            "transform": {
+              "jsonPath": "bytes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/Biography",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "column": "Biography"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/MM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "column": "MM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/UM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "column": "UM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/Classify",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "column": "Classify"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/Cloze",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "column": "Cloze"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_15/Generation",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_15"
+            },
+            "extract": {
+              "column": "Generation"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "forget_5_splits/split_name"
+      },
+      "@id": "forget_5_splits",
+      "name": "forget_5_splits",
+      "description": "Splits for the forget_5 config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "forget_5_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "forget_5",
+      "description": "chengyewang/UMU-bench - 'forget_5' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "forget_5/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "forget_5_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/ID",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "column": "ID"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/image",
+          "dataType": "sc:ImageObject",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "column": "image"
+            },
+            "transform": {
+              "jsonPath": "bytes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/Biography",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "column": "Biography"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/MM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "column": "MM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/UM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "column": "UM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/Classify",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "column": "Classify"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/Cloze",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "column": "Cloze"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "forget_5/Generation",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-forget_5"
+            },
+            "extract": {
+              "column": "Generation"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "retain_85_splits/split_name"
+      },
+      "@id": "retain_85_splits",
+      "name": "retain_85_splits",
+      "description": "Splits for the retain_85 config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "retain_85_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "retain_85",
+      "description": "chengyewang/UMU-bench - 'retain_85' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "retain_85/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "retain_85_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/ID",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "column": "ID"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/image",
+          "dataType": "sc:ImageObject",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "column": "image"
+            },
+            "transform": {
+              "jsonPath": "bytes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/Biography",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "column": "Biography"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/MM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "column": "MM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/UM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "column": "UM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/Classify",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "column": "Classify"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/Cloze",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "column": "Cloze"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_85/Generation",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_85"
+            },
+            "extract": {
+              "column": "Generation"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "retain_90_splits/split_name"
+      },
+      "@id": "retain_90_splits",
+      "name": "retain_90_splits",
+      "description": "Splits for the retain_90 config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "retain_90_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "retain_90",
+      "description": "chengyewang/UMU-bench - 'retain_90' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "retain_90/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "retain_90_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/ID",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "column": "ID"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/image",
+          "dataType": "sc:ImageObject",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "column": "image"
+            },
+            "transform": {
+              "jsonPath": "bytes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/Biography",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "column": "Biography"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/MM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "column": "MM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/UM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "column": "UM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/Classify",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "column": "Classify"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/Cloze",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "column": "Cloze"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_90/Generation",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_90"
+            },
+            "extract": {
+              "column": "Generation"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "retain_95_splits/split_name"
+      },
+      "@id": "retain_95_splits",
+      "name": "retain_95_splits",
+      "description": "Splits for the retain_95 config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "retain_95_splits/split_name": "train"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "retain_95",
+      "description": "chengyewang/UMU-bench - 'retain_95' subset",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "retain_95/(?:partial-)?(train)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "retain_95_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/ID",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "column": "ID"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/image",
+          "dataType": "sc:ImageObject",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "column": "image"
+            },
+            "transform": {
+              "jsonPath": "bytes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/Biography",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "column": "Biography"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/MM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "column": "MM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/UM_QA",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "column": "UM_QA"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/Classify",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "column": "Classify"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/Cloze",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "column": "Cloze"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "retain_95/Generation",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-retain_95"
+            },
+            "extract": {
+              "column": "Generation"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
+  "name": "UMU-bench",
+  "description": "\n\t\n\t\t\n\t\tUMU-bench\n\t\n\n\n\t\n\t\t\n\t\tAbstract\n\t\n\n",
+  "alternateName": [
+    "chengyewang/UMU-bench"
+  ],
+  "creator": {
+    "@type": "Person",
+    "name": "chengyewang",
+    "url": "https://huggingface.co/chengyewang"
+  },
+  "keywords": [
+    "cc-by-4.0",
+    "1K - 10K",
+    "parquet",
+    "Image",
+    "Text",
+    "Datasets",
+    "pandas",
+    "Croissant",
+    "Polars",
+    "🇺🇸 Region: US"
+  ],
+  "license": "https://choosealicense.com/licenses/cc-by-4.0/",
+  "url": "https://huggingface.co/datasets/chengyewang/UMU-bench"
+}

@@ -1,0 +1,1410 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "arrayShape": "cr:arrayShape",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataBiases": "cr:dataBiases",
+    "dataCollection": "cr:dataCollection",
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isArray": "cr:isArray",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "personalSensitiveInformation": "cr:personalSensitiveInformation",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "repo",
+      "name": "repo",
+      "description": "The Hugging Face git repository.",
+      "contentUrl": "https://huggingface.co/datasets/AI-Secure/PolyGuard/tree/refs%2Fconvert%2Fparquet",
+      "encodingFormat": "git+https",
+      "sha256": "https://github.com/mlcommons/croissant/issues/80"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-code",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "code/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-cyber",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "cyber/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-education",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "education/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-finance_input",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "finance_input/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-hr",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "hr/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-law_input",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "law_input/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-law_output",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "law_output/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-regulation_input",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "regulation_input/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-regulation_output",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "regulation_output/*/*.parquet"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-social_media",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "social_media/*/*.parquet"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "code_splits/split_name"
+      },
+      "@id": "code_splits",
+      "name": "code_splits",
+      "description": "Splits for the code config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "code_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "code_splits/split_name": "bias"
+        },
+        {
+          "code_splits/split_name": "insecure_code"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "code",
+      "description": "AI-Secure/PolyGuard - 'code' subset\n\nAdditional information:\n- 2 splits: bias, insecure_code",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "code/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-code"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "code/(?:partial-)?(bias|insecure_code)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "code_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "code/category",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-code"
+            },
+            "extract": {
+              "column": "category"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "code/label",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-code"
+            },
+            "extract": {
+              "column": "label"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "code/prompt",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-code"
+            },
+            "extract": {
+              "column": "prompt"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "code/response",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-code"
+            },
+            "extract": {
+              "column": "response"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "cyber_splits/split_name"
+      },
+      "@id": "cyber_splits",
+      "name": "cyber_splits",
+      "description": "Splits for the cyber config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "cyber_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "cyber_splits/split_name": "code_interpreter_misuse"
+        },
+        {
+          "cyber_splits/split_name": "cve"
+        },
+        {
+          "cyber_splits/split_name": "malware"
+        },
+        {
+          "cyber_splits/split_name": "mitre"
+        },
+        {
+          "cyber_splits/split_name": "phishing"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "cyber",
+      "description": "AI-Secure/PolyGuard - 'cyber' subset\n\nAdditional information:\n- 5 splits: code_interpreter_misuse, cve, malware, mitre, phishing",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "cyber/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-cyber"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "cyber/(?:partial-)?(code_interpreter_misuse|cve|malware|mitre|phishing)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "cyber_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cyber/category",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-cyber"
+            },
+            "extract": {
+              "column": "category"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cyber/label",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-cyber"
+            },
+            "extract": {
+              "column": "label"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cyber/prompt",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-cyber"
+            },
+            "extract": {
+              "column": "prompt"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cyber/response",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-cyber"
+            },
+            "extract": {
+              "column": "response"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "education_splits/split_name"
+      },
+      "@id": "education_splits",
+      "name": "education_splits",
+      "description": "Splits for the education config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "education_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "education_splits/split_name": "COLLEGE_BOARD_AP_safe"
+        },
+        {
+          "education_splits/split_name": "COLLEGE_BOARD_AP_unsafe"
+        },
+        {
+          "education_splits/split_name": "CSU_safe"
+        },
+        {
+          "education_splits/split_name": "CSU_unsafe"
+        },
+        {
+          "education_splits/split_name": "AAMC_safe"
+        },
+        {
+          "education_splits/split_name": "AAMC_unsafe"
+        },
+        {
+          "education_splits/split_name": "AI_FOR_EDUCATION_safe"
+        },
+        {
+          "education_splits/split_name": "AI_FOR_EDUCATION_unsafe"
+        },
+        {
+          "education_splits/split_name": "MCGOVERN_MED_safe"
+        },
+        {
+          "education_splits/split_name": "MCGOVERN_MED_unsafe"
+        },
+        {
+          "education_splits/split_name": "NIU_safe"
+        },
+        {
+          "education_splits/split_name": "NIU_unsafe"
+        },
+        {
+          "education_splits/split_name": "SAMPLE_AI_GUIDANCE_TOOLKIT_safe"
+        },
+        {
+          "education_splits/split_name": "SAMPLE_AI_GUIDANCE_TOOLKIT_unsafe"
+        },
+        {
+          "education_splits/split_name": "UNESCO_safe"
+        },
+        {
+          "education_splits/split_name": "UNESCO_unsafe"
+        },
+        {
+          "education_splits/split_name": "IB_safe"
+        },
+        {
+          "education_splits/split_name": "IB_unsafe"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "education",
+      "description": "AI-Secure/PolyGuard - 'education' subset\n\nAdditional information:\n- 18 splits: COLLEGE_BOARD_AP_safe, COLLEGE_BOARD_AP_unsafe, CSU_safe, CSU_unsafe, AAMC_safe, AAMC_unsafe, AI_FOR_EDUCATION_safe, AI_FOR_EDUCATION_unsafe, MCGOVERN_MED_safe, MCGOVERN_MED_unsafe, NIU_safe, NIU_unsafe, SAMPLE_AI_GUIDANCE_TOOLKIT_safe, SAMPLE_AI_GUIDANCE_TOOLKIT_unsafe, UNESCO_safe, UNESCO_unsafe, IB_safe, IB_unsafe",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "education/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-education"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "education/(?:partial-)?(COLLEGE_BOARD_AP_safe|COLLEGE_BOARD_AP_unsafe|CSU_safe|CSU_unsafe|AAMC_safe|AAMC_unsafe|AI_FOR_EDUCATION_safe|AI_FOR_EDUCATION_unsafe|MCGOVERN_MED_safe|MCGOVERN_MED_unsafe|NIU_safe|NIU_unsafe|SAMPLE_AI_GUIDANCE_TOOLKIT_safe|SAMPLE_AI_GUIDANCE_TOOLKIT_unsafe|UNESCO_safe|UNESCO_unsafe|IB_safe|IB_unsafe)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "education_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "education/instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-education"
+            },
+            "extract": {
+              "column": "instance"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "education/category",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-education"
+            },
+            "extract": {
+              "column": "category"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "education/rule",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-education"
+            },
+            "extract": {
+              "column": "rule"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "finance_input_splits/split_name"
+      },
+      "@id": "finance_input_splits",
+      "name": "finance_input_splits",
+      "description": "Splits for the finance_input config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "finance_input_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "finance_input_splits/split_name": "Alan_safe"
+        },
+        {
+          "finance_input_splits/split_name": "Alan_unsafe"
+        },
+        {
+          "finance_input_splits/split_name": "BIS_safe"
+        },
+        {
+          "finance_input_splits/split_name": "BIS_unsafe"
+        },
+        {
+          "finance_input_splits/split_name": "FINRA_safe"
+        },
+        {
+          "finance_input_splits/split_name": "FINRA_unsafe"
+        },
+        {
+          "finance_input_splits/split_name": "OECD_safe"
+        },
+        {
+          "finance_input_splits/split_name": "OECD_unsafe"
+        },
+        {
+          "finance_input_splits/split_name": "USDT_safe"
+        },
+        {
+          "finance_input_splits/split_name": "USDT_unsafe"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "finance_input",
+      "description": "AI-Secure/PolyGuard - 'finance_input' subset\n\nAdditional information:\n- 10 splits: Alan_safe, Alan_unsafe, BIS_safe, BIS_unsafe, FINRA_safe, FINRA_unsafe, OECD_safe, OECD_unsafe, USDT_safe, USDT_unsafe",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "finance_input/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-finance_input"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "finance_input/(?:partial-)?(Alan_safe|Alan_unsafe|BIS_safe|BIS_unsafe|FINRA_safe|FINRA_unsafe|OECD_safe|OECD_unsafe|USDT_safe|USDT_unsafe)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "finance_input_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "finance_input/category_name",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-finance_input"
+            },
+            "extract": {
+              "column": "category name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "finance_input/rule",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-finance_input"
+            },
+            "extract": {
+              "column": "rule"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "finance_input/original_instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-finance_input"
+            },
+            "extract": {
+              "column": "original instance"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "finance_input/rephrased_instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-finance_input"
+            },
+            "extract": {
+              "column": "rephrased instance"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "hr_splits/split_name"
+      },
+      "@id": "hr_splits",
+      "name": "hr_splits",
+      "description": "Splits for the hr config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "hr_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "hr_splits/split_name": "Google_safe"
+        },
+        {
+          "hr_splits/split_name": "Google_unsafe"
+        },
+        {
+          "hr_splits/split_name": "Microsoft_safe"
+        },
+        {
+          "hr_splits/split_name": "Microsoft_unsafe"
+        },
+        {
+          "hr_splits/split_name": "Amazon_safe"
+        },
+        {
+          "hr_splits/split_name": "Amazon_unsafe"
+        },
+        {
+          "hr_splits/split_name": "Apple_safe"
+        },
+        {
+          "hr_splits/split_name": "Apple_unsafe"
+        },
+        {
+          "hr_splits/split_name": "Meta_safe"
+        },
+        {
+          "hr_splits/split_name": "Meta_unsafe"
+        },
+        {
+          "hr_splits/split_name": "NVIDIA_safe"
+        },
+        {
+          "hr_splits/split_name": "NVIDIA_unsafe"
+        },
+        {
+          "hr_splits/split_name": "IBM_safe"
+        },
+        {
+          "hr_splits/split_name": "IBM_unsafe"
+        },
+        {
+          "hr_splits/split_name": "Intel_safe"
+        },
+        {
+          "hr_splits/split_name": "Intel_unsafe"
+        },
+        {
+          "hr_splits/split_name": "Adobe_safe"
+        },
+        {
+          "hr_splits/split_name": "Adobe_unsafe"
+        },
+        {
+          "hr_splits/split_name": "ByteDance_safe"
+        },
+        {
+          "hr_splits/split_name": "ByteDance_unsafe"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "hr",
+      "description": "AI-Secure/PolyGuard - 'hr' subset\n\nAdditional information:\n- 20 splits: Google_safe, Google_unsafe, Microsoft_safe, Microsoft_unsafe, Amazon_safe, Amazon_unsafe, Apple_safe, Apple_unsafe, Meta_safe, Meta_unsafe, NVIDIA_safe, NVIDIA_unsafe, IBM_safe, IBM_unsafe, Intel_safe, Intel_unsafe, Adobe_safe, Adobe_unsafe, ByteDance_safe, ByteDance_unsafe",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "hr/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-hr"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "hr/(?:partial-)?(Google_safe|Google_unsafe|Microsoft_safe|Microsoft_unsafe|Amazon_safe|Amazon_unsafe|Apple_safe|Apple_unsafe|Meta_safe|Meta_unsafe|NVIDIA_safe|NVIDIA_unsafe|IBM_safe|IBM_unsafe|Intel_safe|Intel_unsafe|Adobe_safe|Adobe_unsafe|ByteDance_safe|ByteDance_unsafe)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "hr_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "hr/instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-hr"
+            },
+            "extract": {
+              "column": "instance"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "hr/category",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-hr"
+            },
+            "extract": {
+              "column": "category"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "hr/rule",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-hr"
+            },
+            "extract": {
+              "column": "rule"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "law_input_splits/split_name"
+      },
+      "@id": "law_input_splits",
+      "name": "law_input_splits",
+      "description": "Splits for the law_input config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "law_input_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "law_input_splits/split_name": "ABA_safe"
+        },
+        {
+          "law_input_splits/split_name": "ABA_unsafe"
+        },
+        {
+          "law_input_splits/split_name": "CalBar_safe"
+        },
+        {
+          "law_input_splits/split_name": "CalBar_unsafe"
+        },
+        {
+          "law_input_splits/split_name": "DCBar_safe"
+        },
+        {
+          "law_input_splits/split_name": "DCBar_unsafe"
+        },
+        {
+          "law_input_splits/split_name": "FloridaBar_safe"
+        },
+        {
+          "law_input_splits/split_name": "FloridaBar_unsafe"
+        },
+        {
+          "law_input_splits/split_name": "NCSC_safe"
+        },
+        {
+          "law_input_splits/split_name": "NCSC_unsafe"
+        },
+        {
+          "law_input_splits/split_name": "TexasBar_safe"
+        },
+        {
+          "law_input_splits/split_name": "TexasBar_unsafe"
+        },
+        {
+          "law_input_splits/split_name": "UKJudiciary_safe"
+        },
+        {
+          "law_input_splits/split_name": "UKJudiciary_unsafe"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "law_input",
+      "description": "AI-Secure/PolyGuard - 'law_input' subset\n\nAdditional information:\n- 14 splits: ABA_safe, ABA_unsafe, CalBar_safe, CalBar_unsafe, DCBar_safe, DCBar_unsafe, FloridaBar_safe, FloridaBar_unsafe, NCSC_safe, NCSC_unsafe, TexasBar_safe, TexasBar_unsafe, UKJudiciary_safe, UKJudiciary_unsafe",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "law_input/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_input"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "law_input/(?:partial-)?(ABA_safe|ABA_unsafe|CalBar_safe|CalBar_unsafe|DCBar_safe|DCBar_unsafe|FloridaBar_safe|FloridaBar_unsafe|NCSC_safe|NCSC_unsafe|TexasBar_safe|TexasBar_unsafe|UKJudiciary_safe|UKJudiciary_unsafe)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "law_input_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_input/category_name",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_input"
+            },
+            "extract": {
+              "column": "category name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_input/rule",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_input"
+            },
+            "extract": {
+              "column": "rule"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_input/original_instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_input"
+            },
+            "extract": {
+              "column": "original instance"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_input/rephrased_instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_input"
+            },
+            "extract": {
+              "column": "rephrased instance"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "law_output_splits/split_name"
+      },
+      "@id": "law_output_splits",
+      "name": "law_output_splits",
+      "description": "Splits for the law_output config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "law_output_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "law_output_splits/split_name": "ABA_unsafe"
+        },
+        {
+          "law_output_splits/split_name": "CalBar_unsafe"
+        },
+        {
+          "law_output_splits/split_name": "DCBar_unsafe"
+        },
+        {
+          "law_output_splits/split_name": "FloridaBar_unsafe"
+        },
+        {
+          "law_output_splits/split_name": "NCSC_unsafe"
+        },
+        {
+          "law_output_splits/split_name": "TexasBar_unsafe"
+        },
+        {
+          "law_output_splits/split_name": "UKJudiciary_unsafe"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "law_output",
+      "description": "AI-Secure/PolyGuard - 'law_output' subset\n\nAdditional information:\n- 7 splits: ABA_unsafe, CalBar_unsafe, DCBar_unsafe, FloridaBar_unsafe, NCSC_unsafe, TexasBar_unsafe, UKJudiciary_unsafe",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "law_output/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_output"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "law_output/(?:partial-)?(ABA_unsafe|CalBar_unsafe|DCBar_unsafe|FloridaBar_unsafe|NCSC_unsafe|TexasBar_unsafe|UKJudiciary_unsafe)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "law_output_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_output/original_instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_output"
+            },
+            "extract": {
+              "column": "original instance"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_output/rephrased_instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_output"
+            },
+            "extract": {
+              "column": "rephrased instance"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_output/output",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_output"
+            },
+            "extract": {
+              "column": "output"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_output/category_name",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_output"
+            },
+            "extract": {
+              "column": "category name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "law_output/rule",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-law_output"
+            },
+            "extract": {
+              "column": "rule"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "regulation_input_splits/split_name"
+      },
+      "@id": "regulation_input_splits",
+      "name": "regulation_input_splits",
+      "description": "Splits for the regulation_input config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_input_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "regulation_input_splits/split_name": "EU_AI_Act_safe"
+        },
+        {
+          "regulation_input_splits/split_name": "EU_AI_Act_unsafe"
+        },
+        {
+          "regulation_input_splits/split_name": "GDPR_safe"
+        },
+        {
+          "regulation_input_splits/split_name": "GDPR_unsafe"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "regulation_input",
+      "description": "AI-Secure/PolyGuard - 'regulation_input' subset\n\nAdditional information:\n- 4 splits: EU_AI_Act_safe, EU_AI_Act_unsafe, GDPR_safe, GDPR_unsafe",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_input/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_input"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "regulation_input/(?:partial-)?(EU_AI_Act_safe|EU_AI_Act_unsafe|GDPR_safe|GDPR_unsafe)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "regulation_input_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_input/category",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_input"
+            },
+            "extract": {
+              "column": "category"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_input/label",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_input"
+            },
+            "extract": {
+              "column": "label"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_input/prompt",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_input"
+            },
+            "extract": {
+              "column": "prompt"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "regulation_output_splits/split_name"
+      },
+      "@id": "regulation_output_splits",
+      "name": "regulation_output_splits",
+      "description": "Splits for the regulation_output config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_output_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "regulation_output_splits/split_name": "EU_AI_Act_safe"
+        },
+        {
+          "regulation_output_splits/split_name": "EU_AI_Act_unsafe"
+        },
+        {
+          "regulation_output_splits/split_name": "GDPR_safe"
+        },
+        {
+          "regulation_output_splits/split_name": "GDPR_unsafe"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "regulation_output",
+      "description": "AI-Secure/PolyGuard - 'regulation_output' subset\n\nAdditional information:\n- 4 splits: EU_AI_Act_safe, EU_AI_Act_unsafe, GDPR_safe, GDPR_unsafe",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_output/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_output"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "regulation_output/(?:partial-)?(EU_AI_Act_safe|EU_AI_Act_unsafe|GDPR_safe|GDPR_unsafe)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "regulation_output_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_output/category",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_output"
+            },
+            "extract": {
+              "column": "category"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_output/label",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_output"
+            },
+            "extract": {
+              "column": "label"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_output/prompt",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_output"
+            },
+            "extract": {
+              "column": "prompt"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "regulation_output/response",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-regulation_output"
+            },
+            "extract": {
+              "column": "response"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "social_media_splits/split_name"
+      },
+      "@id": "social_media_splits",
+      "name": "social_media_splits",
+      "description": "Splits for the social_media config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "social_media_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "social_media_splits/split_name": "Discord_safe"
+        },
+        {
+          "social_media_splits/split_name": "Discord_unsafe"
+        },
+        {
+          "social_media_splits/split_name": "Instagram_safe"
+        },
+        {
+          "social_media_splits/split_name": "Instagram_unsafe"
+        },
+        {
+          "social_media_splits/split_name": "Reddit_safe"
+        },
+        {
+          "social_media_splits/split_name": "Reddit_unsafe"
+        },
+        {
+          "social_media_splits/split_name": "Spotify_safe"
+        },
+        {
+          "social_media_splits/split_name": "Spotify_unsafe"
+        },
+        {
+          "social_media_splits/split_name": "Youtube_safe"
+        },
+        {
+          "social_media_splits/split_name": "Youtube_unsafe"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "social_media",
+      "description": "AI-Secure/PolyGuard - 'social_media' subset\n\nAdditional information:\n- 10 splits: Discord_safe, Discord_unsafe, Instagram_safe, Instagram_unsafe, Reddit_safe, Reddit_unsafe, Spotify_safe, Spotify_unsafe, Youtube_safe, Youtube_unsafe",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "social_media/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-social_media"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "social_media/(?:partial-)?(Discord_safe|Discord_unsafe|Instagram_safe|Instagram_unsafe|Reddit_safe|Reddit_unsafe|Spotify_safe|Spotify_unsafe|Youtube_safe|Youtube_unsafe)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "social_media_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "social_media/instance",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-social_media"
+            },
+            "extract": {
+              "column": "instance"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "social_media/category",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-social_media"
+            },
+            "extract": {
+              "column": "category"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "social_media/rule",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-social_media"
+            },
+            "extract": {
+              "column": "rule"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
+  "name": "PolyGuard",
+  "description": "PolyGuard: Massive Multi-Domain Safety Policy-Grounded Guardrail Dataset\n",
+  "alternateName": [
+    "AI-Secure/PolyGuard"
+  ],
+  "creator": {
+    "@type": "Organization",
+    "name": "Secure Learning Lab",
+    "url": "https://huggingface.co/AI-Secure"
+  },
+  "keywords": [
+    "text-classification",
+    "English",
+    "cc-by-4.0",
+    "100K - 1M",
+    "json",
+    "Text",
+    "Datasets",
+    "pandas",
+    "Croissant",
+    "Polars",
+    "🇺🇸 Region: US"
+  ],
+  "license": "https://choosealicense.com/licenses/cc-by-4.0/",
+  "url": "https://huggingface.co/datasets/AI-Secure/PolyGuard"
+}

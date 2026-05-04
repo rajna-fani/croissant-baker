@@ -21,6 +21,7 @@ evaluation script, and generated output artifacts.
 | `fhir_bundle/` | Structural fidelity | [SMART Health IT custom sample data](https://github.com/smart-on-fhir/custom-sample-data) — 5 FHIR JSON Bundle files exercising the Bundle handler code path |
 | `dcm_validate/` | Standards-grounded (DICOM PS3.6) | [Rorden et al. dcm_validate corpus (Sci Data 2025)](https://doi.org/10.5281/zenodo.15310934): paired DICOM + NIfTI + BIDS sidecars across 6 vendor modules |
 | `openneuro/` | Per-dataset BIDS structure | [OpenNeuro](https://openneuro.org): N publicly available BIDS datasets (configurable LIMIT, default 50) exercising NIfTI + JSON sidecar + TSV handlers in one bake |
+| `neurips_2025/` | Producer-authored Croissants (paper-submission-time snapshot) | NeurIPS 2025 Datasets & Benchmarks track: a pre-registered seeded draw across the 11 primary-area buckets covering all major scientific and applied-ML domains represented in the track, with bundled producer Croissants for field-name and type-agreement comparison |
 
 ## Running an evaluation
 
@@ -45,6 +46,11 @@ uv run pytest eval/dcm_validate/ -v
 bash eval/openneuro/download.sh                 # default: 50 datasets, <=2 GB each
 LIMIT=10 bash eval/openneuro/download.sh        # quick pass for development
 uv run pytest eval/openneuro/ -v
+
+# NeurIPS 2025 Datasets & Benchmarks
+huggingface-cli login
+bash eval/neurips_2025/download.sh
+uv run pytest eval/neurips_2025/ -v
 ```
 
 Evaluations are not collected by the default `uv run pytest` run. They must be

@@ -1,0 +1,562 @@
+{
+  "protocol": "Pre-registered seeded draw: for each Sankey bucket (top-10 OpenReview primary_area values plus 'other') a deterministic random.Random(seed) shuffle of the candidate pool yields one pick per (seed, bucket). Eligibility: accepted NeurIPS 2025 Datasets & Benchmarks paper, dataset publicly retrievable, producer-authored Croissant available, and a feasible repository size.",
+  "seeds": [
+    0,
+    1337,
+    2026
+  ],
+  "buckets": [
+    "language",
+    "cv",
+    "eval",
+    "health",
+    "physics",
+    "life",
+    "dl_scen",
+    "social",
+    "rl",
+    "speech",
+    "other"
+  ],
+  "picks_per_seed": {
+    "seed=0": [
+      {
+        "bucket": "language",
+        "paper_id": "FLiMxTkIeu",
+        "repo": "THU-KEG/AgentIF",
+        "name": "AgentIF"
+      },
+      {
+        "bucket": "cv",
+        "paper_id": "a3hafrDzuA",
+        "repo": "Efficient-Large-Model/worldmodelbench",
+        "name": "WorldModelBench"
+      },
+      {
+        "bucket": "eval",
+        "paper_id": "PuzbYHf1GR",
+        "repo": "TianqiLuo/nvBench2.0",
+        "name": "nvBench2.0"
+      },
+      {
+        "bucket": "health",
+        "paper_id": "ZONgHRsAbl",
+        "repo": "smmile/SMMILE",
+        "name": "SMMILE"
+      },
+      {
+        "bucket": "physics",
+        "paper_id": "SAT0KPA5UO",
+        "repo": "atomind/mlip-arena",
+        "name": "MLIP-Arena"
+      },
+      {
+        "bucket": "life",
+        "paper_id": "VIsPHMMiW8",
+        "repo": "xuan-liu/FGBench",
+        "name": "FGBench"
+      },
+      {
+        "bucket": "dl_scen",
+        "paper_id": "ZbcUIxACQE",
+        "repo": "kaistdata/RDB2G-Bench",
+        "name": "RDB2G-Bench"
+      },
+      {
+        "bucket": "social",
+        "paper_id": "mORzRZaqT4",
+        "repo": "AI-Secure/PolyGuard",
+        "name": "PolyGuard / GuardSet-X"
+      },
+      {
+        "bucket": "rl",
+        "paper_id": "rf8c4zw9lO",
+        "repo": "NathanGavenski/Labyrinth-v0_5x5",
+        "name": "Labyrinth"
+      },
+      {
+        "bucket": "speech",
+        "paper_id": "N5BB7Or30g",
+        "repo": "Shelton1013/SwitchLingua_text",
+        "name": "SwitchLingua"
+      },
+      {
+        "bucket": "other",
+        "paper_id": "LBKyjz2ESc",
+        "repo": "Xinran0906/CineTechBench",
+        "name": "CineTechBench"
+      }
+    ],
+    "seed=1337": [
+      {
+        "bucket": "language",
+        "paper_id": "SSF4qgsNYE",
+        "repo": "m-a-p/OmniBench",
+        "name": "OmniBench"
+      },
+      {
+        "bucket": "cv",
+        "paper_id": "VfG4FBJ9Gc",
+        "repo": "fredericlin/CaMiT",
+        "name": "CaMiT"
+      },
+      {
+        "bucket": "eval",
+        "paper_id": "mdA5lVvNcU",
+        "repo": "ambean/construct-validity-review",
+        "name": "ConstructValidity"
+      },
+      {
+        "bucket": "health",
+        "paper_id": "ZONgHRsAbl",
+        "repo": "smmile/SMMILE",
+        "name": "SMMILE"
+      },
+      {
+        "bucket": "physics",
+        "paper_id": "ig9ujp50D4",
+        "repo": "colabfit/carbon-24_unique",
+        "name": "Carbon-24"
+      },
+      {
+        "bucket": "life",
+        "paper_id": "oLGUJ7OmyE",
+        "repo": "yzf1102/KnowMol-100K",
+        "name": "KnowMol-100K"
+      },
+      {
+        "bucket": "dl_scen",
+        "paper_id": "LuMGoG6lBA",
+        "repo": "vec-ai/struct-ir-qrels",
+        "name": "SSRB"
+      },
+      {
+        "bucket": "social",
+        "paper_id": "M476xkfNXe",
+        "repo": "linbojunzi/UMU-bench",
+        "name": "UMU-Bench"
+      },
+      {
+        "bucket": "rl",
+        "paper_id": "nMpJoVmRy1",
+        "repo": "nebius/SWE-rebench",
+        "name": "SWE-rebench"
+      },
+      {
+        "bucket": "speech",
+        "paper_id": "N5BB7Or30g",
+        "repo": "Shelton1013/SwitchLingua_text",
+        "name": "SwitchLingua"
+      },
+      {
+        "bucket": "other",
+        "paper_id": "mPznBXZSWf",
+        "repo": "ClawCardMirror/MS-Bench",
+        "name": "MS-Bench"
+      }
+    ],
+    "seed=2026": [
+      {
+        "bucket": "language",
+        "paper_id": "zRhO4hizR8",
+        "repo": "prquan/STARK_10k",
+        "name": "STARK-10k"
+      },
+      {
+        "bucket": "cv",
+        "paper_id": "VfG4FBJ9Gc",
+        "repo": "fredericlin/CaMiT",
+        "name": "CaMiT"
+      },
+      {
+        "bucket": "eval",
+        "paper_id": "cU5W9Z3r8p",
+        "repo": "gtfintechlab/all_annotated_sentences_25000",
+        "name": "CB-annotated"
+      },
+      {
+        "bucket": "health",
+        "paper_id": "ZONgHRsAbl",
+        "repo": "smmile/SMMILE",
+        "name": "SMMILE"
+      },
+      {
+        "bucket": "physics",
+        "paper_id": "ig9ujp50D4",
+        "repo": "colabfit/carbon-24_unique",
+        "name": "Carbon-24"
+      },
+      {
+        "bucket": "life",
+        "paper_id": "63Tia99ofI",
+        "repo": "yuyan-chen/open-insect",
+        "name": "Open-Insect"
+      },
+      {
+        "bucket": "dl_scen",
+        "paper_id": "MgXrLxjDed",
+        "repo": "llooss/UniHG",
+        "name": "UniHG"
+      },
+      {
+        "bucket": "social",
+        "paper_id": "mORzRZaqT4",
+        "repo": "AI-Secure/PolyGuard",
+        "name": "PolyGuard / GuardSet-X"
+      },
+      {
+        "bucket": "rl",
+        "paper_id": "rf8c4zw9lO",
+        "repo": "NathanGavenski/Labyrinth-v0_5x5",
+        "name": "Labyrinth"
+      },
+      {
+        "bucket": "speech",
+        "paper_id": "N5BB7Or30g",
+        "repo": "Shelton1013/SwitchLingua_text",
+        "name": "SwitchLingua"
+      },
+      {
+        "bucket": "other",
+        "paper_id": "khzyK7RuzJ",
+        "repo": "yandex/alchemist",
+        "name": "Alchemist"
+      }
+    ]
+  },
+  "unique_datasets": [
+    {
+      "repo": "fredericlin/CaMiT",
+      "name": "CaMiT",
+      "paper_id": "VfG4FBJ9Gc",
+      "buckets": [
+        "cv"
+      ],
+      "seeds": [
+        "seed=1337",
+        "seed=2026"
+      ],
+      "license": "cc-by-nc-sa-4.0",
+      "producer_croissant": "producer_croissants/VfG4FBJ9Gc.json"
+    },
+    {
+      "repo": "atomind/mlip-arena",
+      "name": "MLIP-Arena",
+      "paper_id": "SAT0KPA5UO",
+      "buckets": [
+        "physics"
+      ],
+      "seeds": [
+        "seed=0"
+      ],
+      "license": "apache-2.0",
+      "producer_croissant": "producer_croissants/SAT0KPA5UO.json"
+    },
+    {
+      "repo": "Shelton1013/SwitchLingua_text",
+      "name": "SwitchLingua",
+      "paper_id": "N5BB7Or30g",
+      "buckets": [
+        "speech"
+      ],
+      "seeds": [
+        "seed=0",
+        "seed=1337",
+        "seed=2026"
+      ],
+      "license": "cc-by-nc-4.0",
+      "producer_croissant": "producer_croissants/N5BB7Or30g.json"
+    },
+    {
+      "repo": "ClawCardMirror/MS-Bench",
+      "name": "MS-Bench",
+      "paper_id": "mPznBXZSWf",
+      "buckets": [
+        "other"
+      ],
+      "seeds": [
+        "seed=1337"
+      ],
+      "license": "mit",
+      "producer_croissant": "producer_croissants/mPznBXZSWf.json"
+    },
+    {
+      "repo": "yzf1102/KnowMol-100K",
+      "name": "KnowMol-100K",
+      "paper_id": "oLGUJ7OmyE",
+      "buckets": [
+        "life"
+      ],
+      "seeds": [
+        "seed=1337"
+      ],
+      "license": "mit",
+      "producer_croissant": "producer_croissants/oLGUJ7OmyE.json"
+    },
+    {
+      "repo": "m-a-p/OmniBench",
+      "name": "OmniBench",
+      "paper_id": "SSF4qgsNYE",
+      "buckets": [
+        "language"
+      ],
+      "seeds": [
+        "seed=1337"
+      ],
+      "license": "unspecified",
+      "producer_croissant": "producer_croissants/SSF4qgsNYE.json"
+    },
+    {
+      "repo": "llooss/UniHG",
+      "name": "UniHG",
+      "paper_id": "MgXrLxjDed",
+      "buckets": [
+        "dl_scen"
+      ],
+      "seeds": [
+        "seed=2026"
+      ],
+      "license": "unspecified",
+      "producer_croissant": "producer_croissants/MgXrLxjDed.json"
+    },
+    {
+      "repo": "yuyan-chen/open-insect",
+      "name": "Open-Insect",
+      "paper_id": "63Tia99ofI",
+      "buckets": [
+        "life"
+      ],
+      "seeds": [
+        "seed=2026"
+      ],
+      "license": "cc-by-nc-sa-4.0",
+      "producer_croissant": "producer_croissants/63Tia99ofI.json"
+    },
+    {
+      "repo": "xuan-liu/FGBench",
+      "name": "FGBench",
+      "paper_id": "VIsPHMMiW8",
+      "buckets": [
+        "life"
+      ],
+      "seeds": [
+        "seed=0"
+      ],
+      "license": "mit",
+      "producer_croissant": "producer_croissants/VIsPHMMiW8.json"
+    },
+    {
+      "repo": "nebius/SWE-rebench",
+      "name": "SWE-rebench",
+      "paper_id": "nMpJoVmRy1",
+      "buckets": [
+        "rl"
+      ],
+      "seeds": [
+        "seed=1337"
+      ],
+      "license": "cc-by-4.0",
+      "producer_croissant": "producer_croissants/nMpJoVmRy1.json"
+    },
+    {
+      "repo": "linbojunzi/UMU-bench",
+      "name": "UMU-Bench",
+      "paper_id": "M476xkfNXe",
+      "buckets": [
+        "social"
+      ],
+      "seeds": [
+        "seed=1337"
+      ],
+      "license": "cc-by-4.0",
+      "producer_croissant": "producer_croissants/M476xkfNXe.json"
+    },
+    {
+      "repo": "AI-Secure/PolyGuard",
+      "name": "PolyGuard / GuardSet-X",
+      "paper_id": "mORzRZaqT4",
+      "buckets": [
+        "social"
+      ],
+      "seeds": [
+        "seed=0",
+        "seed=2026"
+      ],
+      "license": "cc-by-4.0",
+      "producer_croissant": "producer_croissants/mORzRZaqT4.json"
+    },
+    {
+      "repo": "kaistdata/RDB2G-Bench",
+      "name": "RDB2G-Bench",
+      "paper_id": "ZbcUIxACQE",
+      "buckets": [
+        "dl_scen"
+      ],
+      "seeds": [
+        "seed=0"
+      ],
+      "license": "mit",
+      "producer_croissant": "producer_croissants/ZbcUIxACQE.json"
+    },
+    {
+      "repo": "smmile/SMMILE",
+      "name": "SMMILE",
+      "paper_id": "ZONgHRsAbl",
+      "buckets": [
+        "health"
+      ],
+      "seeds": [
+        "seed=0",
+        "seed=1337",
+        "seed=2026"
+      ],
+      "license": "cc-by-4.0",
+      "producer_croissant": "producer_croissants/ZONgHRsAbl.json"
+    },
+    {
+      "repo": "prquan/STARK_10k",
+      "name": "STARK-10k",
+      "paper_id": "zRhO4hizR8",
+      "buckets": [
+        "language"
+      ],
+      "seeds": [
+        "seed=2026"
+      ],
+      "license": "bsd-3-clause",
+      "producer_croissant": "producer_croissants/zRhO4hizR8.json"
+    },
+    {
+      "repo": "Efficient-Large-Model/worldmodelbench",
+      "name": "WorldModelBench",
+      "paper_id": "a3hafrDzuA",
+      "buckets": [
+        "cv"
+      ],
+      "seeds": [
+        "seed=0"
+      ],
+      "license": "unspecified",
+      "producer_croissant": "producer_croissants/a3hafrDzuA.json"
+    },
+    {
+      "repo": "vec-ai/struct-ir-qrels",
+      "name": "SSRB",
+      "paper_id": "LuMGoG6lBA",
+      "buckets": [
+        "dl_scen"
+      ],
+      "seeds": [
+        "seed=1337"
+      ],
+      "license": "apache-2.0",
+      "producer_croissant": "producer_croissants/LuMGoG6lBA.json"
+    },
+    {
+      "repo": "THU-KEG/AgentIF",
+      "name": "AgentIF",
+      "paper_id": "FLiMxTkIeu",
+      "buckets": [
+        "language"
+      ],
+      "seeds": [
+        "seed=0"
+      ],
+      "license": "cc-by-nc-4.0",
+      "producer_croissant": "producer_croissants/FLiMxTkIeu.json"
+    },
+    {
+      "repo": "NathanGavenski/Labyrinth-v0_5x5",
+      "name": "Labyrinth",
+      "paper_id": "rf8c4zw9lO",
+      "buckets": [
+        "rl"
+      ],
+      "seeds": [
+        "seed=0",
+        "seed=2026"
+      ],
+      "license": "mit",
+      "producer_croissant": "producer_croissants/rf8c4zw9lO.json"
+    },
+    {
+      "repo": "colabfit/carbon-24_unique",
+      "name": "Carbon-24",
+      "paper_id": "ig9ujp50D4",
+      "buckets": [
+        "physics"
+      ],
+      "seeds": [
+        "seed=1337",
+        "seed=2026"
+      ],
+      "license": "cc-by-4.0",
+      "producer_croissant": "producer_croissants/ig9ujp50D4.json"
+    },
+    {
+      "repo": "TianqiLuo/nvBench2.0",
+      "name": "nvBench2.0",
+      "paper_id": "PuzbYHf1GR",
+      "buckets": [
+        "eval"
+      ],
+      "seeds": [
+        "seed=0"
+      ],
+      "license": "unspecified",
+      "producer_croissant": "producer_croissants/PuzbYHf1GR.json"
+    },
+    {
+      "repo": "gtfintechlab/all_annotated_sentences_25000",
+      "name": "CB-annotated",
+      "paper_id": "cU5W9Z3r8p",
+      "buckets": [
+        "eval"
+      ],
+      "seeds": [
+        "seed=2026"
+      ],
+      "license": "cc-by-nc-sa-4.0",
+      "producer_croissant": "producer_croissants/cU5W9Z3r8p.json"
+    },
+    {
+      "repo": "Xinran0906/CineTechBench",
+      "name": "CineTechBench",
+      "paper_id": "LBKyjz2ESc",
+      "buckets": [
+        "other"
+      ],
+      "seeds": [
+        "seed=0"
+      ],
+      "license": "cc-by-nc-nd-4.0",
+      "producer_croissant": "producer_croissants/LBKyjz2ESc.json"
+    },
+    {
+      "repo": "ambean/construct-validity-review",
+      "name": "ConstructValidity",
+      "paper_id": "mdA5lVvNcU",
+      "buckets": [
+        "eval"
+      ],
+      "seeds": [
+        "seed=1337"
+      ],
+      "license": "cc-by-sa-4.0",
+      "producer_croissant": "producer_croissants/mdA5lVvNcU.json"
+    },
+    {
+      "repo": "yandex/alchemist",
+      "name": "Alchemist",
+      "paper_id": "khzyK7RuzJ",
+      "buckets": [
+        "other"
+      ],
+      "seeds": [
+        "seed=2026"
+      ],
+      "license": "apache-2.0",
+      "producer_croissant": "producer_croissants/khzyK7RuzJ.json"
+    }
+  ]
+}

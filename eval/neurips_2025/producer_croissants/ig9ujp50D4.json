@@ -1,0 +1,397 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "arrayShape": "cr:arrayShape",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataBiases": "cr:dataBiases",
+    "dataCollection": "cr:dataCollection",
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isArray": "cr:isArray",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "personalSensitiveInformation": "cr:personalSensitiveInformation",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "repo",
+      "name": "repo",
+      "description": "The Hugging Face git repository.",
+      "contentUrl": "https://huggingface.co/datasets/colabfit/carbon-enantiomorphs/tree/refs%2Fconvert%2Fparquet",
+      "encodingFormat": "git+https",
+      "sha256": "https://github.com/mlcommons/croissant/issues/80"
+    },
+    {
+      "@type": "cr:FileSet",
+      "@id": "parquet-files-for-config-default",
+      "containedIn": {
+        "@id": "repo"
+      },
+      "encodingFormat": "application/x-parquet",
+      "includes": "default/*/*.parquet"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "dataType": "cr:Split",
+      "key": {
+        "@id": "default_splits/split_name"
+      },
+      "@id": "default_splits",
+      "name": "default_splits",
+      "description": "Splits for the default config.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "default_splits/split_name",
+          "dataType": "sc:Text"
+        }
+      ],
+      "data": [
+        {
+          "default_splits/split_name": "train"
+        },
+        {
+          "default_splits/split_name": "val"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "default",
+      "description": "colabfit/carbon-enantiomorphs - 'default' subset\n\nAdditional information:\n- 2 splits: train, val",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "default/split",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "fileProperty": "fullpath"
+            },
+            "transform": {
+              "regex": "default/(?:partial-)?(train|val)/.+parquet$"
+            }
+          },
+          "references": {
+            "field": {
+              "@id": "default_splits/split_name"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/id",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "id"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/hash",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "hash"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/last_modified",
+          "dataType": "sc:DateTime",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "last_modified"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/chemical_formula_hill",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "chemical_formula_hill"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/chemical_formula_reduced",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "chemical_formula_reduced"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/chemical_formula_anonymous",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "chemical_formula_anonymous"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/elements",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "elements"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/elements_ratios",
+          "dataType": "cr:Float64",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "elements_ratios"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/atomic_numbers",
+          "dataType": "cr:Int32",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "atomic_numbers"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/nsites",
+          "dataType": "cr:Int32",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "nsites"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/nelements",
+          "dataType": "cr:Int32",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "nelements"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/nperiodic_dimensions",
+          "dataType": "cr:Int32",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "nperiodic_dimensions"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/cell",
+          "dataType": "cr:Float64",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "cell"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1,-1"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/dimension_types",
+          "dataType": "cr:Int32",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "dimension_types"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/pbc",
+          "dataType": "sc:Boolean",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "pbc"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/names",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "names"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/labels",
+          "dataType": "sc:Text",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "labels"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "default/positions",
+          "dataType": "cr:Float64",
+          "source": {
+            "fileSet": {
+              "@id": "parquet-files-for-config-default"
+            },
+            "extract": {
+              "column": "positions"
+            }
+          },
+          "isArray": true,
+          "arrayShape": "-1,-1"
+        }
+      ]
+    }
+  ],
+  "conformsTo": "http://mlcommons.org/croissant/1.1",
+  "name": "carbon-enantiomorphs",
+  "description": "\n\t\n\t\t\n\t\tDataset  Name\n\t\n\ncarbon-enantiomorphs     \n\n\t\n\t\t\n\t\tCitation\n\t\n\nPlease cite Martirossyan et al. (https://arxiv.org/abs/2509.12178) if your work utilizes this dataset.  \n\n\t\n\t\t\n\t\tDescription\n\t\n\nThis carbon-enantiomorphs dataset is cultivated from the carbon-24-unique-with-enantiomorphs dataset.\nContents:train.xyz - 80 structures which are chiraltest.xyz - 80 of the same structures with opposite handedness  \n\n\t\n\t\t\n\t\tLicense\n\t\n\nCC-BY-4.0  \n",
+  "alternateName": [
+    "colabfit/carbon-enantiomorphs",
+    "carbon-enantiomorphs"
+  ],
+  "creator": {
+    "@type": "Organization",
+    "name": "ColabFit",
+    "url": "https://huggingface.co/colabfit"
+  },
+  "keywords": [
+    "cc-by-4.0",
+    "arxiv:2509.12178",
+    "\ud83c\uddfa\ud83c\uddf8 Region: US",
+    "generative modeling",
+    "materials discovery",
+    "DFT"
+  ],
+  "license": "https://choosealicense.com/licenses/cc-by-4.0/",
+  "url": "https://huggingface.co/datasets/colabfit/carbon-enantiomorphs"
+}
